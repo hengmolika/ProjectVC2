@@ -10,18 +10,18 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            "first_name" => "max:10|required",
-            "last_name" => "max:10|required",
-            "email" => ['email', 'unique:users'],
-            "password" => ['min:4', 'confirmed']
+            'username' => 'max:10|required',
+            'email' => ['email', 'unique:users'],
+            'password' => ['min:4', 'confirmed'],
+            'profile' => 'nullable|image|mimes:jpg,jpeg,png|max:1999|',
 
         ]);
         //create user
         $user = new User();
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
+        $user->username = $request->username;
         $user->email = $request->email;
         $user->roles = $request->roles;
+        $user->profile = $request->profile;
         $user->password = bcrypt($request->password);
 
         $user->save();
@@ -58,5 +58,8 @@ class UserController extends Controller
             'token' => $token,
         ]);
     }
-    
+    public function index()
+    {
+        return User::latest()->get();
+    }
 }

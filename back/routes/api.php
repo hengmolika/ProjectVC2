@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
+Route::get('users', [UserController::class, 'index']);
 
 Route::get('students', [StudentController::class, 'index']);
 Route::get('students/{id}', [StudentController::class, 'show']);
