@@ -30,7 +30,7 @@ class StudentController extends Controller
             'gender' => 'required',
             'profile' => 'nullable|image|mimes:jpg,jpeg,png|max:1999|',
             'class_name' => 'required',
-            'phone' => 'required|min:11|numeric',
+            'phone' => 'required|min:9|numeric',
         ]);
         $student = new Student();
         $student->first_name = $request->first_name;
