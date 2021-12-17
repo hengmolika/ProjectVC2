@@ -8,7 +8,7 @@
 <<<<<<< HEAD
 | :---        | :----  |       :--- |
 | POST        | /register        |  The route to register the user |
-| POST        | /login        |  The route to login the user |
+| POST        | /login          |  The route to login the user |
 | POST        | /logout        |  The route to logout the user |
 
 | GET        | /users        |  The route to get all the user |

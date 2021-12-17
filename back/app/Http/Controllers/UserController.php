@@ -12,16 +12,24 @@ class UserController extends Controller
         $request->validate([
             'username' => 'max:10|required',
             'email' => ['email', 'unique:users'],
-            'password' => ['min:4', 'confirmed'],
-            'profile' => 'nullable|image|mimes:jpg,jpeg,png|max:1999|',
+            'password' => ['min:4', 'max:8', 'confirmed'],
+            'profile' => 'nullable|profile|mimes:jpg,jpeg,png|max:1999|',
 
         ]);
+
+
         //create user
         $user = new User();
         $user->username = $request->username;
         $user->email = $request->email;
         $user->roles = $request->roles;
         $user->profile = $request->profile;
+        if($request->profile !== null) {
+            $request->file('profile')->store('public/images');
+            $myevent->profile = $request->file('profile')->hashName();
+        } else {
+            $myevent->profile = "";
+        }
         $user->password = bcrypt($request->password);
 
         $user->save();
