@@ -22,6 +22,12 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->roles = $request->roles;
         $user->profile = $request->profile;
+        if($request->profile !== null) {
+            $request->file('profile')->store('public/images');
+            $user->profile = $request->file('profile')->hashName();
+        } else {
+            $user->profile = "";
+        };
         $user->password = bcrypt($request->password);
 
         $user->save();

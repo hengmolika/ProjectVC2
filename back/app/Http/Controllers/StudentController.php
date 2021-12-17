@@ -37,6 +37,12 @@ class StudentController extends Controller
         $student->last_name = $request->last_name;
         $student->gender = $request->gender;
         $student->profile = $request->profile;
+        if($request->profile !== null) {
+            $request->file('profile')->store('public/images');
+            $student->profile = $request->file('profile')->hashName();
+        } else {
+            $student->profile = "";
+        };
         $student->class_name = $request->class_name;
         $student->phone = $request->phone;
         $student->user_id = $request->user_id;
