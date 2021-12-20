@@ -8,7 +8,12 @@
                     tile
                     class="pa-4"
                 >
-                    <h3 class="font-weight-medium text-center">WELCOME TO STUDENT LIFE</h3>
+                    <h3 class="font-weight-medium text-center mb-4">WELCOME TO STUDENT LIFE</h3>
+
+                    <v-alert type="error" dismissible v-if="message === 'fail' ">
+                        Invalid Password or Email
+                    </v-alert>
+
                     <v-form
                         ref="form"
                         v-model="valid"
@@ -58,6 +63,8 @@
 
 <script>
 export default {
+    emits: ['requestLogin'],
+    props: ["message"],
     data: () => ({
       valid: true,
       password: '',
@@ -73,26 +80,28 @@ export default {
     }),
 
     methods: {
-      validate () {
-        if(this.$refs.form.validate()) {
-            console.log(this.password, this.email)
-        }
-        
-        
-      },
-      reset () {
-        this.$refs.form.reset()
-      },
-      resetValidation () {
-        this.$refs.form.resetValidation()
-      },
+        validate () {
+            if(this.$refs.form.validate()) {
+                let userData = {
+                    email: this.email,
+                    password: this.password
+                }
+                this.$emit("requestLogin", userData);
+            }
+            
+        },
+        reset () {
+            this.$refs.form.reset()
+        },
+        resetValidation () {
+            this.$refs.form.resetValidation()
+        },
     },
 }
 </script>
 
 <style scoped>
 .card {
-    /* width: 40%; */
     margin: auto;
 }
 </style>

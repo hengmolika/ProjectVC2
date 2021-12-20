@@ -1,37 +1,78 @@
 <template>
   <v-app>
-    <!-- <v-navigation-drawer v-model="showDrawer" absolute bottom temporary>
-      <nav-app> </nav-app>
-    </v-navigation-drawer>
-    <v-app-bar app color="blue">
-      <v-app-bar-nav-icon @click.stop="showDrawer = !showDrawer" color="white">
-
-      </v-app-bar-nav-icon>
-
-      <v-toolbar-title style="color: white;">STUDENT LIFE</v-toolbar-title>
-      <v-spacer></v-spacer>
-
-      <v-btn icon color="white">
-        <v-icon>mdi-logout-variant</v-icon>
-      </v-btn>
-    </v-app-bar> -->
-    <nav-app> </nav-app>
+    <nav-app
+      :userdata="user"
+      v-if="user !== null"
+      @requestToLogout="Logout"
+    >
+    </nav-app>
 
     <v-main>
-      <router-view/>
+      <router-view
+        @requestLogin="Login"
+        :message="messageError"
+      >
+      </router-view>
     </v-main>
   </v-app>
 </template>
 
 <script>
+import axios from "./api/api.js";
 import NavBar from "./components/nav/Navbar.vue"
+
 export default {
   name: 'App',
+  
   components: {
     "nav-app": NavBar,
+
   },
-  // data() {
-    
-  // },
+  data() {
+    return {
+      user: null,
+      messageError: ""
+    }
+  },
+  methods: {
+    Login(userData) {
+      axios.post('/login', userData)
+      .then(response => {
+        this.user = response.data.user;
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", response.data.user.id);
+        this.$router.push('/user');
+        
+      })
+      .catch((error) => {
+        if(error.response.status === 401) {
+          this.messageError = error.response.data.message;
+        }
+        
+      })
+    },
+    Logout() {
+      axios.post('/logout')
+      .then((response) => {
+        this.user = null;
+        this.messageError = "";
+        localStorage.removeItem("userId");
+        this.$router.push('/login');
+        console.log(response.data);
+      })
+    }
+  },
+  created() {
+    axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("token");
+  },
+  mounted() {
+    if(localStorage.userId) {
+      axios.get('/users/' + localStorage.userId)
+      .then(response => {
+        this.user = response.data;
+      })
+    }
+      
+  },
 };
 </script>

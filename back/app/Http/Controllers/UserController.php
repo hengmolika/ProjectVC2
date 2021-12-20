@@ -13,7 +13,7 @@ class UserController extends Controller
             'username' => 'max:10|required',
             'email' => ['email', 'unique:users'],
             'password' => ['min:4', 'max:8', 'confirmed'],
-            'profile' => 'nullable|profile|mimes:jpg,jpeg,png|max:1999|',
+            'profile' => 'nullable|image|mimes:jpg,jpeg,png|max:1999|',
 
         ]);
 
@@ -26,10 +26,10 @@ class UserController extends Controller
         $user->profile = $request->profile;
         if($request->profile !== null) {
             $request->file('profile')->store('public/images');
-            $myevent->profile = $request->file('profile')->hashName();
+            $user->profile = $request->file('profile')->hashName();
         } else {
-            $myevent->profile = "";
-        }
+            $user->profile = "";
+        };
         $user->password = bcrypt($request->password);
 
         $user->save();
@@ -56,7 +56,7 @@ class UserController extends Controller
 
         //check password
         if(!$user || !Hash::check($request->password, $user->password)){
-            return response()->json(['message' => 'Bad login'], 401);
+            return response()->json(['message' => 'fail'], 401);
         }
         //create token is a key can access to api
         $token = $user->createToken('mytoken')->plainTextToken;
@@ -69,5 +69,10 @@ class UserController extends Controller
     public function index()
     {
         return User::latest()->get();
+    }
+
+    public function getUserById($id)
+    {
+        return User::findOrFail($id);
     }
 }
