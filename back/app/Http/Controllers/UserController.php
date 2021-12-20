@@ -10,9 +10,9 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'username' => 'max:10|required',
+            'username' => 'min:2|required',
             'email' => ['email', 'unique:users'],
-            'password' => ['min:4', 'confirmed'],
+            'password' => ['min:4', 'required'],
             'profile' => 'nullable|image|mimes:jpg,jpeg,png|max:1999|',
 
         ]);
@@ -68,4 +68,5 @@ class UserController extends Controller
     {
         return User::latest()->get();
     }
+    
 }
