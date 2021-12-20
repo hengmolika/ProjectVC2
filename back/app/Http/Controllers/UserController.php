@@ -12,7 +12,7 @@ class UserController extends Controller
         $request->validate([
             'username' => 'max:10|required',
             'email' => ['email', 'unique:users'],
-            'password' => ['min:4', 'max:8', 'confirmed'],
+            'password' => ['min:4|max:8', 'confirmed'],
             'profile' => 'nullable|image|mimes:jpg,jpeg,png|max:1999|',
 
         ]);
@@ -70,9 +70,37 @@ class UserController extends Controller
     {
         return User::latest()->get();
     }
-
-    public function getUserById($id)
+    public function show($id)
     {
         return User::findOrFail($id);
+    }
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'username' => 'max:10|required',
+            'email' => ['email', 'unique:users'],
+            'password' => ['min:4|max:8', 'confirmed'],
+            'profile' => 'nullable|image|mimes:jpg,jpeg,png|max:1999|',
+
+        ]);
+        //create user
+        $user = User::findOrFail($id);
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->roles = $request->roles;
+        $user->profile = $request->profile;
+        if($request->profile !== null) {
+            $request->file('profile')->store('public/images');
+            $user->profile = $request->file('profile')->hashName();
+        } else {
+            $user->profile = "";
+        };
+        $user->save();
+
+        return response()->json(['message' => 'user updated!'], 200);
+    }
+    public function destroy($id)
+    {
+        return User::destroy($id);
     }
 }
