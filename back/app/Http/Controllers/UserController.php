@@ -10,13 +10,12 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'username' => 'max:10|required',
+            'username' => 'min:2|required',
             'email' => ['email', 'unique:users'],
-            'password' => ['min:4|max:8', 'confirmed'],
+            'password' => ['min:4','max:8'],
             'profile' => 'nullable|image|mimes:jpg,jpeg,png|max:1999|',
 
         ]);
-
 
         //create user
         $user = new User();
@@ -68,8 +67,9 @@ class UserController extends Controller
     }
     public function index()
     {
-        return User::latest()->get();
+        return User::get();
     }
+    
     public function show($id)
     {
         return User::findOrFail($id);

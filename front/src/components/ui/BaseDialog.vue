@@ -1,57 +1,126 @@
 <template>
-    <section>
-        <button
-        @click.stop="dialog = true"
-        >
-            <slot name="buttonAction"> </slot>
-        </button>
-
-        <v-dialog
-        v-model="dialog"
-        max-width="700"
-        >
-        <v-card>
-            <v-card-title class="text-h5 white--text primary lighten-2">
-                <slot name="dialogTitle"> </slot>
-            </v-card-title>
-
-            <v-card-text>
-                <slot name="dialogBody"> </slot>
-            </v-card-text>
-
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                
-                <button @click="dialog = modal" class="mr-3">
-                    <slot name="btnClose"> </slot>
-                </button>
-                    
-                <button @click="dialog = modal" >
-                    <slot name="btnSubmit"> </slot>
-                </button>
-                
-            </v-card-actions>
-        </v-card>
-        </v-dialog>
-    </section>
+  <teleport to="body">
+    <div v-if="show" @click="tryClose" class="backdrop"></div>
+    <transition name="dialog">
+      <dialog open v-if="show">
+        <header>
+          <slot name="header">
+            <h2>{{ title }}</h2>
+          </slot>
+        </header>
+        <section>
+          <slot></slot>
+        </section>
+        <menu v-if="!fixed">
+          <slot name="actions">
+            <base-button @click="tryClose">Close</base-button>
+          </slot>
+        </menu>
+      </dialog>
+    </transition>
+  </teleport>
 </template>
 
 <script>
 export default {
-    props: ["modal"],
-    data() {
-        return {
-            dialog: false,
-        }
+  props: {
+    show: {
+      type: Boolean,
+      required: true,
     },
-    methods: {
-        onClick() {
-            console.log("Hello")
-        }
+    title: {
+      type: String,
+      required: false,
     },
-}
+    fixed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  emits: ['close'],
+  methods: {
+    tryClose() {
+      if (this.fixed) {
+        return;
+      }
+      this.$emit('close');
+    },
+  },
+};
 </script>
 
-<style>
+<style scoped>
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 10;
+}
 
+dialog {
+  position: fixed;
+  top: 20vh;
+  left: 10%;
+  z-index: 100;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  background-color: white;
+}
+
+header {
+  background-color: #3a0061;
+  color: white;
+  width: 100%;
+  padding: 1rem;
+}
+
+header h2 {
+  margin: 0;
+}
+
+section {
+  padding: 1rem;
+}
+
+menu {
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0;
+}
+
+.dialog-enter-from,
+.dialog-leave-to {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.dialog-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.dialog-leave-active {
+  transition: all 0.3s ease-in;
+}
+
+.dialog-enter-to,
+.dialog-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (min-width: 768px) {
+  dialog {
+    left: calc(50% - 20rem);
+    width: 40rem;
+  }
+}
 </style>
