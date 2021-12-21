@@ -17,7 +17,6 @@ class UserController extends Controller
 
         ]);
 
-
         //create user
         $user = new User();
         $user->username = $request->username;

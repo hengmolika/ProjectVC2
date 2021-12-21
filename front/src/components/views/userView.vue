@@ -62,7 +62,7 @@
             ></v-select>
 
             <v-file-input
-              v-if="role !== null && role !== 'STUDENT' "
+              v-if="role !== null && role !== 'STUDENT'"
               :rules="profileRules"
               v-model="profile"
               label="Choose image profile"
@@ -97,6 +97,7 @@
     <!-- TABLE -->
 
     <div class="container mt-12">
+      <user-search @searchByusername="searchUsername" @SelectRole="selectByRole"> </user-search>
       <v-simple-table>
         <template v-slot:default>
           <thead>
@@ -109,12 +110,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user of users" :key="user.id" class="text-left">
+            <!-- <tr v-for="user of users" :key="user.id" class="text-left">
               <td>
                 <v-list-item-avatar>
-                  <v-img
-                    :src="url + user.profile"
-                  ></v-img>
+                  <v-img :src=" user.profile !== '' ? url + user.profile : url + 'profile.jpg' "></v-img>
                 </v-list-item-avatar>
               </td>
               <td>{{ user.username }}</td>
@@ -124,11 +123,14 @@
                 <v-btn class="mr-2" color="success">
                   <v-icon>mdi-pencil-circle-outline</v-icon>
                 </v-btn>
-                <v-btn class="ml-2" color="red" v-if="user.roles !== 'Admin' ">
+                <v-btn class="ml-2" color="red" v-if="user.roles !== 'Admin'">
                   <v-icon>mdi-close-circle-outline</v-icon>
                 </v-btn>
               </td>
-            </tr>
+            </tr> -->
+            <user-card
+            v-for="user of users" :key="user.id"
+            :user="user"> </user-card>
           </tbody>
         </template>
       </v-simple-table>
@@ -138,7 +140,13 @@
 
 <script>
 import axios from "../../api/api.js";
+import UserFormSearch from "../pages/users/userFormSearch.vue";
+import UserCard from "../pages/users/userCard.vue";
 export default {
+  components: {
+    "user-search": UserFormSearch,
+    "user-card": UserCard
+  },
   data() {
     return {
       userId: null,
@@ -149,16 +157,7 @@ export default {
       dialogMode: "create",
       items: ["SOCIAL AFFAIL OFFICER", "STUDENT"],
       students: [
-        "Student1",
-        "Student2",
-        "Student3",
-        "Student4",
-        "Student5",
-        "Student6",
-        "Student7",
-        "Student8",
-        "Student9",
-        "Student10",
+        
       ],
       // DATA FROM INPUT
       username: null,
@@ -176,6 +175,9 @@ export default {
       profileRules: [(v) => !!v || "Profile is required"],
       // DATA GET FROM BACKEND
       users: [],
+      userAction: {},
+      dialogDisplay: false,
+      isSearch: false,
     };
   },
   computed: {
@@ -221,12 +223,9 @@ export default {
       this.dialog = false;
       this.$refs.form.reset();
     },
-    imageSelected(e) {
-      this.profile = e.target.files[0];
-      console.log(this.profile)
-    },
+
     createUser() {
-      if((this.$refs.form.validate())) {
+      if (this.$refs.form.validate()) {
         let userInfo = new FormData();
         userInfo.append("username", this.username);
         userInfo.append("email", this.email);
@@ -235,32 +234,60 @@ export default {
         userInfo.append("roles", this.role);
         userInfo.append("profile", this.profile);
 
-        axios.post("/register", userInfo)
-        .then(response => {
-          this.users.push(response.data.user);
-          console.log(response.data.user)
-          this.closeDialog();
-        })
-        .catch((error) => {
-          console.log(error.response.data.errors)
-        })
+        axios
+          .post("/register", userInfo)
+          .then((response) => {
+            this.users.push(response.data.user);
+            console.log(response.data.user);
+            this.closeDialog();
+          })
+          .catch((error) => {
+            console.log(error.response.data.errors);
+          });
       }
     },
     onConfirm() {
-      if(this.dialogMode === 'create') {
+      if (this.dialogMode === "create") {
         this.createUser();
       }
-
     },
     getUsers() {
       axios.get("/users").then((res) => {
         this.users = res.data;
       });
     },
+
+    showEditForm() {},
+
+    //==========================SEARCH USER BY USERNAME============================================================
+    // Search By Username-----------------------------------------------------------------------------
+    searchUsername(username) {
+      if (
+        (username !== "" )
+      ) {
+        console.log(username);
+        this.users = this.users.filter(
+          (users) =>
+            users.username.toLowerCase().includes(username.toLowerCase()) 
+        );
+      } else {
+        this.getUsers();
+      }
+      this.isSearch = true;
+    },
+    //Search By select roles---------------------------------------------------------------------------
+    selectByRole(roleName) {
+      if(roleName === "ALL") {
+        this.getUsers()
+      } else {
+        this.users = this.users.filter(user => user.roles === roleName);
+      }
+    },
   },
+
   mounted() {
     this.getUsers();
-    this.userId = localStorage.getItem("userId")
+    this.userId = localStorage.getItem("userId");
   },
 };
 </script>
