@@ -2,7 +2,6 @@
   <v-app>
     <nav-app
       :userdata="user"
-      v-if="user !== null"
       @requestToLogout="Logout"
     >
     </nav-app>
@@ -66,6 +65,9 @@ export default {
     axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("token");
   },
   mounted() {
+
+    
+
     if(localStorage.userId) {
       axios.get('/users/' + localStorage.userId)
       .then(response => {

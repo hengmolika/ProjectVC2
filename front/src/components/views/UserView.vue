@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <section >
         <base-dialog
         :modal="dialogDisplay"
         > 

@@ -10,7 +10,7 @@ import PermisionView from '../components/views/PermisionView.vue'
 Vue.use(VueRouter)
 
 const routes = [
-  {path: '/', component: LoginForm},
+  {path: '/', component: UserView},
   {path: '/login', component: LoginForm},
   {path: '/user', component: UserView},
   {path: '/student', component: StudentView},
@@ -24,9 +24,6 @@ const router = new VueRouter({
   routes
 })
 
-// router.beforeEach((to, from) => {
-//   console.log(to);
-//   console.log(from);
-// });
+
 
 export default router
