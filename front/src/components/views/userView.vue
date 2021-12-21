@@ -5,14 +5,14 @@
         <template v-slot:buttonAction>
           <v-btn
             bottom
-            color="primary"
+            color="deep-orange"
             dark
             fab
             fixed
             right
             @click="showCreateForm"
           >
-            <v-icon>mdi-plus</v-icon>
+            <v-icon>mdi-pencil</v-icon>
           </v-btn>
         </template>
 
@@ -21,7 +21,7 @@
         </template>
 
         <template v-slot:dialogBody>
-          <div v-if="dialogMode === 'create' ">
+          <div v-if="dialogMode === 'create'">
             <span class="red--text">{{ manager_error_creat_user }}</span>
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-row class="mt-3">
@@ -69,13 +69,6 @@
                     prepend-icon="mdi-camera"
                   ></v-file-input>
                 </v-col>
-                <v-col>
-                  <v-radio-group v-model="new_data_user.gender" row>
-                    <strong class="mr-10">Choose Gender: </strong>
-                    <v-radio label="Male" value="Male"></v-radio>
-                    <v-radio label="Female" value="Female"></v-radio>
-                  </v-radio-group>
-                </v-col>
               </v-row>
             </v-form>
           </div>
@@ -121,7 +114,6 @@
             <tr>
               <th class="text-left"><h2>Profile</h2></th>
               <th class="text-left"><h2>Username</h2></th>
-              <th class="text-left"><h2>Gender</h2></th>
               <th class="text-left"><h2>Role</h2></th>
               <th class="text-left"><h2>Email</h2></th>
               <th class=""><h2>Action</h2></th>
@@ -171,7 +163,6 @@ export default {
         password: "",
         role: "",
         profile: null,
-        gender: "",
       },
       manager_error_creat_user: "",
       roles: ["Student", "Socail afair", "Admin"],
@@ -187,7 +178,7 @@ export default {
     },
 
     showCreateForm() {
-      this.dialogMode = "create"
+      this.dialogMode = "create";
       this.dialogDisplay = true;
     },
 
@@ -201,7 +192,6 @@ export default {
       this.new_data_user.email = "";
       this.new_data_user.role = "";
       this.new_data_user.password = "";
-      this.new_data_user.gender = "";
       this.new_data_user.profile = null;
       this.manager_error_creat_user = "";
     },
@@ -213,7 +203,6 @@ export default {
           this.new_data_user.email !== "" &&
           this.new_data_user.role !== "" &&
           this.new_data_user.password !== "" &&
-          this.new_data_user.gender !== "" &&
           this.new_data_user.profile !== null
         ) {
           this.manager_error_creat_user = "";
@@ -234,7 +223,6 @@ export default {
       this.new_data_user.email = "";
       this.new_data_user.role = "";
       this.new_data_user.password = "";
-      this.new_data_user.gender = "";
       this.new_data_user.profile = null;
     },
 
