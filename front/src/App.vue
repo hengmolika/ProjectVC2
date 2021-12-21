@@ -1,11 +1,6 @@
 <template>
   <v-app>
-    <nav-app
-      :userdata="user"
-      v-if="user !== null"
-      @requestToLogout="Logout"
-    >
-    </nav-app>
+
 
     <v-main>
       <router-view
@@ -19,12 +14,9 @@
 
 <script>
 import axios from "./api/api.js";
-import NavBar from "./components/nav/Navbar.vue"
+
 
 export default {
-  components: {
-    "nav-app": NavBar,   
-  },
 
   name: 'App',
   data() {

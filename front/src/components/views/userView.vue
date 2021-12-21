@@ -1,278 +1,182 @@
 <template>
-  <v-app class="grey darken-3">
-    <section>
-      <base-dialog :modal="dialogDisplay">
-        <template v-slot:buttonAction>
-          <v-btn
-            bottom
-            color="primary"
-            dark
-            fab
-            fixed
-            right
-            @click="showCreateForm"
-          >
-            <v-icon>mdi-plus</v-icon>
+  <div class="text-center">
+    <v-btn
+      depressed
+      @click.stop="showCreateForm"
+      bottom
+      color="primary"
+      dark
+      fab
+      fixed
+      right
+    >
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
+    <v-dialog
+      v-model="dialog"
+      max-width="700"
+      transition="dialog-top-transition"
+    >
+      <v-card>
+        <v-toolbar color="primary" class="lighten-1" dark>
+          {{ dialogTitle }}
+        </v-toolbar>
+
+        <v-card-text class="mt-5">
+          <v-form ref="form" v-model="valid" lazy-validation>
+            <v-text-field
+              v-model="username"
+              :rules="usernameRules"
+              label="Username"
+              prepend-icon="mdi-account"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              v-model="email"
+              :rules="emailRules"
+              label="E-mail"
+              prepend-icon="mdi-email"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              v-model="password"
+              :rules="passwordRules"
+              label="Password"
+              prepend-icon="mdi-lock"
+              :append-icon="show1 ? 'eye' : 'eye-off'"
+              :type="show1 ? 'text' : 'password'"
+              @click:append="show1 = !show1"
+              required
+            ></v-text-field>
+
+            <v-select
+              v-model="role"
+              :items="items"
+              :rules="roleRules"
+              prepend-icon="mdi-key"
+              label="Select"
+              data-vv-name="select"
+              required
+            ></v-select>
+
+            <v-file-input
+              v-if="role !== null && role !== 'STUDENT' "
+              :rules="profileRules"
+              v-model="profile"
+              label="Choose image profile"
+              filled
+              prepend-icon="mdi-camera"
+            ></v-file-input>
+
+            <v-combobox
+              v-if="role === 'STUDENT'"
+              :rules="studentRules"
+              prepend-icon="mdi-account-multiple"
+              label="Choose"
+              v-model="student"
+              :items="students"
+            >
+            </v-combobox>
+          </v-form>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="warning" @click="closeDialog"> close </v-btn>
+          <v-btn :color="dialogColor" :disabled="!valid" @click="onConfirm">
+            {{ dialogButton }}
           </v-btn>
-        </template>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-        <template v-slot:dialogTitle>
-          <h5>{{ dialogTitle }}</h5>
-        </template>
+    <!-- TABLE -->
 
-        <template v-slot:dialogBody>
-          <div v-if="dialogMode === 'create' ">
-            <span class="red--text">{{ manager_error_creat_user }}</span>
-            <v-form ref="form" v-model="valid" lazy-validation>
-              <v-row class="mt-3">
-                <v-col cols="12" lg="6" md="6" sm="6" xs="12" class="m-0">
-                  <v-text-field
-                    v-model="new_data_user.username"
-                    :rules="usernameRule"
-                    label="Username"
-                    dense
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" lg="6" md="6" sm="6" xs="12" class="m-0">
-                  <v-text-field
-                    label="Password"
-                    v-model="new_data_user.password"
-                    :rules="passwordRule"
-                    dense
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" class="mt-0">
-                  <v-text-field
-                    v-model="new_data_user.email"
-                    :rules="EmailRule"
-                    label="Email"
-                    dense
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col class="d-flex" cols="12" sm="6">
-                  <v-select
-                    :items="roles"
-                    filled
-                    label="Select user role"
-                    v-model="new_data_user.role"
-                    :rules="roleRule"
-                  ></v-select>
-                </v-col>
-                <v-col cols="12" lg="6" md="6" sm="6" xs="12" class="m-0">
-                  <v-file-input
-                    v-model="new_data_user.profile"
-                    label="Choose image profile"
-                    filled
-                    prepend-icon="mdi-camera"
-                  ></v-file-input>
-                </v-col>
-                <v-col>
-                  <v-radio-group v-model="new_data_user.gender" row>
-                    <strong class="mr-10">Choose Gender: </strong>
-                    <v-radio label="Male" value="Male"></v-radio>
-                    <v-radio label="Female" value="Female"></v-radio>
-                  </v-radio-group>
-                </v-col>
-              </v-row>
-            </v-form>
-          </div>
-        </template>
-
-        <template v-slot:btnClose>
-          <v-btn @click="closeDialog" dark color="grey"> Close </v-btn>
-        </template>
-        <template v-slot:btnSubmit>
-          <v-btn @click="onConfirm" dark color="primary"> Create </v-btn>
-        </template>
-      </base-dialog>
-    </section>
-
-    <v-container>
-      <!--*~*~*~*~*~*~*~*~*~*~*~*~[SEARCH]~*~*~*~*~*~*~*~*~*~*~*~*-->
-      <v-row align="center">
-        <!--*~*~*~*~*~*~*~*~*~*~*~*~[SEARCH]~*~*~*~*~*~*~*~*~*~*~*~*-->
-        <v-col class="d-flex" cols="12" sm="4">
-          <v-text-field
-            label="Search users*"
-            solo
-            prepend-inner-icon="mdi-magnify"
-          ></v-text-field>
-          <!--*~*~*~*~*~*~*~*~*~*~*~*~[BTN SEARCH]~*~*~*~*~*~*~*~*~*~*~*~*-->
-          <v-btn color="info" class="ms-1" height="47" width="95">
-            Search
-          </v-btn>
-        </v-col>
-        <!--*~*~*~*~*~*~*~*~*~*~*~*~[SELECT]~*~*~*~*~*~*~*~*~*~*~*~*-->
-        <v-col class="d-flex" cols="12" sm="3">
-          <v-select label="Sort by*" solo></v-select>
-        </v-col>
-      </v-row>
-      <div class="text">
-        <h2 class="white--text">List Of Users</h2>
-      </div>
-      <hr color="blue" class="pa-2" />
-      <!-- <v-layout row wrap mt-10> -->
-      <v-simple-table fixed-header height="500px">
+    <div class="container mt-12">
+      <v-simple-table>
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-left"><h2>Profile</h2></th>
-              <th class="text-left"><h2>Username</h2></th>
-              <th class="text-left"><h2>Gender</h2></th>
-              <th class="text-left"><h2>Role</h2></th>
-              <th class="text-left"><h2>Email</h2></th>
-              <th class=""><h2>Action</h2></th>
+              <th>PROFILE</th>
+              <th>USERNAME</th>
+              <th>EMAIL</th>
+              <th>ROLE</th>
+              <th class="text-center">ACTION</th>
             </tr>
           </thead>
           <tbody>
-            <user-card
-              v-for="user of users"
-              :key="user.id"
-              :user="user"
-            ></user-card>
+            <tr v-for="user of users" :key="user.id" class="text-left">
+              <td>
+                <v-list-item-avatar>
+                  <v-img
+                    :src="url + user.profile"
+                  ></v-img>
+                </v-list-item-avatar>
+              </td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.roles }}</td>
+              <td class="text-center align-center">
+                <v-btn class="mr-2" color="success">
+                  <v-icon>mdi-pencil-circle-outline</v-icon>
+                </v-btn>
+                <v-btn class="ml-2" color="red" v-if="user.roles !== 'Admin' ">
+                  <v-icon>mdi-close-circle-outline</v-icon>
+                </v-btn>
+              </td>
+            </tr>
           </tbody>
-          <!-- </v-layout> -->
         </template>
       </v-simple-table>
-    </v-container>
-  </v-app>
+    </div>
+  </div>
 </template>
 
 <script>
-import axios from "../../axios-http.js";
-import userCard from "../pages/users/userCard.vue";
-import BaseDialog from "../ui/BaseDialog.vue";
-
+import axios from "../../api/api.js";
 export default {
-  components: {
-    "user-card": userCard,
-    "base-dialog": BaseDialog,
-  },
   data() {
     return {
-      users: [],
-      userAction: {},
-      dialogDisplay: false,
-      dialogMode: "create",
+      userId: null,
       valid: true,
-      usernameRule: [(v) => !!v || "Username is required"],
-      EmailRule: [(v) => !!v || "Email is required"],
-      passwordRule: [
-        (v) => !!v || "Password is required at least 4 characters",
+      url: "http://localhost:8000/storage/images/",
+      dialog: false,
+      show1: false,
+      dialogMode: "create",
+      items: ["SOCIAL AFFAIL OFFICER", "STUDENT"],
+      students: [
+        "Student1",
+        "Student2",
+        "Student3",
+        "Student4",
+        "Student5",
+        "Student6",
+        "Student7",
+        "Student8",
+        "Student9",
+        "Student10",
       ],
-      roleRule: [(v) => !!v || "Role is required"],
-
-      new_data_user: {
-        username: "",
-        email: "",
-        password: "",
-        role: "",
-        profile: null,
-        gender: "",
-      },
-      manager_error_creat_user: "",
-      roles: ["Student", "Socail afair", "Admin"],
+      // DATA FROM INPUT
+      username: null,
+      email: null,
+      password: null,
+      student: null,
+      role: null,
+      profile: null,
+      // RULE OF INPUT DATA
+      usernameRules: [(v) => !!v || "Username is required"],
+      emailRules: [(v) => !!v || "Email is required"],
+      passwordRules: [(v) => !!v || "Password is required"],
+      studentRules: [(v) => !!v || "Student is required"],
+      roleRules: [(v) => !!v || "Role is required"],
+      profileRules: [(v) => !!v || "Profile is required"],
+      // DATA GET FROM BACKEND
+      users: [],
     };
-  },
-
-  methods: {
-    getUser() {
-      axios.get("/users").then((response) => {
-        this.users = response.data;
-        console.log(this.users);
-      });
-    },
-
-    showCreateForm() {
-      this.dialogMode = "create"
-      this.dialogDisplay = true;
-    },
-
-    showEditForm() {},
-
-    closeDialog() {
-      this.dialogDisplay = false;
-      this.$refs.form.reset();
-
-      this.new_data_user.username = "";
-      this.new_data_user.email = "";
-      this.new_data_user.role = "";
-      this.new_data_user.password = "";
-      this.new_data_user.gender = "";
-      this.new_data_user.profile = null;
-      this.manager_error_creat_user = "";
-    },
-    onConfirm() {
-      if (this.dialogMode === "create") {
-        if (
-          this.valid &&
-          this.new_data_user.username !== "" &&
-          this.new_data_user.email !== "" &&
-          this.new_data_user.role !== "" &&
-          this.new_data_user.password !== "" &&
-          this.new_data_user.gender !== "" &&
-          this.new_data_user.profile !== null
-        ) {
-          this.manager_error_creat_user = "";
-          this.addUser();
-          this.dialogDisplay = false;
-          console.log("hello", this.new_data_user.username);
-        } else {
-          this.manager_error_creat_user =
-            "All fields are require! Please complete all the fields.";
-        }
-      }
-      if (this.dialogMode === "remove") {
-        this.deleteUser(this.userAction.remove_id);
-        this.dialogDisplay = false;
-      }
-
-      this.new_data_user.username = "";
-      this.new_data_user.email = "";
-      this.new_data_user.role = "";
-      this.new_data_user.password = "";
-      this.new_data_user.gender = "";
-      this.new_data_user.profile = null;
-    },
-
-    addUser() {
-      this.dialogMode = "create";
-      let userData = new FormData();
-      userData.append("username", this.new_data_user.username);
-      userData.append("email", this.new_data_user.email);
-      userData.append("roles", this.new_data_user.role);
-      userData.append("password", this.new_data_user.password);
-      userData.append("gender", this.new_data_user.gender);
-      userData.append("profile", this.new_data_user.profile);
-      console.log(userData);
-      // console.log(this.valid);
-
-      axios
-        .post("/register", userData)
-        .then((response) => {
-          console.log(response.data);
-          this.getUser();
-        })
-        .catch((error) => {
-          console.log(error.response.data.errors);
-          this.manager_error_creat_user = error.response.data.errors;
-        });
-    },
-
-    // showDeleteUserForm(id) {
-    //   this.dialogMode = "remove";
-    //   this.dialogDisplay = true;
-    //   this.userAction = {
-    //     remove_id: id,
-    //   };
-    // },
-
-    // deleteUser(id) {
-    //   console.log(id);
-    // },
   },
   computed: {
     dialogTitle() {
@@ -280,22 +184,83 @@ export default {
       if (this.dialogMode === "create") {
         message = "CREATE NEW USER";
       } else if (this.dialogMode === "edit") {
-        message = "EDIT USER";
+        message = "EDIT THE USER";
       } else if (this.dialogMode === "delete") {
-        message = "DELETE USER";
+        message = "DELETE THE USER";
+      }
+      return message;
+    },
+    dialogButton() {
+      let message = "";
+      if (this.dialogMode === "create") {
+        message = "CREATE";
+      } else if (this.dialogMode === "edit") {
+        message = "UPDATE";
+      } else if (this.dialogMode === "delete") {
+        message = "DELETE";
+      }
+      return message;
+    },
+    dialogColor() {
+      let message = "";
+      if (this.dialogMode === "create") {
+        message = "primary";
+      } else if (this.dialogMode === "edit") {
+        message = "success";
+      } else if (this.dialogMode === "delete") {
+        message = "error";
       }
       return message;
     },
   },
+  methods: {
+    showCreateForm() {
+      this.dialog = true;
+    },
+    closeDialog() {
+      this.dialog = false;
+      this.$refs.form.reset();
+    },
+    imageSelected(e) {
+      this.profile = e.target.files[0];
+      console.log(this.profile)
+    },
+    createUser() {
+      if((this.$refs.form.validate())) {
+        let userInfo = new FormData();
+        userInfo.append("username", this.username);
+        userInfo.append("email", this.email);
+        userInfo.append("password", this.password);
+        userInfo.append("password_confirmation", this.password);
+        userInfo.append("roles", this.role);
+        userInfo.append("profile", this.profile);
 
+        axios.post("/register", userInfo)
+        .then(response => {
+          this.users.push(response.data.user);
+          console.log(response.data.user)
+          this.closeDialog();
+        })
+        .catch((error) => {
+          console.log(error.response.data.errors)
+        })
+      }
+    },
+    onConfirm() {
+      if(this.dialogMode === 'create') {
+        this.createUser();
+      }
+
+    },
+    getUsers() {
+      axios.get("/users").then((res) => {
+        this.users = res.data;
+      });
+    },
+  },
   mounted() {
-    this.getUser();
+    this.getUsers();
+    this.userId = localStorage.getItem("userId")
   },
 };
 </script>
-
-<style scoped>
-#add {
-  margin-right: auto;
-}
-</style>
