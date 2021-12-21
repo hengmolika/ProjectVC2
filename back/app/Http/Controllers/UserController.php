@@ -12,16 +12,19 @@ class UserController extends Controller
         $request->validate([
             'username' => 'min:2|required',
             'email' => ['email', 'unique:users'],
-            'password' => ['min:4', 'required'],
+            'password' => ['min:4','max:8'],
             'profile' => 'nullable|image|mimes:jpg,jpeg,png|max:1999|',
 
         ]);
+
+
         //create user
         $user = new User();
         $user->username = $request->username;
         $user->email = $request->email;
         $user->roles = $request->roles;
         $user->profile = $request->profile;
+        $user->gender = $request->gender;
         if($request->profile !== null) {
             $request->file('profile')->store('public/images');
             $user->profile = $request->file('profile')->hashName();
@@ -54,7 +57,7 @@ class UserController extends Controller
 
         //check password
         if(!$user || !Hash::check($request->password, $user->password)){
-            return response()->json(['message' => 'Bad login'], 401);
+            return response()->json(['message' => 'fail'], 401);
         }
         //create token is a key can access to api
         $token = $user->createToken('mytoken')->plainTextToken;
@@ -69,4 +72,37 @@ class UserController extends Controller
         return User::latest()->get();
     }
     
+    public function show($id)
+    {
+        return User::findOrFail($id);
+    }
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'username' => 'max:10|required',
+            'email' => ['email', 'unique:users'],
+            'password' => ['min:4|max:8', 'confirmed'],
+            'profile' => 'nullable|image|mimes:jpg,jpeg,png|max:1999|',
+
+        ]);
+        //create user
+        $user = User::findOrFail($id);
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->roles = $request->roles;
+        $user->profile = $request->profile;
+        if($request->profile !== null) {
+            $request->file('profile')->store('public/images');
+            $user->profile = $request->file('profile')->hashName();
+        } else {
+            $user->profile = "";
+        };
+        $user->save();
+
+        return response()->json(['message' => 'user updated!'], 200);
+    }
+    public function destroy($id)
+    {
+        return User::destroy($id);
+    }
 }
