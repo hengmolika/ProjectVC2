@@ -29,7 +29,7 @@
 <script>
 export default {
   props: ["user"],
-     emits: ['requestToDeleteUser'],
+  emits: ['requestToDeleteUser'],
   data() {
     return {
       url: "http://localhost:8000/storage/images/",
