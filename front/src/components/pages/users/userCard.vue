@@ -7,7 +7,6 @@
       </v-avatar>
     </td>
     <td>{{ user.username }}</td>
-    <td>{{ user.gender }}</td>
     <td>{{ user.roles }}</td>
     <td>{{ user.email }}</td>
     <td>
@@ -16,7 +15,7 @@
           <!-- <v-icon small left>mdi-pencil</v-icon> -->
           <span>Edit</span>
         </v-btn>
-        <v-btn small color="warning" @click="toRemoveUser(user.id)">
+        <v-btn small color="warning" >
           <!-- <v-icon small left>mdi-delete</v-icon> -->
           <span>remove</span>
         </v-btn>
@@ -29,16 +28,12 @@
 <script>
 export default {
   props: ["user"],
-  emits: ['requestToDeleteUser'],
   data() {
     return {
       url: "http://localhost:8000/storage/images/",
     };
   },
   methods: {
-    toRemoveUser(id) {
-        this.$emit('requestToDeleteUser', id);
-    },
   },
 };
 </script>

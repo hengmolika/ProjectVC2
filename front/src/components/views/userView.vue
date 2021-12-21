@@ -21,7 +21,7 @@
         </template>
 
         <template v-slot:dialogBody>
-          <div v-if="dialogMode === 'create' ">
+          <div v-if="dialogMode === 'create'">
             <span class="red--text">{{ manager_error_creat_user }}</span>
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-row class="mt-3">
@@ -69,13 +69,6 @@
                     prepend-icon="mdi-camera"
                   ></v-file-input>
                 </v-col>
-                <v-col>
-                  <v-radio-group v-model="new_data_user.gender" row>
-                    <strong class="mr-10">Choose Gender: </strong>
-                    <v-radio label="Male" value="Male"></v-radio>
-                    <v-radio label="Female" value="Female"></v-radio>
-                  </v-radio-group>
-                </v-col>
               </v-row>
             </v-form>
           </div>
@@ -91,25 +84,10 @@
     </section>
 
     <v-container>
-      <!--*~*~*~*~*~*~*~*~*~*~*~*~[SEARCH]~*~*~*~*~*~*~*~*~*~*~*~*-->
-      <v-row align="center">
-        <!--*~*~*~*~*~*~*~*~*~*~*~*~[SEARCH]~*~*~*~*~*~*~*~*~*~*~*~*-->
-        <v-col class="d-flex" cols="12" sm="4">
-          <v-text-field
-            label="Search users*"
-            solo
-            prepend-inner-icon="mdi-magnify"
-          ></v-text-field>
-          <!--*~*~*~*~*~*~*~*~*~*~*~*~[BTN SEARCH]~*~*~*~*~*~*~*~*~*~*~*~*-->
-          <v-btn color="info" class="ms-1" height="47" width="95">
-            Search
-          </v-btn>
-        </v-col>
-        <!--*~*~*~*~*~*~*~*~*~*~*~*~[SELECT]~*~*~*~*~*~*~*~*~*~*~*~*-->
-        <v-col class="d-flex" cols="12" sm="3">
-          <v-select label="Sort by*" solo></v-select>
-        </v-col>
-      </v-row>
+      <user-form-search
+        @searchByusername="searchUsername"
+        @SelectRole="selectByRole"
+      ></user-form-search>
       <div class="text">
         <h2 class="white--text">List Of Users</h2>
       </div>
@@ -121,15 +99,21 @@
             <tr>
               <th class="text-left"><h2>Profile</h2></th>
               <th class="text-left"><h2>Username</h2></th>
-              <th class="text-left"><h2>Gender</h2></th>
               <th class="text-left"><h2>Role</h2></th>
               <th class="text-left"><h2>Email</h2></th>
-              <th class=""><h2>Action</h2></th>
+              <th class="text-left"><h2>Action</h2></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="!isSearch">
             <user-card
               v-for="user of users"
+              :key="user.id"
+              :user="user"
+            ></user-card>
+          </tbody>
+          <tbody v-else>
+            <user-card
+              v-for="user of contain_users_search"
               :key="user.id"
               :user="user"
             ></user-card>
@@ -144,12 +128,14 @@
 <script>
 import axios from "../../axios-http.js";
 import userCard from "../pages/users/userCard.vue";
+import userFormSearch from "../pages/users/userFormSearch.vue";
 import BaseDialog from "../ui/BaseDialog.vue";
 
 export default {
   components: {
     "user-card": userCard,
     "base-dialog": BaseDialog,
+    "user-form-search": userFormSearch,
   },
   data() {
     return {
@@ -173,26 +159,31 @@ export default {
         profile: null,
         gender: "",
       },
+
       manager_error_creat_user: "",
       roles: ["Student", "Socail afair", "Admin"],
+      isSearch: false,
+      contain_users_search: [],
     };
   },
 
   methods: {
+    //======================================GET USER======================================================
     getUser() {
       axios.get("/users").then((response) => {
         this.users = response.data;
         console.log(this.users);
       });
     },
-
+    //============================== SHOW CREATE FORM TO CREATE USER=========================================
     showCreateForm() {
-      this.dialogMode = "create"
+      this.dialogMode = "create";
       this.dialogDisplay = true;
     },
 
     showEditForm() {},
 
+    //==================================TO CLOSE DIALOG MODEL FORM======================================================
     closeDialog() {
       this.dialogDisplay = false;
       this.$refs.form.reset();
@@ -201,10 +192,11 @@ export default {
       this.new_data_user.email = "";
       this.new_data_user.role = "";
       this.new_data_user.password = "";
-      this.new_data_user.gender = "";
       this.new_data_user.profile = null;
       this.manager_error_creat_user = "";
     },
+
+    //============================ TO CONFIRM ACTION OF DAILOG FORM=========================================================
     onConfirm() {
       if (this.dialogMode === "create") {
         if (
@@ -213,7 +205,6 @@ export default {
           this.new_data_user.email !== "" &&
           this.new_data_user.role !== "" &&
           this.new_data_user.password !== "" &&
-          this.new_data_user.gender !== "" &&
           this.new_data_user.profile !== null
         ) {
           this.manager_error_creat_user = "";
@@ -234,10 +225,10 @@ export default {
       this.new_data_user.email = "";
       this.new_data_user.role = "";
       this.new_data_user.password = "";
-      this.new_data_user.gender = "";
       this.new_data_user.profile = null;
     },
 
+    //=========================ADD USER==========================================================================
     addUser() {
       this.dialogMode = "create";
       let userData = new FormData();
@@ -245,11 +236,8 @@ export default {
       userData.append("email", this.new_data_user.email);
       userData.append("roles", this.new_data_user.role);
       userData.append("password", this.new_data_user.password);
-      userData.append("gender", this.new_data_user.gender);
       userData.append("profile", this.new_data_user.profile);
-      console.log(userData);
-      // console.log(this.valid);
-
+      // console.log(userData);
       axios
         .post("/register", userData)
         .then((response) => {
@@ -262,17 +250,41 @@ export default {
         });
     },
 
-    // showDeleteUserForm(id) {
-    //   this.dialogMode = "remove";
-    //   this.dialogDisplay = true;
-    //   this.userAction = {
-    //     remove_id: id,
-    //   };
-    // },
+    //==========================SEARCH USER BY USERNAME============================================================
+    // Search By Username-----------------------------------------------------------------------------
+    searchUsername(username_key, role_key) {
+      if (
+        (username_key !== "" && role_key !== "All") ||
+        (username_key === "" && role_key !== "All")
+      ) {
+        console.log(username_key);
+        this.contain_users_search = this.users.filter(
+          (users) =>
+            users.username.toLowerCase().includes(username_key.toLowerCase()) 
+            && users.roles === role_key
+        );
+      } else {
+        this.contain_users_search = this.users.filter((users) =>
+          users.username.toLowerCase().includes(username_key.toLowerCase())
+        );
+      }
+      this.isSearch = true;
+    },
+    //Search By select roles---------------------------------------------------------------------------
+    selectByRole(role_key) {
+      if (role_key !== "") {
+        console.log(role_key);
+        this.contain_users_search = this.users.filter((users) =>
+          users.roles.toLowerCase().includes(role_key.toLowerCase())
+        );
+        this.isSearch = true;
+      }
+      if (role_key === "All") {
+        this.getUser();
+        this.isSearch = false;
+      }
+    },
 
-    // deleteUser(id) {
-    //   console.log(id);
-    // },
   },
   computed: {
     dialogTitle() {

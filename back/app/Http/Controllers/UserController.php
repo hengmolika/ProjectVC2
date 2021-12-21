@@ -17,14 +17,12 @@ class UserController extends Controller
 
         ]);
 
-
         //create user
         $user = new User();
         $user->username = $request->username;
         $user->email = $request->email;
         $user->roles = $request->roles;
         $user->profile = $request->profile;
-        $user->gender = $request->gender;
         if($request->profile !== null) {
             $request->file('profile')->store('public/images');
             $user->profile = $request->file('profile')->hashName();
