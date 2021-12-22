@@ -5,7 +5,7 @@
         <v-list-item-group active-class="deep-purple--text text--accent-4">
           <v-list-item>
             <v-list-item-avatar>
-              <v-img :src="url + userdata.profile"></v-img>
+              <v-img :src="userdata.profile !== null ? url + userdata.profile : url + 'profile.jpg' "></v-img>
             </v-list-item-avatar>
 
             <v-list-item-content>
@@ -88,7 +88,7 @@
         >
           <v-list-item>
             <v-list-item-avatar>
-              <v-img :src="url + userdata.profile"></v-img>
+              <v-img :src="userdata.profile !== null ? url + userdata.profile : url + 'profile.jpg' "></v-img>
             </v-list-item-avatar>
 
             <v-list-item-content>
