@@ -1,5 +1,5 @@
 <template>
-  <nav>
+  <nav >
     <v-navigation-drawer v-model="sidebar" app absolute left temporary>
       <v-list nav dense>
         <v-list-item-group active-class="deep-purple--text text--accent-4">
