@@ -43,6 +43,7 @@
               ></v-text-field>
 
               <v-text-field
+                v-if="dialogMode !== 'edit'"
                 v-model="password"
                 :rules="passwordRules"
                 label="Password"
@@ -64,7 +65,9 @@
               ></v-select>
 
               <v-file-input
-                v-if="role !== null && role !== 'STUDENT'"
+                v-if="
+                  role !== null && role !== 'STUDENT' && dialogMode !== 'edit'
+                "
                 :rules="profileRules"
                 v-model="profile"
                 label="Choose image profile"
@@ -131,6 +134,7 @@
               :key="user.id"
               :user="user"
               @requestToDeleteUser="showDeleteDialog"
+              @requestToEdit="showEditForm"
             >
             </user-card>
           </tbody>
@@ -228,6 +232,7 @@ export default {
     showCreateForm() {
       this.dialogMode = "create";
       this.dialog = true;
+      this.$refs.form.reset();
     },
     // **********************|~SHOW REMOVE DIALOG~|********************** //
     showDeleteDialog(id) {
@@ -243,6 +248,46 @@ export default {
       if (this.dialogMode !== "delete") {
         this.$refs.form.reset();
       }
+    },
+    showEditForm(userData) {
+      this.dialogMode = "edit";
+      this.dialog = true;
+      this.userAction = {
+        id: userData.id,
+        username: userData.username,
+        email: userData.email,
+        role: userData.roles,
+      };
+      this.username = this.userAction.username;
+      this.email = this.userAction.email;
+      if (userData.roles === "ADMIN") {
+        this.role = "ADMIN";
+      } else {
+        this.role = this.userAction.role;
+      }
+
+      console.log(userData);
+    },
+    updateUser() {
+      if (this.userAction.role === "ADMIN") {
+        this.role = "ADMIN";
+      }
+      let myNewUserData = {
+        username: this.username,
+        email: this.email,
+        roles: this.role,
+      };
+
+      axios
+        .put("/users/" + this.userAction.id, myNewUserData)
+        .then((res) => {
+          console.log(res);
+          this.getUsers();
+          this.closeDialog();
+        })
+        .catch((error) => {
+          console.log(error.res.data.errors);
+        });
     },
 
     // **********************|~CREATE NEW USER~|********************** //
@@ -284,6 +329,8 @@ export default {
         this.createUser();
       } else if (this.dialogMode === "delete") {
         this.deleteUser();
+      } else if (this.dialogMode === "edit") {
+        this.updateUser();
       }
     },
 
@@ -294,7 +341,6 @@ export default {
       });
     },
 
-    showEditForm() {},
     // Search By Username-----------------------------------------------------------------------------
     searchUsername(username) {
       if (username !== "") {
