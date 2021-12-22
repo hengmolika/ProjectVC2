@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <nav-app
+      v-if="!$route.path.includes('login')"
       :userdata="user"
       @requestToLogout="Logout"
     >
@@ -9,7 +10,7 @@
     <v-main>
       <router-view @requestLogin="Login" :message="messageError"> </router-view>
     </v-main>
-    <footer-app v-if="user !== null"></footer-app>
+    <footer-app v-if="!$route.path.includes('login')"></footer-app>
   </v-app>
 </template>
 
@@ -62,9 +63,8 @@ export default {
       "Bearer " + localStorage.getItem("token");
   },
   mounted() {
-    if(localStorage.userId) {
-      axios.get('/users/' + localStorage.userId)
-      .then(response => {
+    if (localStorage.userId) {
+      axios.get("/users/" + localStorage.userId).then((response) => {
         this.user = response.data;
       });
     }

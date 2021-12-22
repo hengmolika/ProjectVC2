@@ -45,8 +45,8 @@ export default {
       this.$emit("searchByusername", this.keySearchUsername);
     },
 
-    SelectUserRole(){
-        this.$emit("SelectRole",this.keySelectByRole);
+    SelectUserRole() {
+      this.$emit("SelectRole", this.keySelectByRole);
     },
 
     clearText() {
