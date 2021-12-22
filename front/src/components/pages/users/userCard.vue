@@ -2,18 +2,29 @@
   <tr class="text-left">
     <td>
       <v-list-item-avatar>
-        <v-img :src=" user.profile !== '' ? url + user.profile : url + 'profile.jpg' "></v-img>
+        <v-img
+          :src="user.profile !== '' ? url + user.profile : url + 'profile.jpg'"
+        ></v-img>
       </v-list-item-avatar>
     </td>
     <td>{{ user.username }}</td>
     <td>{{ user.email }}</td>
     <td>{{ user.roles }}</td>
-    <td :class="user.roles !== 'ADMIN' ? 'text-center align-center' : 'text-center' ">
+    <td
+      :class="
+        user.roles !== 'ADMIN' ? 'text-center align-center' : 'text-center'
+      "
+    >
       <v-btn class="mr-2" color="success">
-        <v-icon>mdi-pencil</v-icon>
+        <v-icon>mdi-pencil</v-icon>EDIT
       </v-btn>
-      <v-btn class="ml-2" color="red" v-if="user.roles !== 'ADMIN'">
-        <v-icon>mdi-delete-sweep</v-icon>
+      <v-btn
+        class="ml-2"
+        color="red white--text"
+        v-if="user.roles !== 'ADMIN'"
+        @click="toRemoveUser(user.id)"
+      >
+        <v-icon>mdi-delete</v-icon>DELETE
       </v-btn>
     </td>
   </tr>

@@ -1,11 +1,17 @@
 <template>
-  <nav >
+  <nav>
     <v-navigation-drawer v-model="sidebar" app absolute left temporary>
       <v-list nav dense>
         <v-list-item-group active-class="deep-purple--text text--accent-4">
           <v-list-item>
             <v-list-item-avatar>
-              <!-- <v-img :src="userdata.profile !== null ? url + userdata.profile : url + 'profile.jpg' "></v-img> -->
+              <v-img
+                :src="
+                  userdata.profile !== null
+                    ? url + userdata.profile
+                    : url + 'profile.jpg'
+                "
+              ></v-img>
             </v-list-item-avatar>
 
             <v-list-item-content>
@@ -55,7 +61,8 @@
 
           <!--~*~*~*~*~*~*~*~*~*~*~*~*~*~*|DARK MOOD|~*~*~*~*~*~*~*~*~*~*~*~*~*~*-->
           <v-divider></v-divider>
-          <v-list-item active-class="deep-white--text text--accent-4"
+          <v-list-item
+            active-class="deep-white--text text--accent-4"
             :dark="!!(isDark === 'dark')"
             @click="$vuetify.theme.dark = !$vuetify.theme.dark"
           >
@@ -88,7 +95,13 @@
         >
           <v-list-item>
             <v-list-item-avatar>
-              <!-- <v-img :src="userdata.profile !== null ? url + userdata.profile : url + 'profile.jpg' "></v-img> -->
+              <v-img
+                :src="
+                  userdata.profile !== null
+                    ? url + userdata.profile
+                    : url + 'profile.jpg'
+                "
+              ></v-img>
             </v-list-item-avatar>
 
             <v-list-item-content>
@@ -142,14 +155,14 @@
           LOGOUT
         </v-btn>
         <!--~*~*~*~*~*~*~*~*~*~*~*~*~*~*|DARK MOOD|~*~*~*~*~*~*~*~*~*~*~*~*~*~*-->
-        <!-- <v-btn text @click="$vuetify.theme.dark = !$vuetify.theme.dark">
+        <v-btn text @click="$vuetify.theme.dark = !$vuetify.theme.dark">
           <v-icon>
             {{
               $vuetify.theme.dark ? "mdi-weather-night" : "mdi-weather-sunny"
             }}
           </v-icon>
           DARK
-        </v-btn> -->
+        </v-btn>
       </v-toolbar-items>
     </v-toolbar>
   </nav>

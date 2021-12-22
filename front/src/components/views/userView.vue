@@ -4,7 +4,8 @@
       depressed
       @click.stop="showCreateForm"
       bottom
-      color="primary"
+      class="mb-8"
+      color="deep-orange"
       dark
       fab
       fixed
@@ -17,70 +18,81 @@
       max-width="700"
       transition="dialog-top-transition"
     >
+      <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|-CREATE FORM DIALOG-|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
       <v-card>
         <v-toolbar color="primary" class="lighten-1" dark>
           {{ dialogTitle }}
         </v-toolbar>
+        <div v-if="dialogMode !== 'delete'">
+          <v-card-text class="mt-5">
+            <v-form ref="form" v-model="valid" lazy-validation>
+              <v-text-field
+                v-model="username"
+                :rules="usernameRules"
+                label="Username"
+                prepend-icon="mdi-account"
+                required
+              ></v-text-field>
 
-        <v-card-text class="mt-5">
-          <v-form ref="form" v-model="valid" lazy-validation>
-            <v-text-field
-              v-model="username"
-              :rules="usernameRules"
-              label="Username"
-              prepend-icon="mdi-account"
-              required
-            ></v-text-field>
+              <v-text-field
+                v-model="email"
+                :rules="emailRules"
+                label="E-mail"
+                prepend-icon="mdi-email"
+                required
+              ></v-text-field>
 
-            <v-text-field
-              v-model="email"
-              :rules="emailRules"
-              label="E-mail"
-              prepend-icon="mdi-email"
-              required
-            ></v-text-field>
+              <v-text-field
+                v-model="password"
+                :rules="passwordRules"
+                label="Password"
+                prepend-icon="mdi-lock"
+                :append-icon="show1 ? 'eye' : 'eye-off'"
+                :type="show1 ? 'text' : 'password'"
+                @click:append="show1 = !show1"
+                required
+              ></v-text-field>
 
-            <v-text-field
-              v-model="password"
-              :rules="passwordRules"
-              label="Password"
-              prepend-icon="mdi-lock"
-              :append-icon="show1 ? 'eye' : 'eye-off'"
-              :type="show1 ? 'text' : 'password'"
-              @click:append="show1 = !show1"
-              required
-            ></v-text-field>
+              <v-select
+                v-model="role"
+                :items="items"
+                :rules="roleRules"
+                prepend-icon="mdi-key"
+                label="Select"
+                data-vv-name="select"
+                required
+              ></v-select>
 
-            <v-select
-              v-model="role"
-              :items="items"
-              :rules="roleRules"
-              prepend-icon="mdi-key"
-              label="Select"
-              data-vv-name="select"
-              required
-            ></v-select>
+              <v-file-input
+                v-if="role !== null && role !== 'STUDENT'"
+                :rules="profileRules"
+                v-model="profile"
+                label="Choose image profile"
+                filled
+                prepend-icon="mdi-camera"
+              ></v-file-input>
 
-            <v-file-input
-              v-if="role !== null && role !== 'STUDENT'"
-              :rules="profileRules"
-              v-model="profile"
-              label="Choose image profile"
-              filled
-              prepend-icon="mdi-camera"
-            ></v-file-input>
+              <v-combobox
+                v-if="role === 'STUDENT'"
+                :rules="studentRules"
+                prepend-icon="mdi-account-multiple"
+                label="Choose"
+                v-model="student"
+                :items="students"
+              >
+              </v-combobox>
+            </v-form>
+          </v-card-text>
+        </div>
 
-            <v-combobox
-              v-if="role === 'STUDENT'"
-              :rules="studentRules"
-              prepend-icon="mdi-account-multiple"
-              label="Choose"
-              v-model="student"
-              :items="students"
-            >
-            </v-combobox>
-          </v-form>
-        </v-card-text>
+        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|-REMOVE DIALOG-|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+        <div v-else>
+          <v-card-text class="mt-5">
+            <v-alert outlined type="error" prominent border="left">
+              Are you sure to delete this user?
+            </v-alert>
+          </v-card-text>
+        </div>
 
         <v-divider></v-divider>
 
@@ -114,7 +126,12 @@
             </tr>
           </thead>
           <tbody>
-            <user-card v-for="user of users" :key="user.id" :user="user">
+            <user-card
+              v-for="user of users"
+              :key="user.id"
+              :user="user"
+              @requestToDeleteUser="showDeleteDialog"
+            >
             </user-card>
           </tbody>
         </template>
@@ -124,8 +141,13 @@
 </template>
 
 <script>
+// IMPORT AXIOS ----------------------------------------
 import axios from "../../api/api.js";
+
+// IMPORT USER FORM SEARCH ----------------------------------------
 import UserFormSearch from "../pages/users/userFormSearch.vue";
+
+// IMPORT USER CARD ----------------------------------------
 import UserCard from "../pages/users/userCard.vue";
 export default {
   components: {
@@ -142,21 +164,21 @@ export default {
       dialogMode: "create",
       items: ["SOCIAL AFFAIL OFFICER", "STUDENT"],
       students: [],
-      // DATA FROM INPUT
+      // DATA FROM INPUT ----------------------------------------
       username: null,
       email: null,
       password: null,
       student: null,
       role: null,
-      profile: null,
-      // RULE OF INPUT DATA
+      profile: "",
+      // RULE OF INPUT DATA ----------------------------------------
       usernameRules: [(v) => !!v || "Username is required"],
       emailRules: [(v) => !!v || "Email is required"],
       passwordRules: [(v) => !!v || "Password is required"],
       studentRules: [(v) => !!v || "Student is required"],
       roleRules: [(v) => !!v || "Role is required"],
       profileRules: [(v) => !!v || "Profile is required"],
-      // DATA GET FROM BACKEND
+      // DATA GET FROM BACKEND ----------------------------------------
       users: [],
       userAction: {},
       dialogDisplay: false,
@@ -164,6 +186,7 @@ export default {
     };
   },
   computed: {
+    // **********************|~TITLE DIALOG~|********************** //
     dialogTitle() {
       let message = "";
       if (this.dialogMode === "create") {
@@ -175,6 +198,7 @@ export default {
       }
       return message;
     },
+    // **********************|~BUTTON DIALOG~|********************** //
     dialogButton() {
       let message = "";
       if (this.dialogMode === "create") {
@@ -186,6 +210,7 @@ export default {
       }
       return message;
     },
+    // **********************|~COLOR DIALOG~|********************** //
     dialogColor() {
       let message = "";
       if (this.dialogMode === "create") {
@@ -199,14 +224,28 @@ export default {
     },
   },
   methods: {
+    // **********************|~SHOW CREATE FORM DIALOG~|********************** //
     showCreateForm() {
+      this.dialogMode = "create";
       this.dialog = true;
     },
+    // **********************|~SHOW REMOVE DIALOG~|********************** //
+    showDeleteDialog(id) {
+      this.userAction = {
+        id: id,
+      };
+      this.dialogMode = "delete";
+      this.dialog = true;
+    },
+    // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
       this.dialog = false;
-      this.$refs.form.reset();
+      if (this.dialogMode !== "delete") {
+        this.$refs.form.reset();
+      }
     },
 
+    // **********************|~CREATE NEW USER~|********************** //
     createUser() {
       if (this.$refs.form.validate()) {
         let userInfo = new FormData();
@@ -229,18 +268,33 @@ export default {
           });
       }
     },
+
+    // **********************|~REMOVE USER~|********************** //
+    deleteUser() {
+      let id = this.userAction.id;
+      axios.delete("/users/" + id).then(() => {
+        this.users = this.users.filter((user) => user.id !== id);
+        this.closeDialog();
+      });
+    },
+
+    // **********************|~CONFIRM DIALOG~|********************** //
     onConfirm() {
       if (this.dialogMode === "create") {
         this.createUser();
+      } else if (this.dialogMode === "delete") {
+        this.deleteUser();
       }
     },
+
+    // **********************|~GET USERS~|********************** //
     getUsers() {
       axios.get("/users").then((res) => {
         this.users = res.data;
       });
     },
 
-    showEditForm() {}, //==========================SEARCH USER BY USERNAME============================================================
+    showEditForm() {},
     // Search By Username-----------------------------------------------------------------------------
     searchUsername(username) {
       if (username !== "") {
@@ -261,11 +315,10 @@ export default {
         this.users = this.users.filter((user) => user.roles === roleName);
       }
     },
-  },       
+  },
   mounted() {
     this.getUsers();
     this.userId = localStorage.getItem("userId");
   },
 };
-
 </script>
