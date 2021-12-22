@@ -1,11 +1,11 @@
 <template>
-  <nav >
+  <nav v-if="!$route.path.includes('login')">
     <v-navigation-drawer v-model="sidebar" app absolute left temporary>
       <v-list nav dense>
         <v-list-item-group active-class="deep-purple--text text--accent-4">
           <v-list-item>
             <v-list-item-avatar>
-              <v-img :src="userdata.profile !== null ? url + userdata.profile : url + 'profile.jpg' "></v-img>
+              <v-img :src=" user.profile !== '' ? url + user.profile : url + 'profile.jpg' "></v-img>
             </v-list-item-avatar>
 
             <v-list-item-content>
@@ -88,7 +88,7 @@
         >
           <v-list-item>
             <v-list-item-avatar>
-              <v-img :src="userdata.profile !== null ? url + userdata.profile : url + 'profile.jpg' "></v-img>
+              <v-img :src=" user.profile !== '' ? url + user.profile : url + 'profile.jpg' "></v-img>
             </v-list-item-avatar>
 
             <v-list-item-content>
