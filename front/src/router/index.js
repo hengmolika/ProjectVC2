@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import UserView from '../components/views/userView.vue'
 
 import LoginForm from '../authentication/LoginForm.vue'
 import UserView from '../components/views/UserView.vue'
@@ -11,8 +10,7 @@ import PermisionView from '../components/views/PermisionView.vue'
 Vue.use(VueRouter)
 
 const routes = [
-  // {path: '/users', component: UserView},
-  {path: '/', component: LoginForm},
+  {path: '/', component: UserView},
   {path: '/login', component: LoginForm},
   {path: '/user', component: UserView},
   {path: '/student', component: StudentView},
@@ -26,9 +24,6 @@ const router = new VueRouter({
   routes
 })
 
-// router.beforeEach((to, from) => {
-//   console.log(to);
-//   console.log(from);
-// });
+
 
 export default router

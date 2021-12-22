@@ -17,7 +17,6 @@ class UserController extends Controller
 
         ]);
 
-
         //create user
         $user = new User();
         $user->username = $request->username;
@@ -68,7 +67,7 @@ class UserController extends Controller
     }
     public function index()
     {
-        return User::latest()->get();
+        return User::get();
     }
     
     public function show($id)

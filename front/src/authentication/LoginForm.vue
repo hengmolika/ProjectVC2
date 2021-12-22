@@ -32,24 +32,29 @@
                             v-model="password"
                             :rules="nameRules"
                             label="Password"
-                            type="password"
+                            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                            :type="show ? 'text' : 'password'"
                             prepend-icon="mdi-lock"
                             required
+                            @click:append="show = !show"
                         ></v-text-field>
 
-                        <v-btn
+                        <!-- <v-btn
                             color="error"
                             class="mr-4"
                             @click="reset"
                         >
                             Clear
-                        </v-btn>
+                        </v-btn> -->
 
                         <v-btn
+                            
                             :disabled="!valid"
                             color="info"
                             class="mr-4"
+                            right
                             @click="validate"
+
                         >
                             Login
                         </v-btn>
@@ -67,6 +72,7 @@ export default {
     props: ["message"],
     data: () => ({
       valid: true,
+      show: false,
       password: '',
       nameRules: [
         v => !!v || 'Password is required',
@@ -92,9 +98,6 @@ export default {
         },
         reset () {
             this.$refs.form.reset()
-        },
-        resetValidation () {
-            this.$refs.form.resetValidation()
         },
     },
 }
