@@ -9,8 +9,8 @@
     <td>{{ user.email }}</td>
     <td>{{ user.roles }}</td>
     <td :class="user.roles !== 'ADMIN' ? 'text-center align-center' : 'text-center' ">
-      <v-btn class="mr-2" color="success">
-        <v-icon>mdi-pencil</v-icon>
+      <v-btn class="mr-2" color="success" @click="toEditUser(user)">
+        <v-icon >mdi-pencil</v-icon>
       </v-btn>
       <v-btn class="ml-2" color="red" v-if="user.roles !== 'ADMIN'">
         <v-icon>mdi-delete-sweep</v-icon>
@@ -32,6 +32,9 @@ export default {
     toRemoveUser(id) {
       this.$emit("requestToDeleteUser", id);
     },
+    toEditUser(user){
+      this.$emit("requestToEdit", user)
+    }
   },
 };
 </script>

@@ -41,6 +41,7 @@
             ></v-text-field>
 
             <v-text-field
+              v-if="dialogMode !== 'edit' "
               v-model="password"
               :rules="passwordRules"
               label="Password"
@@ -62,7 +63,7 @@
             ></v-select>
 
             <v-file-input
-              v-if="role !== null && role !== 'STUDENT'"
+              v-if="(role !== null && role !== 'STUDENT') && dialogMode !== 'edit' "
               :rules="profileRules"
               v-model="profile"
               label="Choose image profile"
@@ -114,7 +115,10 @@
             </tr>
           </thead>
           <tbody>
-            <user-card v-for="user of users" :key="user.id" :user="user">
+            <user-card v-for="user of users" 
+            :key="user.id" :user="user"
+            @requestToEdit="showEditForm"
+            >
             </user-card>
           </tbody>
         </template>
@@ -200,13 +204,55 @@ export default {
   },
   methods: {
     showCreateForm() {
+      this.dialogMode = "create";
       this.dialog = true;
+      this.$refs.form.reset();
     },
     closeDialog() {
       this.dialog = false;
       this.$refs.form.reset();
     },
+    showEditForm(userData) {
+      this.dialogMode = "edit";
+      this.dialog = true;
+      this.userAction = {
+        id: userData.id,
+        username: userData.username,
+        email: userData.email,
+        role: userData.roles,
+      }
+      this.username = this.userAction.username;
+      this.email = this.userAction.email;
+      if(userData.roles === 'ADMIN') {
+        this.role = 'ADMIN'
+      } else {
+        this.role = this.userAction.role;
+      }
+      
+      console.log(userData)
+    },
+    updateUser() {
+      if(this.userAction.role === 'ADMIN') {
+        this.role = 'ADMIN';
+      }
+      let myNewUserData = {
+        username: this.username,
+        email: this.email,
+        roles: this.role
+      }
+      
+      axios.put("/users/" + this.userAction.id, myNewUserData)
+      .then(res => {
+        console.log(res)
+        this.getUsers();
+        this.closeDialog();
+      })
+      .catch((error) => {
+        console.log(error.res.data.errors)
+      })
 
+      
+    },
     createUser() {
       if (this.$refs.form.validate()) {
         let userInfo = new FormData();
@@ -232,6 +278,8 @@ export default {
     onConfirm() {
       if (this.dialogMode === "create") {
         this.createUser();
+      }else if(this.dialogMode === "edit") {
+        this.updateUser();
       }
     },
     getUsers() {
@@ -240,7 +288,7 @@ export default {
       });
     },
 
-    showEditForm() {}, //==========================SEARCH USER BY USERNAME============================================================
+    
     // Search By Username-----------------------------------------------------------------------------
     searchUsername(username) {
       if (username !== "") {

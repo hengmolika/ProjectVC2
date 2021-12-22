@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <nav-app
-      v-if="userdata !== null"
+      v-if="user !== null"
       :userdata="user"
       @requestToLogout="Logout"
     >
