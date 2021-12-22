@@ -9,7 +9,7 @@
                 :src="
                   userdata.profile !== ''
                     ? url + userdata.profile
-                    : url + 'profile.jpg'
+                    : url + 'profile.png'
                 "
               ></v-img>
             </v-list-item-avatar>
@@ -49,14 +49,14 @@
             <v-list-item-icon>
               <v-icon>mdi-account-multiple</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>DISCIPLES</v-list-item-title>
+            <v-list-item-title>DISCIPLINE</v-list-item-title>
           </v-list-item>
 
           <v-list-item @click="$emit('requestToLogout')">
             <v-list-item-icon>
               <v-icon>mdi-logout</v-icon>
             </v-list-item-icon>
-            <v-list-item-title> LOGOUT </v-list-item-title>
+            <v-list-item-title> LOG OUT </v-list-item-title>
           </v-list-item>
 
           <!--~*~*~*~*~*~*~*~*~*~*~*~*~*~*|DARK MOOD|~*~*~*~*~*~*~*~*~*~*~*~*~*~*-->
@@ -75,7 +75,11 @@
                 }}
               </v-icon>
             </v-list-item-icon>
-            <v-list-item-title> DARK</v-list-item-title>
+            <v-list-item-title> {{
+                  $vuetify.theme.dark
+                    ? "LIGHT MODE"
+                    : "DARK MODE"
+                }}</v-list-item-title>
           </v-list-item>
           <!--~*~*~*~*~*~*~*~*~*~*~*~*~*~*|END OF DARK MOOD|~*~*~*~*~*~*~*~*~*~*~*~*~*~*-->
         </v-list-item-group>
@@ -99,7 +103,7 @@
                 :src="
                   userdata.profile !== ''
                     ? url + userdata.profile
-                    : url + 'profile.jpg'
+                    : url + 'profile.png'
                 "
               ></v-img>
             </v-list-item-avatar>
@@ -133,7 +137,7 @@
           <v-icon left active-class="grey-5 info--text"
             >mdi-account-star</v-icon
           >
-          PERMISION
+          PERMISSION
         </v-btn>
 
         <v-btn
@@ -144,7 +148,7 @@
           <v-icon left active-class="grey-5 info--text"
             >mdi-account-multiple-outline</v-icon
           >
-          DISCIPLE
+          DISCIPLINE
         </v-btn>
         <v-btn
           active-class="grey-5 white--text"
@@ -152,7 +156,7 @@
           @click="$emit('requestToLogout')"
         >
           <v-icon left>mdi-logout</v-icon>
-          LOGOUT
+          LOG OUT
         </v-btn>
         <!--~*~*~*~*~*~*~*~*~*~*~*~*~*~*|DARK MOOD|~*~*~*~*~*~*~*~*~*~*~*~*~*~*-->
         <v-btn text @click="$vuetify.theme.dark = !$vuetify.theme.dark">
@@ -161,7 +165,7 @@
               $vuetify.theme.dark ? "mdi-weather-night" : "mdi-weather-sunny"
             }}
           </v-icon>
-          DARK
+          
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>

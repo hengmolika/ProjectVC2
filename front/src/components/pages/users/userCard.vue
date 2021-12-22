@@ -3,7 +3,7 @@
     <td>
       <v-list-item-avatar>
         <v-img
-          :src="user.profile !== '' ? url + user.profile : url + 'profile.jpg'"
+          :src="user.profile !== '' ? url + user.profile : url + 'profile.png'"
         ></v-img>
       </v-list-item-avatar>
     </td>

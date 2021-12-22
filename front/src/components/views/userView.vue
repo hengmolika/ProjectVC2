@@ -56,17 +56,16 @@
 
               <v-select
                 v-model="role"
-                :items="items"
+                :items="roles"
                 :rules="roleRules"
                 prepend-icon="mdi-key"
                 label="Select"
-                data-vv-name="select"
                 required
               ></v-select>
 
               <v-file-input
                 v-if="
-                  role !== null && role !== 'STUDENT' && dialogMode !== 'edit'
+                  role !== null && role === 'SOCIAL AFFAIL OFFICER' && dialogMode !== 'edit'
                 "
                 :rules="profileRules"
                 v-model="profile"
@@ -116,6 +115,7 @@
         @searchByusername="searchUsername"
         @SelectRole="selectByRole"
       >
+
       </user-search>
       <v-simple-table>
         <template v-slot:default>
@@ -166,7 +166,7 @@ export default {
       dialog: false,
       show1: false,
       dialogMode: "create",
-      items: ["SOCIAL AFFAIL OFFICER", "STUDENT"],
+      roles: ["SOCIAL AFFAIL OFFICER", "STUDENT"],
       students: [],
       // DATA FROM INPUT ----------------------------------------
       username: null,
@@ -177,7 +177,7 @@ export default {
       profile: "",
       // RULE OF INPUT DATA ----------------------------------------
       usernameRules: [(v) => !!v || "Username is required"],
-      emailRules: [(v) => !!v || "Email is required"],
+      emailRules: [(v) => !!v || "Email is required", (v) => /.+@.+\..+/.test(v) || "E-mail must be valid"],
       passwordRules: [(v) => !!v || "Password is required"],
       studentRules: [(v) => !!v || "Student is required"],
       roleRules: [(v) => !!v || "Role is required"],
@@ -232,7 +232,13 @@ export default {
     showCreateForm() {
       this.dialogMode = "create";
       this.dialog = true;
-      this.$refs.form.reset();
+
+      this.username = null;
+      this.email = null;
+      this.password = null;
+      this.student = null;
+      this.role = null;
+      this.profile = "";
     },
     // **********************|~SHOW REMOVE DIALOG~|********************** //
     showDeleteDialog(id) {
@@ -241,6 +247,7 @@ export default {
       };
       this.dialogMode = "delete";
       this.dialog = true;
+      
     },
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
