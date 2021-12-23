@@ -48,7 +48,7 @@ class StudentController extends Controller
         $student->user_id = $request->user_id;
         $student->save();
 
-        return response()->json(['message' => 'Student created!'], 201);
+        return response()->json(['message' => 'Student created!', 'data' => $student], 201);
     }
 
     /**

@@ -78,7 +78,7 @@ class UserController extends Controller
     {
         $request->validate([
             'username' => 'max:10|required',
-            'email' => ['email', 'unique:users'],
+            'email' => ['email'],
 
         ]);
         //create user
@@ -88,7 +88,7 @@ class UserController extends Controller
         $user->roles = $request->roles;
         $user->save();
 
-        return response()->json(['message' => 'user updated!'], 200);
+        return response()->json(['message' => 'user updated!', 'data' => $user], 200);
     }
     public function destroy($id)
     {

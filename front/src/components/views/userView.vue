@@ -272,8 +272,6 @@ export default {
       } else {
         this.role = this.userAction.role;
       }
-
-      console.log(userData);
     },
     updateUser() {
       if (this.userAction.role === "ADMIN") {
@@ -284,11 +282,10 @@ export default {
         email: this.email,
         roles: this.role,
       };
-
       axios
         .put("/users/" + this.userAction.id, myNewUserData)
         .then((res) => {
-          console.log(res);
+          console.log(res.data);
           this.getUsers();
           this.closeDialog();
         })
