@@ -288,7 +288,7 @@ export default {
       axios
         .put("/users/" + this.userAction.id, myNewUserData)
         .then((res) => {
-          console.log(res);
+          console.log(res.data);
           this.getUsers();
           this.closeDialog();
         })

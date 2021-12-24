@@ -13,7 +13,6 @@ class UserController extends Controller
             'username' => 'min:2|required',
             'email' => ['email', 'unique:users'],
             'password' => ['min:4','max:8'],
-            'profile' => 'nullable|image|mimes:jpg,jpeg,png|max:1999|',
 
         ]);
 
@@ -22,13 +21,6 @@ class UserController extends Controller
         $user->username = $request->username;
         $user->email = $request->email;
         $user->roles = $request->roles;
-        $user->profile = $request->profile;
-        if($request->profile !== null) {
-            $request->file('profile')->store('public/images');
-            $user->profile = $request->file('profile')->hashName();
-        } else {
-            $user->profile = "";
-        };
         $user->password = bcrypt($request->password);
 
         $user->save();
@@ -78,7 +70,7 @@ class UserController extends Controller
     {
         $request->validate([
             'username' => 'max:10|required',
-            'email' => ['email', 'unique:users'],
+            'email' => 'email',
 
         ]);
         //create user
@@ -88,7 +80,7 @@ class UserController extends Controller
         $user->roles = $request->roles;
         $user->save();
 
-        return response()->json(['message' => 'user updated!'], 200);
+        return response()->json(['message' => 'user updated!', "data" => $user], 200);
     }
     public function destroy($id)
     {
