@@ -63,7 +63,7 @@
                 required
               ></v-select>
 
-              <v-file-input
+              <!-- <v-file-input
                 v-if="
                   role !== null && role === 'SOCIAL AFFAIL OFFICER' && dialogMode !== 'edit'
                 "
@@ -72,7 +72,7 @@
                 label="Choose image profile"
                 filled
                 prepend-icon="mdi-camera"
-              ></v-file-input>
+              ></v-file-input> -->
 
               <v-combobox
                 v-if="role === 'STUDENT'"

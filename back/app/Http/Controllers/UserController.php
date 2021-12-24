@@ -10,7 +10,7 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'username' => 'min:2|required',
+            'username' => 'min:1|required',
             'email' => ['email', 'unique:users'],
             'password' => ['min:4','max:8'],
 
@@ -69,7 +69,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'username' => 'max:10|required',
+            'username' => 'min:1|required',
             'email' => 'email',
 
         ]);
