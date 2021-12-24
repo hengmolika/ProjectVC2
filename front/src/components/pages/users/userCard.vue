@@ -1,12 +1,12 @@
 <template>
   <tr class="text-left">
-    <td>
+    <!-- <td>
       <v-list-item-avatar>
         <v-img
           :src="user.profile !== '' ? url + user.profile : url + 'profile.png'"
         ></v-img>
       </v-list-item-avatar>
-    </td>
+    </td> -->
     <td>{{ user.username }}</td>
     <td>{{ user.email }}</td>
     <td>{{ user.roles }}</td>

@@ -128,9 +128,19 @@
               <th class="text-center">ACTION</th>
             </tr>
           </thead>
-          <tbody>
-            <user-card
+          <tbody v-if="!isSearch">
+            <user-card 
               v-for="user of users"
+              :key="user.id"
+              :user="user"
+              @requestToDeleteUser="showDeleteDialog"
+              @requestToEdit="showEditForm"
+            >
+            </user-card>
+          </tbody>
+          <tbody v-else>
+            <user-card
+              v-for="user of contain_users_search"
               :key="user.id"
               :user="user"
               @requestToDeleteUser="showDeleteDialog"
@@ -187,6 +197,7 @@ export default {
       userAction: {},
       dialogDisplay: false,
       isSearch: false,
+      contain_users_search: [],
     };
   },
   computed: {
@@ -306,8 +317,7 @@ export default {
         userInfo.append("password", this.password);
         userInfo.append("password_confirmation", this.password);
         userInfo.append("roles", this.role);
-        userInfo.append("profile", this.profile);
-
+        // userInfo.append("profile", this.profile);
         axios
           .post("/register", userInfo)
           .then((response) => {
@@ -347,26 +357,40 @@ export default {
         this.users = res.data;
       });
     },
-
+    
+    //==========================SEARCH USER BY USERNAME============================================================
     // Search By Username-----------------------------------------------------------------------------
-    searchUsername(username) {
-      if (username !== "") {
-        console.log(username);
-        this.users = this.users.filter((users) =>
-          users.username.toLowerCase().includes(username.toLowerCase())
+    searchUsername(username_key, role_key) {
+      if (
+        (username_key !== "" && role_key !== "ALL") ||
+        (username_key === "" && role_key !== "ALL")
+      ) {
+        console.log(username_key);
+        this.contain_users_search = this.users.filter(
+          (user) =>
+            user.username.toLowerCase().includes(username_key.toLowerCase()) &&
+            user.roles.toLowerCase().includes(role_key.toLowerCase())
         );
       } else {
-        this.getUsers();
+        this.contain_users_search = this.users.filter((user) =>
+          user.username.toLowerCase().includes(username_key.toLowerCase())
+        );
       }
       this.isSearch = true;
     },
     //Search By select roles---------------------------------------------------------------------------
-    selectByRole(roleName) {
-      if (roleName === "ALL") {
+    selectByRole(role_key) {
+      if (role_key === "ALL") {
         this.getUsers();
-      } else {
-        this.users = this.users.filter((user) => user.roles === roleName);
+        this.isSearch = false;
+      }else{
+        console.log(role_key);
+        this.contain_users_search = this.users.filter((user) =>
+          user.roles.toLowerCase().includes(role_key.toLowerCase())
+        );
+        this.isSearch = true;
       }
+      
     },
   },
   mounted() {

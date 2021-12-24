@@ -37,16 +37,16 @@ export default {
     return {
       keySearchUsername: "",
       keyRoles: ["ALL", "SOCIAL AFFAIL OFFICER", "STUDENT"],
-      keySelectByRole: "All",
+      keySelectByRole: "ALL",
     };
   },
   methods: {
     searchUsername() {
-      this.$emit("searchByusername", this.keySearchUsername);
+      this.$emit("searchByusername", this.keySearchUsername,this.keySelectByRole);
     },
 
-    SelectUserRole() {
-      this.$emit("SelectRole", this.keySelectByRole);
+    SelectUserRole(){
+        this.$emit("SelectRole",this.keySelectByRole);
     },
 
     clearText() {
