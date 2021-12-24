@@ -19,8 +19,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('students', [StudentController::class, 'store']);
     Route::put('students/{id}', [StudentController::class, 'update']);
     Route::delete('students/{id}', [StudentController::class, 'destroy']);
-    // Get Country Route
-    Route::get('/student_class', [ClassController::class, 'getStudentClass']);
+    // Get Class Route
+    Route::get('/class', [ClassController::class, 'getClass']);
 
     Route::put('users/{id}', [UserController::class, 'update']);
     Route::delete('users/{id}', [UserController::class, 'destroy']);
