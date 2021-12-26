@@ -103,3 +103,6 @@ class StudentController extends Controller
         return Student::destroy($id);
     }
 }
+
+
+// 1|Xp0kxtvW24zBbDTWNLcHdmVZrOaxQUXnfZCAZVkq
