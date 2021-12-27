@@ -1,8 +1,8 @@
 <template>
-  <div class="text-center">
+  <div>
     <v-btn
-      depressed
       @click.stop="showCreateForm"
+      depressed
       bottom
       class="mb-8"
       color="deep-orange"
@@ -26,51 +26,61 @@
         <div v-if="dialogMode !== 'delete'">
           <v-card-text class="mt-5">
             <v-form ref="form" v-model="valid" lazy-validation>
-              <v-text-field
-                v-model="first_name"
-                :rules="FirstnameRules"
-                label="FirstName"
-                prepend-icon="mdi-account"
-                required
-              ></v-text-field>
 
-              <v-text-field
-                v-model="last_name"
-                :rules="LastnameRules"
-                label="Lastname"
-                prepend-icon="mdi-account"
-                required
-              ></v-text-field>
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="first_name"
+                    :rules="firstnameRules"
+                    label="First Name"
+                    prepend-icon="mdi-account"
+                   
+                  ></v-text-field>
+                </v-col>
 
-              <v-radio-group :rules="GenderRules" v-model="gender" row>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="last_name"
+                    :rules="lastnameRules"
+                    label="Last Name"
+                    prepend-icon="mdi-account"
+
+                    
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+
+              <v-radio-group :rules="genderRules" v-model="gender" row>
                 <v-radio label="Male" value="Male"></v-radio>
-                <v-radio label="FeMale" value="Female"></v-radio>
-              </v-radio-group>
 
-              <v-text-field
-                v-model="phone"
-                :rules="LastnameRules"
-                label="Phone Number"
-                prepend-icon="mdi-phone"
-                required
-              ></v-text-field>
+                <v-radio label="Female" value="Female"></v-radio>
+              </v-radio-group>
 
               <v-select
                 v-model="class_name"
-                :items="studentClass"
-                :rules="ClassnameRules"
+                :rules="classRules"
                 prepend-icon="mdi-school"
                 label="Class"
+                :items="student_class"
                 required
-              ></v-select>
+              >
+              </v-select>
+
+              <v-text-field
+                v-model="phonenumber"
+                :rules="phonenumberRules"
+                prepend-icon="mdi-phone"
+                label="Phone Number"
+                required
+              ></v-text-field>
 
               <v-file-input
-                :rules="profileRules"
                 v-model="profile"
+                :rules="profileRules"
                 label="Choose image profile"
-                filled
                 prepend-icon="mdi-camera"
-              ></v-file-input>
+              >
+              </v-file-input>
             </v-form>
           </v-card-text>
         </div>
@@ -96,24 +106,22 @@
       </v-card>
     </v-dialog>
 
-    <!-- TABLE -->
-
     <div class="container mt-12">
       <v-simple-table>
         <template v-slot:default>
           <thead>
             <tr>
-              <th>Profile</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Gender</th>
-              <th>Class_name</th>
-              <th>Phone Number</th>
+              <th class="text-left">Profile</th>
+              <th class="text-left">FirstName</th>
+              <th class="text-left">LastName</th>
+              <th class="text-left">Gender</th>
+              <th class="text-left">Class_name</th>
+              <th class="text-left">Phone Number</th>
             </tr>
           </thead>
           <tbody>
             <student-card
-              v-for="student of students"
+              v-for="student in students"
               :key="student.id"
               :student="student"
             >
@@ -124,105 +132,61 @@
     </div>
   </div>
 </template>
-
 <script>
-// IMPORT AXIOS ----------------------------------------
 import axios from "../../api/api.js";
-// import StudentCard from "../pages/student/StudentCard.vue";
-import StudentCard from "../pages/student/StudentCard";
-// IMPORT USER FORM SEARCH ----------------------------------------
-
-// IMPORT USER CARD ----------------------------------------
-
+import StudentCard from "../pages/students/StudentCard.vue";
 export default {
   components: {
     "student-card": StudentCard,
   },
   data() {
     return {
-      valid: true,
-      url: "http://localhost:8000/storage/images/",
-      dialog: false,
-      show1: false,
-      dialogMode: "create",
       students: [],
-      // DATA FROM INPUT ----------------------------------------
+      dialog: false,
+      dialogMode: "create",
+      valid: true,
+      show1: false,
+      studentAction: {},
+      dialogDisplay: false,
+      student_class: [],
+      class: {},
+
+      // Data from input
       first_name: null,
       last_name: null,
       gender: null,
       class_name: null,
-      phone: null,
-      profile: "",
-      studentClass: [],
-      // RULE OF INPUT DATA ----------------------------------------
-      FirstnameRules: [(v) => !!v || "Firstname is required"],
-      LastnameRules: [(v) => !!v || " Lastname is required"],
-      GenderRules: [(v) => !!v || "Gender is required"],
-      ClassnameRules: [(v) => !!v || "ClassName is required"],
-      phonenumberRules: [(v) => !!v || "phonenumber is required"],
-      profileRules: [(v) => !!v || "Profile is required"],
-      // DATA GET FROM BACKEND ----------------------------------------
+      phonenumber: null,
 
-      dialogDisplay: false,
+      profile: "",
+      // Rule of input data
+      firstnameRules: [(v) => !!v || "Firstname is required"],
+      lastnameRules: [(v) => !!v || "Lastname is required"],
+      genderRules: [(v) => !!v || "Gender is required"],
+      classRules: [(v) => !!v || "Class is required"],
+      phonenumberRules: [(v) => !!v || "PhoneNumber is required"],
+      profileRules: [(v) => !!v || "Profile is required"],
+
+      // data get from backend
     };
   },
-  computed: {
-    // **********************|~TITLE DIALOG~|********************** //
-    dialogTitle() {
-      let message = "";
-      if (this.dialogMode === "create") {
-        message = "CREATE NEW USER";
-      }
-      return message;
-    },
-    // **********************|~BUTTON DIALOG~|********************** //
-    dialogButton() {
-      let message = "";
-      if (this.dialogMode === "create") {
-        message = "CREATE";
-      }
-      return message;
-    },
-    // **********************|~COLOR DIALOG~|********************** //
-    dialogColor() {
-      let message = "";
-      if (this.dialogMode === "create") {
-        message = "primary";
-      }
-      return message;
-    },
-  },
   methods: {
-     // **********************|~GET USERS~|********************** //
     getStudent() {
-      axios.get("/students").then((res) => {
-        this.students = res.data;
-      }).catch(error =>{
-        console.log(error.response.data);
-      })
-    },
-
-    // **********************|~GET STUDENT CLASS ~|**********************//
-    getStudentClass(){
-      axios.get("/class")
-      .then((res)=>{
-        this.studentClass = res.data.class;
-        console.log("student class",this.studentClass);
-      })
+      axios
+        .get("/students")
+        .then((res) => {
+          this.students = res.data;
+          console.log(this.students);
+        })
+        .catch((error) => {
+          console.log(error.res.data.errors);
+        });
     },
     // **********************|~SHOW CREATE FORM DIALOG~|********************** //
     showCreateForm() {
       this.dialogMode = "create";
       this.dialog = true;
-
-      this.first_name = null;
-      this.last_name = null;
-      this.gender = null;
-      this.class_name = null;
-      this.phone = null;
-      this.profile = "";
     },
-    // **********************|~SHOW REMOVE DIALOG~|********************** //
 
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
@@ -232,50 +196,68 @@ export default {
       }
     },
 
-    // **********************|~CREATE NEW USER~|********************** //
-    createUser() {
+    // **********************|~CONFIRM DIALOG~|********************** //
+    onConfirm() {
+      if (this.dialogMode === "create") {
+        this.creatStudent();
+      }
+    },
+
+    // **********************|~CREATE NEW STUDENT~|********************** //
+    creatStudent() {
       if (this.$refs.form.validate()) {
         let studentInfo = new FormData();
-        let userId = localStorage.getItem("userId");
-        studentInfo.append("user_id", userId);
         studentInfo.append("first_name", this.first_name);
         studentInfo.append("last_name", this.last_name);
         studentInfo.append("gender", this.gender);
         studentInfo.append("class_name", this.class_name);
-        studentInfo.append("phone", this.phone);
-        studentInfo.append("profile", this.profile);
-
+        studentInfo.append("phone", this.phonenumber);
+        console.log(studentInfo);
         axios
           .post("/students", studentInfo)
           .then((response) => {
-            this.students.push(response.data.user);
-            localStorage.setItem("token", response.data.token);
             this.closeDialog();
             this.getStudent();
+            console.log("Hello", response.data);
           })
           .catch((error) => {
-            console.log(error.response.data.errors);
+            console.log("dsdsd", error.response.data.errors);
           });
       }
     },
-
-    // **********************|~REMOVE USER~|********************** //
-
-    // **********************|~CONFIRM DIALOG~|********************** //
-    onConfirm() {
-      if (this.dialogMode === "create") {
-        this.createUser();
-      }
-    },
-
   },
-
+  computed: {
+    dialogTitle() {
+      let message = "";
+      if (this.dialogMode === "create") {
+        message = "CREATE NEW STUDENT";
+      }
+      return message;
+    },
+    dialogButton() {
+      let message = "";
+      if (this.dialogMode === "create") {
+        message = "CREATE";
+      }
+      return message;
+    },
+    dialogColor() {
+      let message = "";
+      if (this.dialogMode === "create") {
+        message = "primary";
+      }
+      return message;
+    },
+  },
   mounted() {
     this.getStudent();
-    console.log("student lisht", this.students);
-    this.getStudentClass();
-    
-    
+    axios.get("/class").then((res) => {
+      this.class = res.data;
+      for (let clas in res.data) {
+        this.student_class.push(clas);
+      }
+      console.log(this.student_class);
+    });
   },
 };
 </script>

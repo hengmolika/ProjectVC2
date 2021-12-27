@@ -45,7 +45,7 @@ class StudentController extends Controller
         };
         $student->class_name = $request->class_name;
         $student->phone = $request->phone;
-        $student->user_id = $request->user_id;
+       
         $student->save();
 
         return response()->json(['message' => 'Student created!'], 201);
@@ -86,7 +86,6 @@ class StudentController extends Controller
         $student->profile = $request->profile;
         $student->class_name = $request->class_name;
         $student->phone = $request->phone;
-        $student->user_id = $request->user_id;
         $student->save();
 
         return response()->json(['message' => 'Student updated!'], 200);
@@ -103,3 +102,6 @@ class StudentController extends Controller
         return Student::destroy($id);
     }
 }
+
+
+// 1|Xp0kxtvW24zBbDTWNLcHdmVZrOaxQUXnfZCAZVkq
