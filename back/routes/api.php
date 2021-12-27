@@ -19,14 +19,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('students', [StudentController::class, 'store']);
     Route::put('students/{id}', [StudentController::class, 'update']);
     Route::delete('students/{id}', [StudentController::class, 'destroy']);
-// ------------------------- ROUTE PERMISSION ----------------------------
+    // ------------------------- ROUTE PERMISSION ----------------------------
     Route::get('permissions', [PermissionController::class, 'index']);
     Route::get('permissions/{id}', [PermissionController::class, 'show']);
     Route::post('permissions', [PermissionController::class, 'store']);
     Route::put('permissions/{id}', [PermissionController::class, 'update']);
     Route::delete('permissions/{id}', [PermissionController::class, 'destroy']);
 
-//---------------------- Get Reason Route  ---------------------------
+    //---------------------- Get Reason Route  ---------------------------
     Route::get('/reasons', [ReasonController::class, 'getReason']);
 
     Route::put('users/{id}', [UserController::class, 'update']);

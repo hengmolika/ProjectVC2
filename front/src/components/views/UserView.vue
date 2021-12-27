@@ -153,6 +153,7 @@ import UserFormSearch from "../pages/users/userFormSearch.vue";
 
 // IMPORT USER CARD ----------------------------------------
 import UserCard from "../pages/users/userCard.vue";
+
 export default {
   components: {
     "user-search": UserFormSearch,

@@ -5,7 +5,7 @@ import LoginForm from '../authentication/LoginForm.vue'
 import UserView from '../components/views/UserView.vue'
 import StudentView from '../components/views/StudentView.vue'
 import DiscipleView from '../components/views/DiscipleView.vue'
-import PermisionView from '../components/views/PermisionView.vue'
+import PermissionView from '../components/views/PermissionView.vue'
 
 Vue.use(VueRouter)
 
@@ -14,8 +14,8 @@ const routes = [
   {path: '/login', component: LoginForm},
   {path: '/user', component: UserView},
   {path: '/student', component: StudentView},
-  {path: '/disciple', component: DiscipleView},
-  {path: '/permision', component: PermisionView}
+  {path: '/disciples', component: DiscipleView},
+  {path: '/permission', component: PermissionView}
 ]
 
 const router = new VueRouter({
