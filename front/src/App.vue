@@ -40,6 +40,7 @@ export default {
           this.user = response.data.user;
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("userId", response.data.user.id);
+          localStorage.setItem("user", response.data.user);
           this.$router.push("/user");
         })
         .catch((error) => {
@@ -61,13 +62,14 @@ export default {
   },
   mounted() {
     
-    if (localStorage.userId) {
+    if (localStorage.userId && localStorage.token) {
       axios.get("/users/" + localStorage.userId).then((response) => {
         this.user = response.data;
       });
+
       axios.defaults.headers.common["Authorization"] =
       "Bearer " + localStorage.getItem("token");
-    }
+    } 
   },
 };
 </script>
