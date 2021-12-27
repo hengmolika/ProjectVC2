@@ -333,7 +333,6 @@ export default {
           .post("/register", userInfo)
           .then((response) => {
             this.users.push(response.data.user);
-            localStorage.setItem("token", response.data.token);
             this.closeDialog();
           })
           .catch((error) => {
