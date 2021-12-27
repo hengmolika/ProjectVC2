@@ -11,8 +11,13 @@ class Permission extends Model
 
     protected $fillable = ['start_date', 'end_date', 'reason', 'description'];
 
+    protected $hidden = [
+        "created_at",
+        "updated_at"
+    ];
+
     public function students(){
         
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(Student::class, 'student_id');
     }
 }
