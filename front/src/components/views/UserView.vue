@@ -115,7 +115,6 @@
         @searchByusername="searchUsername"
         @SelectRole="selectByRole"
       >
-      
       </user-search>
       <v-simple-table>
         <template v-slot:default>
@@ -129,7 +128,7 @@
             </tr>
           </thead>
           <tbody v-if="!isSearch">
-            <user-card 
+            <user-card
               v-for="user of users"
               :key="user.id"
               :user="user"
@@ -178,6 +177,12 @@ export default {
       dialogMode: "create",
       roles: ["SOCIAL AFFAIL OFFICER", "STUDENT"],
       students: [],
+      images: [
+        "https://i.pinimg.com/236x/92/8f/c8/928fc874edae45b141ac45bdc157a70b.jpg",
+        "https://i.pinimg.com/236x/c4/d3/e2/c4d3e2dd8797e6d7d5b07dbfc338d054.jpg",
+        "https://i.pinimg.com/236x/3f/87/6c/3f876cc74af0f155af84306443b3ea56.jpg",
+        "https://i.pinimg.com/236x/97/7f/e7/977fe798cf2c3a037e7aa9af6ce4b9d1.jpg",
+      ],
       // DATA FROM INPUT ----------------------------------------
       username: null,
       email: null,
@@ -187,7 +192,10 @@ export default {
       profile: "",
       // RULE OF INPUT DATA ----------------------------------------
       usernameRules: [(v) => !!v || "Username is required"],
-      emailRules: [(v) => !!v || "Email is required", (v) => /.+@.+\..+/.test(v) || "E-mail must be valid"],
+      emailRules: [
+        (v) => !!v || "Email is required",
+        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+      ],
       passwordRules: [(v) => !!v || "Password is required"],
       studentRules: [(v) => !!v || "Student is required"],
       roleRules: [(v) => !!v || "Role is required"],
@@ -258,7 +266,6 @@ export default {
       };
       this.dialogMode = "delete";
       this.dialog = true;
-      
     },
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
@@ -284,7 +291,6 @@ export default {
         this.role = this.userAction.role;
       }
 
-      console.log(userData);
     },
     updateUser() {
       if (this.userAction.role === "ADMIN") {
@@ -311,13 +317,18 @@ export default {
     // **********************|~CREATE NEW USER~|********************** //
     createUser() {
       if (this.$refs.form.validate()) {
-        let userInfo = new FormData();
-        userInfo.append("username", this.username);
-        userInfo.append("email", this.email);
-        userInfo.append("password", this.password);
-        userInfo.append("password_confirmation", this.password);
-        userInfo.append("roles", this.role);
-        // userInfo.append("profile", this.profile);
+
+        const imageRadom = Math.floor(Math.random() * this.images.length);
+        this.profile = this.images[imageRadom];
+
+        let userInfo = {
+          username: this.username,
+          email: this.email,
+          password: this.password,
+          password_confirmation: this.password,
+          roles: this.role,
+          profile: this.profile,
+        };
         axios
           .post("/register", userInfo)
           .then((response) => {
@@ -357,7 +368,7 @@ export default {
         this.users = res.data;
       });
     },
-    
+
     //==========================SEARCH USER BY USERNAME============================================================
     // Search By Username-----------------------------------------------------------------------------
     searchUsername(username_key, role_key) {
@@ -383,14 +394,13 @@ export default {
       if (role_key === "ALL") {
         this.getUsers();
         this.isSearch = false;
-      }else{
+      } else {
         console.log(role_key);
         this.contain_users_search = this.users.filter((user) =>
           user.roles.toLowerCase().includes(role_key.toLowerCase())
         );
         this.isSearch = true;
       }
-      
     },
   },
   mounted() {
