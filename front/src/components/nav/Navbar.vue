@@ -8,8 +8,8 @@
               <v-img
                 :src="
                   userdata.profile !== ''
-                    ? url + userdata.profile
-                    : url + 'profile.png'
+                    ? userdata.profile
+                    : 'https://cdn.pixabay.com/photo/2019/08/11/18/59/icon-4399701__340.png'
                 "
               ></v-img>
             </v-list-item-avatar>
@@ -86,7 +86,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar dark>
+    <v-toolbar>
       <span class="hidden-md-and-up">
         <v-app-bar-nav-icon @click="showSideBar"> </v-app-bar-nav-icon>
       </span>
@@ -102,8 +102,8 @@
               <v-img
                 :src="
                   userdata.profile !== ''
-                    ? url + userdata.profile
-                    : url + 'profile.png'
+                    ? userdata.profile
+                    : 'https://cdn.pixabay.com/photo/2019/08/11/18/59/icon-4399701__340.png'
                 "
               ></v-img>
             </v-list-item-avatar>
