@@ -343,8 +343,8 @@ export default {
 
     // **********************|~GET USERS~|********************** //
     getUsers() {
-      axios.get("/users").then((res) => {
-        this.users = res.data;
+      axios.get("/users").then((response) => {
+        this.users = response.data;
       });
     },
 
