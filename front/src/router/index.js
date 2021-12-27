@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import LoginForm from '../authentication/LoginForm.vue'
-import UserView from '../components/views/UserView.vue'
+import UserView from '../components/views/userView.vue'
 import StudentView from '../components/views/StudentView.vue'
 import DiscipleView from '../components/views/DiscipleView.vue'
 import PermisionView from '../components/views/PermisionView.vue'
