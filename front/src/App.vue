@@ -53,20 +53,20 @@ export default {
         this.user = null;
         this.messageError = "";
         localStorage.removeItem("userId");
+        localStorage.removeItem("token");
         this.$router.push("/login");
         console.log(response.data);
       });
     },
   },
-  created() {
-    axios.defaults.headers.common["Authorization"] =
-      "Bearer " + localStorage.getItem("token");
-  },
   mounted() {
+    
     if (localStorage.userId) {
       axios.get("/users/" + localStorage.userId).then((response) => {
         this.user = response.data;
       });
+      axios.defaults.headers.common["Authorization"] =
+      "Bearer " + localStorage.getItem("token");
     }
   },
 };
