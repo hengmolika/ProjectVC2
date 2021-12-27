@@ -39,7 +39,6 @@ class PermissionController extends Controller
         $permiss->reason = $request->reason;
         $permiss->student_id = $request->student_id;
         $permiss->save();
-
         return response()->json(['message' => 'permission created!', 'data' => $permiss], 201);
     }
 
@@ -67,7 +66,6 @@ class PermissionController extends Controller
 
             'start_date' => 'required|before:end_date',
             'end_date' => 'required|after:start_date',
-            
         ]);
         $permiss = Permission::findOrFail($id);
         $permiss->start_date = $request->start_date;
