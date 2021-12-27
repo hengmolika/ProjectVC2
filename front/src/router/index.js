@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+import DashboardView from '../components/views/DashboardView.vue'
 import LoginForm from '../authentication/LoginForm.vue'
 import UserView from '../components/views/UserView.vue'
 import StudentView from '../components/views/StudentView.vue'
@@ -40,7 +41,7 @@ const routes = [{
     }
   },
   {
-    path: '/disciple',
+    path: '/discipline',
     component: DiscipleView,
     meta: {
       needLogin: true,
@@ -50,6 +51,14 @@ const routes = [{
   {
     path: '/permision',
     component: PermisionView,
+    meta: {
+      needLogin: true,
+      needAdmin: true
+    }
+  },
+  {
+    path: '/dashboard',
+    component: DashboardView,
     meta: {
       needLogin: true,
       needAdmin: true
