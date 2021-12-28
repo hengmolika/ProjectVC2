@@ -1,5 +1,14 @@
 <template>
-  <tr class="text-left">
+  <tr
+    class="text-left"
+    :class="
+      user.roles === 'ADMIN'
+        ? 'adminColor'
+        : user.roles === 'STUDENT'
+        ? 'studentColor'
+        : 'edColor'
+    "
+  >
     <td>
       <v-list-item-avatar>
         <v-img
@@ -14,11 +23,7 @@
     <td>{{ user.username }}</td>
     <td>{{ user.email }}</td>
     <td>{{ user.roles }}</td>
-    <td
-      :class="
-        user.roles !== 'ADMIN' ? ' align-center' : ''
-      "
-    >
+    <td :class="user.roles !== 'ADMIN' ? ' align-center' : ''">
       <v-btn class="mr-1" icon color="success" @click="toEditUser(user)">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
@@ -54,4 +59,16 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+.adminColor {
+  background: #18ffff48;
+}
+.studentColor {
+  background: #ffa60062;
+  
+}
+
+.edColor {
+  background: #00ffd575;
+}
+</style>

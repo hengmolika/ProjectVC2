@@ -13,10 +13,9 @@ Vue.use(VueRouter)
 
 const routes = [{
     path: '/',
-    component: UserView,
+    component: DashboardView,
     meta: {
       needLogin: true,
-      needAdmin: true
     }
   },
   {

@@ -12,11 +12,11 @@
 
       <v-row>
         <v-col cols="12" lg="12" md="12" sm="12" xs="12">
-          <v-card elevation="24" width="1500" class="mx-auto">
+          <v-card elevation="24"  class="mx-auto">
             <v-system-bar lights-out></v-system-bar>
             <v-carousel
               cycle
-              height="400"
+              height="300"
               hide-delimiter-background
               show-arrows-on-hover
             >

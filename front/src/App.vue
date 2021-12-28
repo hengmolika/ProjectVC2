@@ -10,21 +10,21 @@
     <v-main>
       <router-view @requestLogin="Login" :message="messageError"> </router-view>
     </v-main>
-    <footer-app v-if="!$route.path.includes('login')"></footer-app>
+    <!-- <footer-app v-if="!$route.path.includes('login')"></footer-app> -->
   </v-app>
 </template>
 
 <script>
 import axios from "./api/api.js";
 import NavBar from "./components/nav/Navbar.vue";
-import Footer from "./components/nav/Footer.vue";
+// import Footer from "./components/nav/Footer.vue";
 
 export default {
   name: "App",
 
   components: {
     "nav-app": NavBar,
-    "footer-app": Footer,
+    // "footer-app": Footer,
   },
   data() {
     return {

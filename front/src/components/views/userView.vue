@@ -41,6 +41,9 @@
                 prepend-icon="mdi-email"
                 required
               ></v-text-field>
+              <v-alert dense outlined type="error" v-if="messageError !== ''">
+                {{ messageError }}
+              </v-alert>
 
               <v-text-field
                 v-if="dialogMode !== 'edit'"
@@ -58,7 +61,7 @@
                 v-model="role"
                 :items="roles"
                 :rules="roleRules"
-                prepend-icon="mdi-key"
+                prepend-icon="mdi-account-star"
                 label="Select"
                 required
               ></v-select>
@@ -100,12 +103,24 @@
     <!-- TABLE -->
 
     <div class="container">
+      <v-alert
+        type="success"
+        class="mt-6"
+        elevation="12"
+        v-if="messageAlert !== ''"
+        dismissible
+        border="left"
+        colored-border
+      >
+        {{ messageAlert }}
+      </v-alert>
       <user-search
+        class="mt-12"
         @searchByusername="searchUsername"
         @SelectRole="selectByRole"
       >
       </user-search>
-      <v-simple-table>
+      <v-simple-table class="mb-12">
         <template v-slot:default>
           <thead class="tableHead">
             <tr>
@@ -185,7 +200,12 @@ export default {
         (v) => !!v || "Email is required",
         (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
       ],
-      passwordRules: [(v) => !!v || "Password is required"],
+      passwordRules: [
+        (v) => !!v || "Password is required",
+        (v) =>
+          (v && v.length <= 8 && v.length >= 4) ||
+          "Password must be at least 4 and less than 8 characters",
+      ],
       studentRules: [(v) => !!v || "Student is required"],
       roleRules: [(v) => !!v || "Role is required"],
       profileRules: [(v) => !!v || "Profile is required"],
@@ -195,8 +215,9 @@ export default {
       dialogDisplay: false,
       isSearch: false,
       contain_users_search: [],
-      // MESSAGE ERROR DATA
-      
+      // MESSAGE DATA
+      messageError: "",
+      messageAlert: "",
     };
   },
   computed: {
@@ -249,6 +270,8 @@ export default {
       this.student = null;
       this.role = null;
       this.profile = "";
+      this.messageError = "";
+      this.messageAlert = "";
     },
     // **********************|~SHOW REMOVE DIALOG~|********************** //
     showDeleteDialog(id) {
@@ -257,6 +280,7 @@ export default {
       };
       this.dialogMode = "delete";
       this.dialog = true;
+      this.messageAlert = "";
     },
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
@@ -281,6 +305,8 @@ export default {
       } else {
         this.role = this.userAction.role;
       }
+      this.messageError = "";
+      this.messageAlert = "";
     },
     updateUser() {
       if (this.userAction.role === "ADMIN") {
@@ -294,13 +320,17 @@ export default {
 
       axios
         .put("/users/" + this.userAction.id, myNewUserData)
-        .then((res) => {
-          console.log(res.data);
+        .then((response) => {
+          console.log(response.data);
           this.getUsers();
           this.closeDialog();
+          this.messageAlert = "Update successfully!";
         })
         .catch((error) => {
-          console.log(error.res.data.errors);
+          if (error.response.status === 500) {
+            this.messageError =
+              "The email has already been taken by other user!";
+          }
         });
     },
 
@@ -323,9 +353,11 @@ export default {
           .then((response) => {
             this.users.push(response.data.user);
             this.closeDialog();
+            this.messageAlert = "Create succussfully !";
           })
           .catch((error) => {
-            console.log(error.response.data.errors);
+            this.messageError = error.response.data.errors.email[0];
+            console.log(this.messageError);
           });
       }
     },
@@ -336,6 +368,7 @@ export default {
       axios.delete("/users/" + id).then(() => {
         this.users = this.users.filter((user) => user.id !== id);
         this.closeDialog();
+        this.messageAlert = "Delete succussfully!";
       });
     },
 
@@ -398,7 +431,6 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .text-center {
   background: url(https://cdn.pixabay.com/photo/2017/02/05/15/04/stones-2040340_960_720.jpg)
@@ -406,7 +438,8 @@ export default {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  height: 100vh;
+  min-height: 100vh;
+  max-height: auto;
 }
 
 .tableHead {

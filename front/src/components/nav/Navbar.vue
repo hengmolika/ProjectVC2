@@ -93,7 +93,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar>
+    <v-toolbar elevation="12">
       <span class="hidden-md-and-up">
         <v-app-bar-nav-icon @click="showSideBar"> </v-app-bar-nav-icon>
       </span>
@@ -127,42 +127,42 @@
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn
-          active-class="grey-5 info--text"
+          active-class="info"
           text
           :to="{ path: '/dashboard' }"
         >
-          <v-icon left active-class="grey-5 info--text"
+          <v-icon left active-class="info"
             >mdi-view-dashboard</v-icon
           >
           DASHBOARD
         </v-btn>
-        <v-btn active-class="grey-5 info--text" text :to="{ path: '/user' }">
-          <v-icon left active-class="grey-5 info--text"
+        <v-btn active-class="info" text :to="{ path: '/user' }">
+          <v-icon left active-class="info"
             >mdi-account-group-outline</v-icon
           >
           USER
         </v-btn>
-        <v-btn active-class="grey-5 info--text" text :to="{ path: '/student' }">
-          <v-icon left active-class="grey-5 info--text">mdi-school</v-icon>
+        <v-btn active-class="info" text :to="{ path: '/student' }">
+          <v-icon left active-class="info">mdi-school</v-icon>
           STUDENT
         </v-btn>
         <v-btn
-          active-class="grey-5 info--text"
+          active-class="info"
           text
           :to="{ path: '/permision' }"
         >
-          <v-icon left active-class="grey-5 info--text"
+          <v-icon left active-class="info"
             >mdi-account-star</v-icon
           >
           PERMISSION
         </v-btn>
 
         <v-btn
-          active-class="grey-5 info--text"
+          active-class="info"
           text
           :to="{ path: '/discipline' }"
         >
-          <v-icon left active-class="grey-5 info--text"
+          <v-icon left active-class="info"
             >mdi-account-multiple-outline</v-icon
           >
           DISCIPLINE
