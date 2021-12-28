@@ -12,15 +12,11 @@
       <v-list-item>
         <!--USER PROFILE-->
         <v-list-item-avatar height="80" width="80" class="mb-14">
-          <v-img
-            size="100"
-            :src="url+permission.students.profile"
-          >
-          </v-img>
+          <v-img size="100" :src="url + permission.students.profile"> </v-img>
         </v-list-item-avatar>
         <v-list-item-content class="ml-10">
           <div class="mb-1 text-h6">
-            {{ permission.students.class_name}}
+            {{ permission.students.class }}
           </div>
           <!--STUDENT NAME-->
           <div class="d-flex">
@@ -68,7 +64,12 @@
             mdi-eye
           </v-icon>
         </v-btn>
-        <v-btn icon :class="{ 'show-btn-edit': hover }" :color="transparent">
+        <v-btn
+          icon
+          :class="{ 'show-btn-edit': hover }"
+          :color="transparent"
+          @click.prevent="editPermission(permission)"
+        >
           <v-icon :class="{ 'show-btn-edit': hover }" :color="transparent">
             mdi-pencil
           </v-icon>
@@ -90,7 +91,7 @@
           <v-card-text class="pb-0">
             <p class="text-h4 text--primary">Discription</p>
             <p>
-              {{permission.description}}
+              {{ permission.description }}
             </p>
           </v-card-text>
           <v-card-actions class="pt-0">
@@ -102,17 +103,13 @@
       </v-expand-transition>
     </v-card>
   </v-hover>
-
-  <!--~!~!~!~!~!~!~!~!~!~|BTN CREATE|~!~!~!~!~!~!~!~!~!~-->
-  <!-- <v-btn class="mb-10" bottom color="deep-orange" dark fab fixed right>
-    <v-icon>mdi-plus</v-icon>
-  </v-btn> -->
 </template>
 
 <!--~!~!~!~!~!~!~!~!~!~!~|SCRIPT|~!~!~!~!~!~!~!~!~!~!~-->
 <script>
 export default {
-  props: ["permission","students"],
+  props: ["permission","student"],
+  emits: ["permissiontEdit"],
 
   data() {
     return {
@@ -121,8 +118,12 @@ export default {
     };
   },
   computed: {},
-  methods: {},
-  
+  methods: {
+    editPermission(permission) {
+      this.$emit("permissiontEdit", permission);
+      console.log("permission edit",permission)
+    },
+  },
 };
 </script>
 
