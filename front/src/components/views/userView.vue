@@ -63,17 +63,6 @@
                 required
               ></v-select>
 
-              <!-- <v-file-input
-                v-if="
-                  role !== null && role === 'SOCIAL AFFAIL OFFICER' && dialogMode !== 'edit'
-                "
-                :rules="profileRules"
-                v-model="profile"
-                label="Choose image profile"
-                filled
-                prepend-icon="mdi-camera"
-              ></v-file-input> -->
-
               <v-combobox
                 v-if="role === 'STUDENT'"
                 :rules="studentRules"
@@ -110,7 +99,7 @@
 
     <!-- TABLE -->
 
-    <div class="container mt-12">
+    <div class="container">
       <user-search
         @searchByusername="searchUsername"
         @SelectRole="selectByRole"
@@ -118,13 +107,13 @@
       </user-search>
       <v-simple-table>
         <template v-slot:default>
-          <thead>
+          <thead class="tableHead">
             <tr>
               <th>PROFILE</th>
               <th>USERNAME</th>
               <th>EMAIL</th>
               <th>ROLE</th>
-              <th class="text-center">ACTION</th>
+              <th>ACTION</th>
             </tr>
           </thead>
           <tbody v-if="!isSearch">
@@ -292,7 +281,6 @@ export default {
       } else {
         this.role = this.userAction.role;
       }
-
     },
     updateUser() {
       if (this.userAction.role === "ADMIN") {
@@ -319,7 +307,6 @@ export default {
     // **********************|~CREATE NEW USER~|********************** //
     createUser() {
       if (this.$refs.form.validate()) {
-
         const imageRadom = Math.floor(Math.random() * this.images.length);
         this.profile = this.images[imageRadom];
 
@@ -410,3 +397,19 @@ export default {
   },
 };
 </script>
+
+
+<style scoped>
+.text-center {
+  background: url(https://cdn.pixabay.com/photo/2017/02/05/15/04/stones-2040340_960_720.jpg)
+    fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100vh;
+}
+
+.tableHead {
+  background: #03a9f4;
+}
+</style>

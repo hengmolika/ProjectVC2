@@ -3,24 +3,33 @@
     <td>
       <v-list-item-avatar>
         <v-img
-          :src="user.profile !== '' ? user.profile : 'https://cdn.pixabay.com/photo/2019/08/11/18/59/icon-4399701__340.png'"
+          :src="
+            user.profile !== ''
+              ? user.profile
+              : 'https://cdn.pixabay.com/photo/2019/08/11/18/59/icon-4399701__340.png'
+          "
         ></v-img>
       </v-list-item-avatar>
     </td>
     <td>{{ user.username }}</td>
     <td>{{ user.email }}</td>
     <td>{{ user.roles }}</td>
-    <td :class="user.roles !== 'ADMIN' ? 'text-center align-center' : 'text-center' ">
-      <v-btn class="mr-2" color="success" @click="toEditUser(user)">
-        <v-icon >mdi-pencil</v-icon>EDIT
+    <td
+      :class="
+        user.roles !== 'ADMIN' ? ' align-center' : ''
+      "
+    >
+      <v-btn class="mr-1" icon color="success" @click="toEditUser(user)">
+        <v-icon>mdi-pencil</v-icon>
       </v-btn>
       <v-btn
-        class="ml-2"
+        class="ml-1"
+        icon
         color="red white--text"
         v-if="user.roles !== 'ADMIN'"
         @click="toRemoveUser(user.id)"
       >
-        <v-icon>mdi-delete</v-icon>DELETE
+        <v-icon>mdi-delete</v-icon>
       </v-btn>
     </td>
   </tr>
@@ -39,9 +48,9 @@ export default {
     toRemoveUser(id) {
       this.$emit("requestToDeleteUser", id);
     },
-    toEditUser(user){
-      this.$emit("requestToEdit", user)
-    }
+    toEditUser(user) {
+      this.$emit("requestToEdit", user);
+    },
   },
 };
 </script>
