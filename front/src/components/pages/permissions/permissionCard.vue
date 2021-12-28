@@ -102,11 +102,6 @@
       </v-expand-transition>
     </v-card>
   </v-hover>
-
-  <!--~!~!~!~!~!~!~!~!~!~|BTN CREATE|~!~!~!~!~!~!~!~!~!~-->
-  <!-- <v-btn class="mb-10" bottom color="deep-orange" dark fab fixed right>
-    <v-icon>mdi-plus</v-icon>
-  </v-btn> -->
 </template>
 
 <!--~!~!~!~!~!~!~!~!~!~!~|SCRIPT|~!~!~!~!~!~!~!~!~!~!~-->

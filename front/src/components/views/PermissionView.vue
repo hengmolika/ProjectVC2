@@ -29,11 +29,7 @@
               <v-form ref="form" v-model="valid">
                 <v-col cols="12" class="d-flex">
                   <v-icon>mdi-account</v-icon>
-                  <select
-                    v-model="student_id"
-                    class="mb-3"
-                    :rules="studentnameRules"
-                  >
+                  <select v-model="student_id" class="mb-3">
                     <option
                       v-for="student of contain_students"
                       :key="student.id"
@@ -137,13 +133,25 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <permission-search @searchByStudentName="searchStudentPermission">
+      <permission-search
+        @searchByStudentName="searchStudentPermission"
+        @SelectByClass="SelectClass"
+      >
       </permission-search>
-      <permission-card
-        v-for="permission of permissions_data"
-        :key="permission.id"
-        :permission="permission"
-      ></permission-card>
+      <div v-if="!isSearch">
+        <permission-card
+          v-for="permission of permissions_data"
+          :key="permission.id"
+          :permission="permission"
+        ></permission-card>
+      </div>
+      <div v-else>
+        <permission-card
+          v-for="permission of contain_permission_search"
+          :key="permission.id"
+          :permission="permission"
+        ></permission-card>
+      </div>
     </v-container>
   </section>
 </template>
@@ -183,8 +191,9 @@ export default {
 
       contain_leaveType: [],
       contain_students: [],
+      contain_permission_search: [],
+      isSearch: false,
 
-      studentNameRules: [(v) => !!v || "student name is required"],
       startDateRules: [(v) => !!v || "Start date is required"],
       endDateRules: [(v) => !!v || "End date is required"],
       leave_typeRules: [(v) => !!v || "Leave type is required"],
@@ -284,20 +293,56 @@ export default {
         // console.log(this.permissions_data);
       });
     },
-    // SEARCH STUDENT PERMISION =================================
-    searchStudentPermission(first_name) {
-      if (first_name !== "") {
-        this.contain_students = this.contain_students.filter(
-          (contain_students) =>
-            contain_students.first_name
+
+    //==========================SEARCH PERMISSION BY USERNAME AND CLASS ============================================================
+    // Search By Username-----------------------------------------------------------------------------
+    searchStudentPermission(username_key, class_key) {
+      if (
+        (username_key !== "" && class_key !== "All Class") ||
+        (username_key === "" && class_key !== "All Class")
+      ) {
+        console.log("search", username_key, class_key);
+        this.contain_permission_search = this.permissions_data.filter(
+          (permission) =>
+            (permission.students.first_name
               .toLowerCase()
-              .includes(first_name.toLowerCase())
+              .includes(username_key.toLowerCase()) || permission.students.last_name
+              .toLowerCase()
+              .includes(username_key.toLowerCase())) &&
+              (permission.students.class.toLowerCase()
+                .includes(class_key.toLowerCase()))
         );
       } else {
-        this.getPermissions();
+        this.contain_permission_search = this.permissions_data.filter(
+          (permission) =>
+            permission.students.first_name
+              .toLowerCase()
+              .includes(username_key.toLowerCase()) ||
+            permission.students.last_name
+              .toLowerCase()
+              .includes(username_key.toLowerCase())
+        );
       }
-      this.isSearchStudentPermission = true;
+      this.isSearch = true;
     },
+    //Search By select Class---------------------------------------------------------------------------
+    SelectClass(class_key) {
+      if (class_key === "All Class") {
+        this.getPermissions();
+        this.isSearch = false;
+      } else {
+        console.log(class_key);
+        this.contain_permission_search = this.permissions_data.filter(
+          (permission) =>
+            permission.students.class
+              .toLowerCase()
+              .includes(class_key.toLowerCase())
+        );
+        this.isSearch = true;
+      }
+    },
+
+    
   },
   mounted() {
     this.getPermissions();
