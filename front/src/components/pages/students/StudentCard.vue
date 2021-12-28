@@ -10,12 +10,12 @@
     <td>{{ student.gender }}</td>
     <td>{{ student.class }}</td>
     <td>{{ student.phone }}</td>
-    <td >
-      <v-btn class="mr-2" color="success">
-        <v-icon>mdi-pencil</v-icon>EDIT
+    <td class="text-center">
+      <v-btn icon class="mr-1" color="success" @click.stop="editStudent(student)">
+        <v-icon>mdi-pencil</v-icon>
       </v-btn>
-      <v-btn class="ml-2" color="red white--text">
-          <v-icon>mdi-delete</v-icon>DELETE
+      <v-btn icon color="red white--text">
+          <v-icon>mdi-delete</v-icon>
       </v-btn>
    
     </td>
@@ -25,11 +25,16 @@
 <script>
 export default {
   props: ["student"],
+  emits: ["studentEdit", "studentDelete"],
   data() {
     return {
       url: "http://localhost:8000/storage/images/",
     };
   },
-  method: {},
+  methods: {
+    editStudent(studentData) {
+      this.$emit("studentEdit", studentData);
+    }
+  },
 };
 </script>
