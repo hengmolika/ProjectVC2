@@ -20,7 +20,7 @@
         </v-list-item-avatar>
         <v-list-item-content class="ml-10">
           <div class="mb-1 text-h6">
-            {{ permission.students.class_name}}
+            {{ permission.students.class}}
           </div>
           <!--STUDENT NAME-->
           <div class="d-flex">

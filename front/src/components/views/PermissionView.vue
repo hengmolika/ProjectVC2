@@ -137,7 +137,8 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <permission-search></permission-search>
+      <permission-search @searchByStudentName="searchStudentPermission">
+      </permission-search>
       <permission-card
         v-for="permission of permissions_data"
         :key="permission.id"
@@ -173,6 +174,7 @@ export default {
         .toISOString()
         .substr(0, 10),
 
+      isSearchStudentPermission: false,
       isDateSelected1: false,
       isDateSelected2: false,
       student_id: 0,
@@ -281,6 +283,20 @@ export default {
         this.permissions_data = response.data;
         // console.log(this.permissions_data);
       });
+    },
+    // SEARCH STUDENT PERMISION =================================
+    searchStudentPermission(first_name) {
+      if (first_name !== "") {
+        this.contain_students = this.contain_students.filter(
+          (contain_students) =>
+            contain_students.first_name
+              .toLowerCase()
+              .includes(first_name.toLowerCase())
+        );
+      } else {
+        this.getPermissions();
+      }
+      this.isSearchStudentPermission = true;
     },
   },
   mounted() {
