@@ -23,7 +23,7 @@
     <td>{{ user.username }}</td>
     <td>{{ user.email }}</td>
     <td>{{ user.roles }}</td>
-    <td :class="user.roles !== 'ADMIN' ? ' align-center' : ''">
+    <td :class="user.roles !== 'ADMIN' ? ' align-center' : ''" v-if="role === 'ADMIN' ">
       <v-btn class="mr-1" icon color="success" @click="toEditUser(user)">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
@@ -47,6 +47,7 @@ export default {
   data() {
     return {
       url: "http://localhost:8000/storage/images/",
+      role: ''
     };
   },
   methods: {
@@ -56,6 +57,10 @@ export default {
     toEditUser(user) {
       this.$emit("requestToEdit", user);
     },
+  },
+  mounted() {
+    this.role = localStorage.getItem("role");
+
   },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-btn
+    <v-btn v-if="userRole === 'ADMIN' "
       depressed
       @click.stop="showCreateForm"
       bottom
@@ -128,7 +128,7 @@
               <th>USERNAME</th>
               <th>EMAIL</th>
               <th>ROLE</th>
-              <th>ACTION</th>
+              <th v-if="userRole === 'ADMIN' ">ACTION</th>
             </tr>
           </thead>
           <tbody v-if="!isSearch">
@@ -171,8 +171,10 @@ export default {
     "user-search": UserFormSearch,
     "user-card": UserCard,
   },
+  props: ["userdata"],
   data() {
     return {
+      userRole: "",
       userId: null,
       valid: true,
       url: "http://localhost:8000/storage/images/",
@@ -180,6 +182,7 @@ export default {
       show1: false,
       dialogMode: "create",
       roles: ["SOCIAL AFFAIL OFFICER", "STUDENT"],
+      notStudentRole: ["STUDENT"],
       students: [],
       images: [
         "https://i.pinimg.com/236x/92/8f/c8/928fc874edae45b141ac45bdc157a70b.jpg",
@@ -427,6 +430,8 @@ export default {
   mounted() {
     this.getUsers();
     this.userId = localStorage.getItem("userId");
+    this.userRole = localStorage.getItem("role");
+
   },
 };
 </script>

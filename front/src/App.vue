@@ -8,7 +8,7 @@
     </nav-app>
 
     <v-main>
-      <router-view @requestLogin="Login" :message="messageError"> </router-view>
+      <router-view @requestLogin="Login" :message="messageError" :userdata="user"> </router-view>
     </v-main>
     <!-- <footer-app v-if="!$route.path.includes('login')"></footer-app> -->
   </v-app>
@@ -40,8 +40,10 @@ export default {
           this.user = response.data.user;
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("userId", response.data.user.id);
-          localStorage.setItem("user", response.data.user);
-          this.$router.push("/user");
+          localStorage.setItem("role", response.data.user.roles);
+         
+          this.$router.push("/")
+    
         })
         .catch((error) => {
           if (error.response.status === 401) {

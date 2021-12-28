@@ -136,7 +136,7 @@
           >
           DASHBOARD
         </v-btn>
-        <v-btn active-class="info" text :to="{ path: '/user' }">
+        <v-btn active-class="info" text :to="{ path: '/user' }" v-if="userdata.roles === 'ADMIN' ">
           <v-icon left active-class="info"
             >mdi-account-group-outline</v-icon
           >
