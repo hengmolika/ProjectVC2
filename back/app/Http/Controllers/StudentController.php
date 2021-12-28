@@ -29,7 +29,7 @@ class StudentController extends Controller
             'last_name' => 'max:10|required',
             'gender' => 'required',
             'profile' => 'nullable|image|mimes:jpg,jpeg,png|max:1999|',
-            'class_name' => 'required',
+            'class' => 'required',
             'phone' => 'required|min:9|numeric',
         ]);
         $student = new Student();
@@ -43,12 +43,12 @@ class StudentController extends Controller
         } else {
             $student->profile = "";
         };
-        $student->class_name = $request->class_name;
+        $student->class = $request->class;
         $student->phone = $request->phone;
        
         $student->save();
 
-        return response()->json(['message' => 'Student created!'], 201);
+        return response()->json(['message' => 'Student created!', 'data' => $student], 201);
     }
 
     /**
@@ -76,7 +76,7 @@ class StudentController extends Controller
             'last_name' => 'min:1|max:10',
             'gender' => 'required',
             'profile' => 'nullable|image|mimes:jpg,jpeg,png|max:1999|',
-            'class_name' => 'required',
+            'class' => 'required',
             'phone' => 'required|min:11|numeric',
         ]);
         $student = Student::findOrFail($id);
@@ -84,11 +84,11 @@ class StudentController extends Controller
         $student->last_name = $request->last_name;
         $student->gender = $request->gender;
         $student->profile = $request->profile;
-        $student->class_name = $request->class_name;
+        $student->class = $request->class;
         $student->phone = $request->phone;
         $student->save();
 
-        return response()->json(['message' => 'Student updated!'], 200);
+        return response()->json(['message' => 'Student updated!', 'data' => $student], 200);
     }
 
     /**
