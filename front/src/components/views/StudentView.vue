@@ -58,7 +58,6 @@
                 :rules="classRules"
                 :items="items"
                 item-text="class_group"
-                item-value="class_group"
                 required
               >
               </v-select>
@@ -72,6 +71,7 @@
               ></v-text-field>
 
               <v-file-input
+                v-if="dialogMode !== 'edit'"
                 v-model="profile"
                 :rules="profileRules"
                 label="Choose profile image "
@@ -86,7 +86,7 @@
         <div v-else>
           <v-card-text class="mt-5">
             <v-alert outlined type="error" prominent border="left">
-              Are you sure to delete this user?
+              Are you sure to delete this student?
             </v-alert>
           </v-card-text>
         </div>
@@ -104,7 +104,14 @@
     </v-dialog>
 
     <div class="container mt-12">
-      <v-alert dense text type="success" v-if="this.messageAlert !== ''" dismissible elevation="2">
+      <v-alert
+        dense
+        text
+        type="success"
+        v-if="this.messageAlert !== ''"
+        dismissible
+        elevation="2"
+      >
         {{ messageAlert }}
       </v-alert>
 
@@ -118,7 +125,7 @@
               <th>Gender</th>
               <th>Class_name</th>
               <th>Phone Number</th>
-              <th>Action</th>
+              <th class="text-center">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -126,12 +133,13 @@
               v-for="student in students"
               :key="student.id"
               :student="student"
+              @studentEdit="showEditForm"
+              @studentDelete="showDeleteDialog"
             >
             </student-card>
           </tbody>
         </template>
       </v-simple-table>
-
     </div>
   </div>
 </template>
@@ -212,8 +220,36 @@ export default {
       this.dialogMode = "create";
       this.dialog = true;
       this.messageAlert = "";
-    },
 
+      if (this.dialogMode === "create") {
+        this.$refs.form.reset();
+      }
+    },
+    // ---------------------------- SHOW EDIT FORM --------------------------- \\
+    showEditForm(studentData) {
+      this.dialogMode = "edit";
+      this.dialog = true;
+      this.messageAlert = "";
+
+      this.studentAction = studentData;
+
+      console.log(this.studentAction.id)
+
+      this.first_name = studentData.first_name;
+      this.last_name = studentData.last_name;
+      this.gender = studentData.gender;
+      this.class_name = studentData.class;
+      this.phonenumber = studentData.phone;
+      this.profile = studentData.profile;
+    },
+    // **********************|~SHOW REMOVE DIALOG~|********************** //
+    showDeleteDialog(id) {
+      this.studentAction = {
+        id: id,
+      };
+      this.dialogMode = "delete";
+      this.dialog = true;
+    },
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
       this.dialog = false;
@@ -226,6 +262,10 @@ export default {
     onConfirm() {
       if (this.dialogMode === "create") {
         this.creatStudent();
+      } else if (this.dialogMode === "edit") {
+        this.updateStudent();
+      }else {
+        this.deleteStudent();
       }
     },
 
@@ -240,23 +280,42 @@ export default {
         studentInfo.append("profile", this.profile);
         studentInfo.append("phone", this.phonenumber);
         console.log(studentInfo);
-        axios
-          .post("/students", studentInfo)
-          .then(() => {
-            this.closeDialog();
-            this.getStudent();
-            this.messageAlert = "Created success";
-          })
-          .catch((error) => {
-            console.log("message", error.response.data.errors);
-          });
-        console.log(this.class_name);
-        console.log(this.phonenumber);
-        console.log(this.last_name);
-        console.log(this.first_name);
-        console.log(this.gender);
-        console.log(this.profile);
+        axios.post("/students", studentInfo).then(() => {
+          this.closeDialog();
+          this.getStudent();
+          this.messageAlert = "Created success";
+          console.log(this.messageAlert);
+        });
+        
       }
+    },
+
+    // ---------------------------------- UPDAE STUDENT ------------------------ \\
+    updateStudent() {
+      let newData =  {
+        first_name: this.first_name,
+        last_name: this.last_name,
+        gender: this.gender,
+        class: this.class_name,
+        phone: this.phonenumber
+      }
+
+      axios.put('/students/' + this.studentAction.id, newData)
+      .then(response => {
+        console.log(response.data);
+        this.messageAlert = "Update success";
+        this.getStudent();
+        this.closeDialog();
+      })
+    },
+    // **********************|~REMOVE STUDENT~|********************** //
+    deleteStudent() {
+      let id = this.studentAction.id;
+      axios.delete("/students/" + id).then(() => {
+        this.students = this.students.filter((student) => student.id !== id);
+        this.messageAlert = "Delete success";
+        this.closeDialog();
+      });
     },
   },
   computed: {
@@ -264,6 +323,10 @@ export default {
       let message = "";
       if (this.dialogMode === "create") {
         message = "CREATE NEW STUDENT";
+      } else if (this.dialogMode === "edit") {
+        message = "UPDATE STUDENT";
+      } else if (this.dialogMode === "delete") {
+        message = "DELETE STUDENT";
       }
       return message;
     },
@@ -271,6 +334,10 @@ export default {
       let message = "";
       if (this.dialogMode === "create") {
         message = "CREATE";
+      } else if (this.dialogMode === "edit") {
+        message = "UPDATE";
+      } else if (this.dialogMode === "delete") {
+        message = "REMOVE";
       }
       return message;
     },
@@ -278,15 +345,19 @@ export default {
       let message = "";
       if (this.dialogMode === "create") {
         message = "primary";
+      } else if (this.dialogMode === "edit") {
+        message = "success";
+      } else if (this.dialogMode === "delete") {
+        message = "error";
       }
       return message;
     },
   },
   mounted() {
-    axios.get("/class").then((res) => {
-      this.student_class = JSON.stringify(res.data.class);
-      console.log(this.student_class);
-    });
+    // axios.get("/class").then((res) => {
+    //   this.student_class = JSON.stringify(res.data.class);
+    //   console.log(this.student_class);
+    // });
 
     this.getStudent();
   },

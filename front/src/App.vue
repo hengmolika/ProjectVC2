@@ -67,8 +67,8 @@ export default {
         this.user = response.data;
       });
 
-      // axios.defaults.headers.common["Authorization"] =
-      // "Bearer " + localStorage.getItem("token");
+      axios.defaults.headers.common["Authorization"] =
+      "Bearer " + localStorage.getItem("token");
     } 
   },
 };
