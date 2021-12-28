@@ -86,7 +86,7 @@
         <div v-else>
           <v-card-text class="mt-5">
             <v-alert outlined type="error" prominent border="left">
-              Are you sure to delete this user?
+              Are you sure to delete this student?
             </v-alert>
           </v-card-text>
         </div>
@@ -134,6 +134,7 @@
               :key="student.id"
               :student="student"
               @studentEdit="showEditForm"
+              @studentDelete="showDeleteDialog"
             >
             </student-card>
           </tbody>
@@ -208,7 +209,7 @@ export default {
         .get("/students")
         .then((res) => {
           this.students = res.data;
-          console.log(this.students);
+          // console.log(this.students);
         })
         .catch((error) => {
           console.log(error.res.data.errors);
@@ -241,7 +242,14 @@ export default {
       this.phonenumber = studentData.phone;
       this.profile = studentData.profile;
     },
-
+    // **********************|~SHOW REMOVE DIALOG~|********************** //
+    showDeleteDialog(id) {
+      this.studentAction = {
+        id: id,
+      };
+      this.dialogMode = "delete";
+      this.dialog = true;
+    },
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
       this.dialog = false;
@@ -256,6 +264,8 @@ export default {
         this.creatStudent();
       } else if (this.dialogMode === "edit") {
         this.updateStudent();
+      }else {
+        this.deleteStudent();
       }
     },
 
@@ -276,9 +286,7 @@ export default {
           this.messageAlert = "Created success";
           console.log(this.messageAlert);
         });
-        // .catch((error) => {
-        //   console.log("dsdsd", error.response.data.errors);
-        // });
+        
       }
     },
 
@@ -299,7 +307,16 @@ export default {
         this.getStudent();
         this.closeDialog();
       })
-    }
+    },
+    // **********************|~REMOVE STUDENT~|********************** //
+    deleteStudent() {
+      let id = this.studentAction.id;
+      axios.delete("/students/" + id).then(() => {
+        this.students = this.students.filter((student) => student.id !== id);
+        this.messageAlert = "Delete success";
+        this.closeDialog();
+      });
+    },
   },
   computed: {
     dialogTitle() {

@@ -68,6 +68,9 @@ export default {
       axios.get("/users/" + localStorage.userId).then((response) => {
         this.user = response.data;
       });
+
+      axios.defaults.headers.common["Authorization"] =
+      "Bearer " + localStorage.getItem("token");
     } 
   },
 };

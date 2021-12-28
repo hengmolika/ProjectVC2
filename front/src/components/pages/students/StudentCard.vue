@@ -14,7 +14,7 @@
       <v-btn icon class="mr-1" color="success" @click.stop="editStudent(student)">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
-      <v-btn icon color="red white--text">
+      <v-btn icon color="red white--text" @click.stop="deleteStudent(student.id)">
           <v-icon>mdi-delete</v-icon>
       </v-btn>
    
@@ -34,6 +34,9 @@ export default {
   methods: {
     editStudent(studentData) {
       this.$emit("studentEdit", studentData);
+    },
+    deleteStudent(id) {
+      this.$emit("studentDelete", id);
     }
   },
 };
