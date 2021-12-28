@@ -201,7 +201,7 @@ export default {
         .get("/students")
         .then((res) => {
           this.students = res.data;
-          console.log(this.students);
+          // console.log(this.students);
         })
         .catch((error) => {
           console.log(error.res.data.errors);
@@ -248,7 +248,7 @@ export default {
             this.messageAlert = "Created success";
           })
           .catch((error) => {
-            console.log("dsdsd", error.response.data.errors);
+            console.log("message", error.response.data.errors);
           });
         console.log(this.class_name);
         console.log(this.phonenumber);
