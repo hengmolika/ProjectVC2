@@ -143,6 +143,7 @@
           v-for="permission of permissions_data"
           :key="permission.id"
           :permission="permission"
+          @permissiontEdit="showEditForm"
         ></permission-card>
       </div>
       <div v-else>
@@ -150,6 +151,7 @@
           v-for="permission of contain_permission_search"
           :key="permission.id"
           :permission="permission"
+          @permissiontEdit="showEditForm"
         ></permission-card>
       </div>
     </v-container>
@@ -174,6 +176,7 @@ export default {
       dialogMode: "create",
       permissionAction: {},
       dialogDisplay: false,
+      messageAlert:"",
 
       startDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
@@ -239,7 +242,7 @@ export default {
       return message;
     },
   },
-
+   
   methods: {
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
@@ -253,17 +256,34 @@ export default {
     showCreateForm() {
       this.dialogMode = "create";
       this.dialog = true;
-
-      this.student_id = 0;
       this.startDate = null;
       this.endDate = null;
-      this.leave_type = null;
-      this.description = null;
+   
     },
+     // ---------------------------- SHOW EDIT FORM --------------------------- \\
+    showEditForm(permissionData) {
+      this.dialogMode = "edit";
+      this.dialog = true;
+      this.messageAlstartDateert = "";
+
+      this.permissionAction = permissionData;
+
+      console.log("hello",permissionData);
+
+      this.startDate = permissionData.start_date;
+      this.endDate = permissionData.end_date;
+      this.description = permissionData.description;
+      this.reason = permissionData.leave_type;
+      this.student_id = permissionData.student_id;
+    },
+
     onConfirm() {
       if (this.dialogMode === "create") {
         this.addPermission();
         this.closeDialog();
+      }else if(this.dialogMode === "edit"){
+        this.closeDialog();
+        this.updatePermission(this.permissionAction.id);
       }
     },
 
@@ -285,6 +305,28 @@ export default {
         .catch((error) => {
           console.log(error.response.data.errors);
         });
+    },
+
+    // ---------------------------------- UPDADE PERMISSION ------------------------ \\
+    updatePermission(edit_id) {
+      
+      let permission_info = {
+        start_date: this.startDate,
+        end_date: this.endDate,
+        reason: this.leave_type,
+        description: this.description,
+        student_id: this.student_id,
+      };
+
+      console.log('fsyrd',this.endDate);
+      axios.put('/permissions/' + edit_id, permission_info)
+      .then(response => {
+        console.log(response.data);
+        this.messageAlert = "Update success";
+        this.getPermissions();
+      }).catch(error=>{
+        console.log(error.response.data.errors);
+      })
     },
 
     getPermissions() {
@@ -342,7 +384,7 @@ export default {
       }
     },
 
-    
+
   },
   mounted() {
     this.getPermissions();
