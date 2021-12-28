@@ -206,6 +206,8 @@ export default {
       dialogDisplay: false,
       isSearch: false,
       contain_users_search: [],
+      // MESSAGE ERROR DATA
+      
     };
   },
   computed: {
