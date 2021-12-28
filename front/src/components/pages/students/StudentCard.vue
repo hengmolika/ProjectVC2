@@ -1,5 +1,5 @@
 <template>
-  <tr>
+  <tr :class="student.gender === 'Male' ? 'maleStudent' : 'femaleStudent' ">
     <td>
       <v-list-item-avatar>
         <v-img :src="url + student.profile"> </v-img>
@@ -10,7 +10,7 @@
     <td>{{ student.gender }}</td>
     <td>{{ student.class }}</td>
     <td>{{ student.phone }}</td>
-    <td class="text-center">
+    <td class="text-center" v-if="role !== 'STUDENT' ">
       <v-btn icon class="mr-1" color="success" @click.stop="editStudent(student)">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
@@ -29,6 +29,7 @@ export default {
   data() {
     return {
       url: "http://localhost:8000/storage/images/",
+      role: ""
     };
   },
   methods: {
@@ -39,5 +40,17 @@ export default {
       this.$emit("studentDelete", id);
     }
   },
+  mounted() {
+    this.role = localStorage.getItem("role")
+  },
 };
 </script>
+
+<style scoped>
+.maleStudent {
+  background: #007bdf5d;
+}
+.femaleStudent {
+  background: #00d1b55b;
+}
+</style>

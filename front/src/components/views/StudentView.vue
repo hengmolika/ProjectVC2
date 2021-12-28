@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-btn
+      v-if="role !== 'STUDENT' "
       @click.stop="showCreateForm"
       depressed
       bottom
@@ -118,14 +119,14 @@
       <v-simple-table>
         <template v-slot:default>
           <thead>
-            <tr>
+            <tr class="tableHead">
               <th>Profile</th>
               <th>FirstName</th>
               <th>LastName</th>
               <th>Gender</th>
               <th>Class_name</th>
               <th>Phone Number</th>
-              <th class="text-center">Action</th>
+              <th class="text-center" v-if="role !== 'STUDENT'">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -152,6 +153,7 @@ export default {
   },
   data() {
     return {
+      role: "",
       students: [],
       url: "http://localhost:8000/storage/images/",
       dialog: false,
@@ -233,7 +235,7 @@ export default {
 
       this.studentAction = studentData;
 
-      console.log(this.studentAction.id)
+      console.log(this.studentAction.id);
 
       this.first_name = studentData.first_name;
       this.last_name = studentData.last_name;
@@ -264,7 +266,7 @@ export default {
         this.creatStudent();
       } else if (this.dialogMode === "edit") {
         this.updateStudent();
-      }else {
+      } else {
         this.deleteStudent();
       }
     },
@@ -286,27 +288,27 @@ export default {
           this.messageAlert = "Created success";
           console.log(this.messageAlert);
         });
-        
       }
     },
 
     // ---------------------------------- UPDAE STUDENT ------------------------ \\
     updateStudent() {
-      let newData =  {
+      let newData = {
         first_name: this.first_name,
         last_name: this.last_name,
         gender: this.gender,
         class: this.class_name,
-        phone: this.phonenumber
-      }
+        phone: this.phonenumber,
+      };
 
-      axios.put('/students/' + this.studentAction.id, newData)
-      .then(response => {
-        console.log(response.data);
-        this.messageAlert = "Update success";
-        this.getStudent();
-        this.closeDialog();
-      })
+      axios
+        .put("/students/" + this.studentAction.id, newData)
+        .then((response) => {
+          console.log(response.data);
+          this.messageAlert = "Update success";
+          this.getStudent();
+          this.closeDialog();
+        });
     },
     // **********************|~REMOVE STUDENT~|********************** //
     deleteStudent() {
@@ -358,8 +360,14 @@ export default {
     //   this.student_class = JSON.stringify(res.data.class);
     //   console.log(this.student_class);
     // });
-
+    this.role = localStorage.getItem("role");
     this.getStudent();
   },
 };
 </script>
+
+<style scoped>
+.tableHead {
+  background: #00b7ff;
+}
+</style>
