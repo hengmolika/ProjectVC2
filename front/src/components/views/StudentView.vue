@@ -26,34 +26,38 @@
         <div v-if="dialogMode !== 'delete'">
           <v-card-text class="mt-5">
             <v-form ref="form" v-model="valid" lazy-validation>
-              <v-text-field
-                v-model="first_name"
-                :rules="firstnameRules"
-                label="FirstName"
-                prepend-icon="mdi-account"
-                required
-              ></v-text-field>
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="first_name"
+                    :rules="firstnameRules"
+                    label="First Name"
+                    prepend-icon="mdi-account"
+                  ></v-text-field>
+                </v-col>
 
-              <v-text-field
-                v-model="last_name"
-                :rules="lastnameRules"
-                label="LastName"
-                prepend-icon="mdi-account"
-                required
-              ></v-text-field>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="last_name"
+                    :rules="lastnameRules"
+                    label="Last Name"
+                    prepend-icon="mdi-account"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
 
               <v-radio-group :rules="genderRules" v-model="gender" row>
                 <v-radio label="Male" value="Male"></v-radio>
-
                 <v-radio label="Female" value="Female"></v-radio>
               </v-radio-group>
 
               <v-select
                 v-model="class_name"
-                :rules="classRules"
                 prepend-icon="mdi-school"
                 label="Class"
-                :items="student_class"
+                :rules="classRules"
+                :items="items"
+                item-text="class_group"
                 required
               >
               </v-select>
@@ -67,24 +71,13 @@
               ></v-text-field>
 
               <v-file-input
+                v-if="dialogMode !== 'edit'"
                 v-model="profile"
                 :rules="profileRules"
-                label="Choose image profile"
+                label="Choose profile image "
                 prepend-icon="mdi-camera"
               >
               </v-file-input>
-
-              <v-text-field
-                v-model="userId"
-                type="number"   
-                step="any"
-                min="0"
-                ref="input"
-                :rules="[numberRule]"
-                label="UserId"
-                prepend-icon="mdi-account"
-              ></v-text-field>
-
             </v-form>
           </v-card-text>
         </div>
@@ -110,28 +103,43 @@
       </v-card>
     </v-dialog>
 
-    <v-simple-table>
-      <template v-slot:default>
-        <thead>
-          <tr>
-            <th class="text-left">Profile</th>
-            <th class="text-left">FirstName</th>
-            <th class="text-left">LastName</th>
-            <th class="text-left">Gender</th>
-            <th class="text-left">Class_name</th>
-            <th class="text-left">Phone Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          <student-card
-            v-for="student in students"
-            :key="student.id"
-            :student="student"
-          >
-          </student-card>
-        </tbody>
-      </template>
-    </v-simple-table>
+    <div class="container mt-12">
+      <v-alert
+        dense
+        text
+        type="success"
+        v-if="this.messageAlert !== ''"
+        dismissible
+        elevation="2"
+      >
+        {{ messageAlert }}
+      </v-alert>
+
+      <v-simple-table>
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th>Profile</th>
+              <th>FirstName</th>
+              <th>LastName</th>
+              <th>Gender</th>
+              <th>Class_name</th>
+              <th>Phone Number</th>
+              <th class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <student-card
+              v-for="student in students"
+              :key="student.id"
+              :student="student"
+              @studentEdit="showEditForm"
+            >
+            </student-card>
+          </tbody>
+        </template>
+      </v-simple-table>
+    </div>
   </div>
 </template>
 <script>
@@ -144,6 +152,7 @@ export default {
   data() {
     return {
       students: [],
+      url: "http://localhost:8000/storage/images/",
       dialog: false,
       dialogMode: "create",
       valid: true,
@@ -151,7 +160,28 @@ export default {
       studentAction: {},
       dialogDisplay: false,
       student_class: [],
-      class: {},
+      messageAlert: "",
+      class: [],
+      items: [
+        { class_group: "SNA 2021" },
+        { class_group: "WEB 2021 A" },
+        { class_group: "WEB 2021 B" },
+        { class_group: "SNA 2022" },
+        { class_group: "WEB 2022 A" },
+        { class_group: "WEB 2022 B" },
+        { class_group: "SNA 2023" },
+        { class_group: "WEB 2023 A" },
+        { class_group: "WEB 2023 B" },
+        { class_group: "SNA 2024" },
+        { class_group: "WEB 2024 A" },
+        { class_group: "WEB 2024 B" },
+        { class_group: "SNA 2025" },
+        { class_group: "WEB 2025 A" },
+        { class_group: "WEB 2025 B" },
+        { class_group: "SNA 2026" },
+        { class_group: "WEB 2026 A" },
+        { class_group: "WEB 2026 B" },
+      ],
 
       // Data from input
       first_name: null,
@@ -159,8 +189,8 @@ export default {
       gender: null,
       class_name: null,
       phonenumber: null,
-      userId: null,
       profile: "",
+
       // Rule of input data
       firstnameRules: [(v) => !!v || "Firstname is required"],
       lastnameRules: [(v) => !!v || "Lastname is required"],
@@ -168,7 +198,6 @@ export default {
       classRules: [(v) => !!v || "Class is required"],
       phonenumberRules: [(v) => !!v || "PhoneNumber is required"],
       profileRules: [(v) => !!v || "Profile is required"],
-      numberRule: [(v) => !!v || "UserId is required"],
 
       // data get from backend
     };
@@ -189,6 +218,28 @@ export default {
     showCreateForm() {
       this.dialogMode = "create";
       this.dialog = true;
+      this.messageAlert = "";
+
+      if (this.dialogMode === "create") {
+        this.$refs.form.reset();
+      }
+    },
+    // ---------------------------- SHOW EDIT FORM --------------------------- \\
+    showEditForm(studentData) {
+      this.dialogMode = "edit";
+      this.dialog = true;
+      this.messageAlert = "";
+
+      this.studentAction = studentData;
+
+      console.log(this.studentAction.id)
+
+      this.first_name = studentData.first_name;
+      this.last_name = studentData.last_name;
+      this.gender = studentData.gender;
+      this.class_name = studentData.class;
+      this.phonenumber = studentData.phone;
+      this.profile = studentData.profile;
     },
 
     // **********************|~CLOSE FORM DIALOG~|********************** //
@@ -203,6 +254,8 @@ export default {
     onConfirm() {
       if (this.dialogMode === "create") {
         this.creatStudent();
+      } else if (this.dialogMode === "edit") {
+        this.updateStudent();
       }
     },
 
@@ -213,28 +266,50 @@ export default {
         studentInfo.append("first_name", this.first_name);
         studentInfo.append("last_name", this.last_name);
         studentInfo.append("gender", this.gender);
-        studentInfo.append("class_name", this.class_name);
+        studentInfo.append("class", this.class_name);
+        studentInfo.append("profile", this.profile);
         studentInfo.append("phone", this.phonenumber);
         console.log(studentInfo);
-        axios
-          .post("/students", studentInfo)
-          .then((response) => {
-            this.closeDialog();
-            this.getStudent();
-            console.log("Hello",response.data);
-          })
-          .catch((error) => {
-            console.log("dsdsd",error.response.data.errors);
-          });
+        axios.post("/students", studentInfo).then(() => {
+          this.closeDialog();
+          this.getStudent();
+          this.messageAlert = "Created success";
+          console.log(this.messageAlert);
+        });
+        // .catch((error) => {
+        //   console.log("dsdsd", error.response.data.errors);
+        // });
       }
     },
 
+    // ---------------------------------- UPDAE STUDENT ------------------------ \\
+    updateStudent() {
+      let newData =  {
+        first_name: this.first_name,
+        last_name: this.last_name,
+        gender: this.gender,
+        class: this.class_name,
+        phone: this.phonenumber
+      }
+
+      axios.put('/students/' + this.studentAction.id, newData)
+      .then(response => {
+        console.log(response.data);
+        this.messageAlert = "Update success";
+        this.getStudent();
+        this.closeDialog();
+      })
+    }
   },
   computed: {
     dialogTitle() {
       let message = "";
       if (this.dialogMode === "create") {
         message = "CREATE NEW STUDENT";
+      } else if (this.dialogMode === "edit") {
+        message = "UPDATE STUDENT";
+      } else if (this.dialogMode === "delete") {
+        message = "DELETE STUDENT";
       }
       return message;
     },
@@ -242,6 +317,10 @@ export default {
       let message = "";
       if (this.dialogMode === "create") {
         message = "CREATE";
+      } else if (this.dialogMode === "edit") {
+        message = "UPDATE";
+      } else if (this.dialogMode === "delete") {
+        message = "REMOVE";
       }
       return message;
     },
@@ -249,21 +328,21 @@ export default {
       let message = "";
       if (this.dialogMode === "create") {
         message = "primary";
+      } else if (this.dialogMode === "edit") {
+        message = "success";
+      } else if (this.dialogMode === "delete") {
+        message = "error";
       }
       return message;
     },
-
   },
   mounted() {
-    this.getStudent();
+    // axios.get("/class").then((res) => {
+    //   this.student_class = JSON.stringify(res.data.class);
+    //   console.log(this.student_class);
+    // });
 
-    axios.get('/class')
-    .then(res => {
-      this.class = res.data
-      for(let clas in res.data) {
-        this.student_class.push(clas);
-      }
-    })
-  }
+    this.getStudent();
+  },
 };
 </script>

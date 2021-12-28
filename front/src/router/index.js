@@ -81,6 +81,7 @@ let authenticationGuard = (to, from, next) => {
         next();
       }
     }
+    
   } else {
     if (localStorage.userId) {
       if (to.path === "/login") {

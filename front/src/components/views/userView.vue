@@ -158,13 +158,8 @@
 </template>
 
 <script>
-// IMPORT AXIOS ----------------------------------------
 import axios from "../../api/api.js";
-
-// IMPORT USER FORM SEARCH ----------------------------------------
 import UserFormSearch from "../pages/users/userFormSearch.vue";
-
-// IMPORT USER CARD ----------------------------------------
 import UserCard from "../pages/users/userCard.vue";
 export default {
   components: {
@@ -262,6 +257,14 @@ export default {
     },
   },
   methods: {
+     // **********************|~GET USER FROM BACKEND~|********************** //
+     getUsers(){
+       axios.get("/users")
+       .then((res)=>{
+         this.users = res.data;
+       });
+     },
+
     // **********************|~SHOW CREATE FORM DIALOG~|********************** //
     showCreateForm() {
       this.dialogMode = "create";
@@ -386,13 +389,6 @@ export default {
       }
     },
 
-    // **********************|~GET USERS~|********************** //
-    getUsers() {
-      axios.get("/users").then((res) => {
-        this.users = res.data;
-      });
-    },
-
     //==========================SEARCH USER BY USERNAME============================================================
     // Search By Username-----------------------------------------------------------------------------
     searchUsername(username_key, role_key) {
@@ -434,6 +430,7 @@ export default {
 
   },
 };
+
 </script>
 
 <style scoped>
