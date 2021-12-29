@@ -75,7 +75,9 @@
           </v-icon>
         </v-btn>
 
-        <v-btn icon :class="{ 'show-btn-remove': hover }" :color="transparent">
+        <v-btn icon :class="{ 'show-btn-remove': hover }" 
+          :color="transparent"
+          @click="deletePermission(permission.id)">
           <v-icon :class="{ 'show-btn-remove': hover }" :color="transparent">
             mdi-delete
           </v-icon>
@@ -109,7 +111,7 @@
 <script>
 export default {
   props: ["permission","student"],
-  emits: ["permissiontEdit"],
+  emits: ["permissiontEdit", "permissionToDelete"],
 
   data() {
     return {
@@ -122,6 +124,9 @@ export default {
     editPermission(permission) {
       this.$emit("permissiontEdit", permission);
       console.log("permission edit",permission)
+    },
+    deletePermission(id) {
+      this.$emit("permissionToDelete", id);
     },
   },
 };

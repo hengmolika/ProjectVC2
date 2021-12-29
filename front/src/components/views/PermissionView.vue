@@ -142,6 +142,7 @@
         :key="permission.id"
         :permission="permission"
         @permissiontEdit="showEditForm"
+        @permissionToDelete="showDialogDelete"
       ></permission-card>
     </v-container>
   </section>
@@ -230,6 +231,12 @@ export default {
   },
    
   methods: {
+    getPermissions() {
+      axios.get("/permissions").then((response) => {
+        this.permissions_data = response.data;
+        // console.log(this.permissions_data);
+      });
+    },
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
       this.dialog = false;
@@ -251,7 +258,7 @@ export default {
     showEditForm(permissionData) {
       this.dialogMode = "edit";
       this.dialog = true;
-      this.messageAlstartDateert = "";
+      this.messageAlert = "";
 
       this.permissionAction = permissionData;
 
@@ -260,9 +267,19 @@ export default {
       this.startDate = permissionData.start_date;
       this.endDate = permissionData.end_date;
       this.description = permissionData.description;
-      this.reason = permissionData.leave_type;
+      this.leave_type = permissionData.reason;
       this.student_id = permissionData.student_id;
     },
+    //----------------------- SHOW DIALOG DELETE -----------------------------------
+    showDialogDelete(id) {
+      this.dialogMode = "delete";
+      this.dialog = true;
+      this.permissionAction = {
+        delete_id: id,
+      }
+      
+    },
+    
 
     onConfirm() {
       if (this.dialogMode === "create") {
@@ -271,16 +288,19 @@ export default {
       }else if(this.dialogMode === "edit"){
         this.closeDialog();
         this.updatePermission(this.permissionAction.id);
+      }else if(this.dialogMode === "delete") {
+        this.deletePermission(this.permissionAction.delete_id);
+        this.closeDialog();
       }
     },
 
     addPermission() {
       let permission_info = {
-        student_id: this.student_id,
         start_date: this.startDate,
         end_date: this.endDate,
         reason: this.leave_type,
         description: this.description,
+        student_id: this.student_id,
       };
       console.log(permission_info);
       axios
@@ -304,8 +324,9 @@ export default {
         description: this.description,
         student_id: this.student_id,
       };
+      
+      console.log("infomation of permission",this.leave_type, this.description, this.student_id, this.endDae, this.start_date)
 
-      console.log('fsyrd',this.endDate);
       axios.put('/permissions/' + edit_id, permission_info)
       .then(response => {
         console.log(response.data);
@@ -313,13 +334,15 @@ export default {
         this.getPermissions();
       }).catch(error=>{
         console.log(error.response.data.errors);
-      })
+      });
     },
 
-    getPermissions() {
-      axios.get("/permissions").then((response) => {
-        this.permissions_data = response.data;
-        // console.log(this.permissions_data);
+    //------------------------------ DELETE PERMISSION------------------------
+    deletePermission(id) {
+      axios.delete("/permissions/" + id).then(() => {
+        this.permissions_data = this.permissions_data.filter((permission) => permission.id !== id);
+        this.messageAlert = "Delete success !";
+        console.log('delete successful');
       });
     },
   },
