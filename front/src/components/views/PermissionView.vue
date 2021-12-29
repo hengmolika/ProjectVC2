@@ -29,10 +29,7 @@
               <v-form ref="form" v-model="valid">
                 <v-col cols="12" class="d-flex">
                   <v-icon>mdi-account</v-icon>
-                  <select
-                    v-model="student_id"
-                    class="mb-3"
-                  >
+                  <select v-model="student_id" class="mb-3" >
                     <option
                       v-for="student of contain_students"
                       :key="student.id"
@@ -56,7 +53,7 @@
                         <v-text-field
                           v-model="startDate"
                           :rules="startDateRules"
-                          label="Picker without buttons"
+                          label="Leave on *"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
@@ -82,7 +79,7 @@
                         <v-text-field
                           v-model="endDate"
                           :rules="endDateRules"
-                          label="Picker without buttons"
+                          label="Back on *"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
@@ -136,14 +133,29 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <permission-search></permission-search>
-      <permission-card
-        v-for="permission of permissions_data"
-        :key="permission.id"
-        :permission="permission"
-        @permissiontEdit="showEditForm"
-        @permissionToDelete="showDialogDelete"
-      ></permission-card>
+      <permission-search
+        @searchByStudentName="searchStudentPermission"
+        @SelectByClass="SelectClass"
+      >
+      </permission-search>
+      <div v-if="!isSearch">
+        <permission-card
+          v-for="permission of permissions_data"
+          :key="permission.id"
+          :permission="permission"
+          @permissiontEdit="showEditForm"
+           @permissionToDelete="showDialogDelete"
+        ></permission-card>
+      </div>
+      <div v-else>
+        <permission-card
+          v-for="permission of contain_permission_search"
+          :key="permission.id"
+          :permission="permission"
+          @permissiontEdit="showEditForm"
+           @permissionToDelete="showDialogDelete"
+        ></permission-card>
+      </div>
     </v-container>
   </section>
 </template>
@@ -166,7 +178,7 @@ export default {
       dialogMode: "create",
       permissionAction: {},
       dialogDisplay: false,
-      messageAlert:"",
+      messageAlert: "",
 
       startDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
@@ -175,6 +187,7 @@ export default {
         .toISOString()
         .substr(0, 10),
 
+      isSearchStudentPermission: false,
       isDateSelected1: false,
       isDateSelected2: false,
       student_id: 0,
@@ -183,6 +196,8 @@ export default {
 
       contain_leaveType: [],
       contain_students: [],
+      contain_permission_search: [],
+      isSearch: false,
 
       startDateRules: [(v) => !!v || "Start date is required"],
       endDateRules: [(v) => !!v || "End date is required"],
@@ -229,7 +244,7 @@ export default {
       return message;
     },
   },
-   
+
   methods: {
     getPermissions() {
       axios.get("/permissions").then((response) => {
@@ -249,12 +264,10 @@ export default {
     showCreateForm() {
       this.dialogMode = "create";
       this.dialog = true;
-      
       this.startDate = null;
       this.endDate = null;
-   
     },
-     // ---------------------------- SHOW EDIT FORM --------------------------- \\
+    // ---------------------------- SHOW EDIT FORM --------------------------- \\
     showEditForm(permissionData) {
       this.dialogMode = "edit";
       this.dialog = true;
@@ -262,7 +275,7 @@ export default {
 
       this.permissionAction = permissionData;
 
-      console.log("hello",permissionData);
+      console.log("hello", permissionData);
 
       this.startDate = permissionData.start_date;
       this.endDate = permissionData.end_date;
@@ -285,7 +298,7 @@ export default {
       if (this.dialogMode === "create") {
         this.addPermission();
         this.closeDialog();
-      }else if(this.dialogMode === "edit"){
+      } else if (this.dialogMode === "edit") {
         this.closeDialog();
         this.updatePermission(this.permissionAction.id);
       }else if(this.dialogMode === "delete") {
@@ -316,7 +329,6 @@ export default {
 
     // ---------------------------------- UPDADE PERMISSION ------------------------ \\
     updatePermission(edit_id) {
-      
       let permission_info = {
         start_date: this.startDate,
         end_date: this.endDate,
@@ -327,14 +339,17 @@ export default {
       
       console.log("infomation of permission",this.leave_type, this.description, this.student_id, this.endDae, this.start_date)
 
-      axios.put('/permissions/' + edit_id, permission_info)
-      .then(response => {
-        console.log(response.data);
-        this.messageAlert = "Update success";
-        this.getPermissions();
-      }).catch(error=>{
-        console.log(error.response.data.errors);
-      });
+      console.log("fsyrd", this.endDate);
+      axios
+        .put("/permissions/" + edit_id, permission_info)
+        .then((response) => {
+          console.log(response.data);
+          this.messageAlert = "Update success";
+          this.getPermissions();
+        })
+        .catch((error) => {
+          console.log(error.response.data.errors);
+        });
     },
 
     //------------------------------ DELETE PERMISSION------------------------
@@ -344,6 +359,56 @@ export default {
         this.messageAlert = "Delete success !";
         console.log('delete successful');
       });
+    },
+
+    //==========================SEARCH PERMISSION BY USERNAME AND CLASS ============================================================
+    // Search By Username-----------------------------------------------------------------------------
+    searchStudentPermission(username_key, class_key) {
+      if (
+        (username_key !== "" && class_key !== "All Class") ||
+        (username_key === "" && class_key !== "All Class")
+      ) {
+        console.log("search", username_key, class_key);
+        this.contain_permission_search = this.permissions_data.filter(
+          (permission) =>
+            (permission.students.first_name
+              .toLowerCase()
+              .includes(username_key.toLowerCase()) ||
+              permission.students.last_name
+                .toLowerCase()
+                .includes(username_key.toLowerCase())) &&
+            permission.students.class
+              .toLowerCase()
+              .includes(class_key.toLowerCase())
+        );
+      } else {
+        this.contain_permission_search = this.permissions_data.filter(
+          (permission) =>
+            permission.students.first_name
+              .toLowerCase()
+              .includes(username_key.toLowerCase()) ||
+            permission.students.last_name
+              .toLowerCase()
+              .includes(username_key.toLowerCase())
+        );
+      }
+      this.isSearch = true;
+    },
+    //Search By select Class---------------------------------------------------------------------------
+    SelectClass(class_key) {
+      if (class_key === "All Class") {
+        this.getPermissions();
+        this.isSearch = false;
+      } else {
+        console.log(class_key);
+        this.contain_permission_search = this.permissions_data.filter(
+          (permission) =>
+            permission.students.class
+              .toLowerCase()
+              .includes(class_key.toLowerCase())
+        );
+        this.isSearch = true;
+      }
     },
   },
   mounted() {

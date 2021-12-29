@@ -1,7 +1,6 @@
 <template>
   <!--~!~!~!~!~!~!~!~!~!~!~|CARD|~!~!~!~!~!~!~!~!~!~!~-->
-
-  <v-hover v-slot="{ hover }" class="mt-10">
+  <v-hover v-slot="{ hover }" class="mt-5">
     <v-card
       id="card"
       class="mx-auto"
@@ -14,8 +13,8 @@
         <v-list-item-avatar height="80" width="80" class="mb-14">
           <v-img size="100" :src="url + permission.students.profile"> </v-img>
         </v-list-item-avatar>
-        <v-list-item-content class="ml-10">
-          <div class="mb-1 text-h6">
+        <v-list-item-content class="ml-5">
+          <div class="text-h7 text-overline">
             {{ permission.students.class }}
           </div>
           <!--STUDENT NAME-->
@@ -24,38 +23,38 @@
               {{ permission.students.first_name }}
               {{ permission.students.last_name }}
             </v-list-item-title>
-            <v-list-item-title class="text-h5 orange--text flex-end">
-              3 Days
-            </v-list-item-title>
           </div>
 
           <!--REQUEST-->
-          <v-list-item-content class="text-h6 mb-1">
+          <v-list-item-content class="text-h7 mb-0 text-overline">
             Leave Type: {{ permission.reason }}
           </v-list-item-content>
 
           <!--DATE TIME -->
-          <v-divider class="mt-2"></v-divider>
-          <v-list-item-subtitle class="mt-2 d-flex">
-            <!-- <strong> Leave At: </strong> 12/Oct/2021 | 9:30AM | -->
-            <div class="text-h6">
-              Start:
+          <v-divider class="mt-0"></v-divider>
+          <v-list-item-subtitle class="mt-0 d-flex">
+            <div class="text-h6 text-overline">
+              <strong> Leave on:</strong>
               <v-icon class="blue--text">mdi-calendar-text</v-icon>
               <strong> {{ permission.start_date }} </strong>
             </div>
-            <div class="text-h6 ml-10">
-              Come back:
+            <div class="text-h6 ml-10 text-overline">
+              <strong>Come back on:</strong>
               <v-icon class="red--text">mdi-calendar-text</v-icon>
               <strong> {{ permission.end_date }}</strong>
+            </div>
+            <div class="text-h6 ml-10 text-overline">
+              <v-icon class="orange--text">mdi-calendar-text</v-icon>
+              <strong>On:</strong> 3 | DAYS
             </div>
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
       <!--BTN HOVER-->
-      <v-card-actions class="text-right">
+      <v-card-actions>
         <v-btn
-          icon
+          text
           :class="{ 'show-btn-detail': hover }"
           :color="transparent"
           @click="reveal = true"
@@ -63,9 +62,10 @@
           <v-icon :class="{ 'show-btn-detail': hover }" :color="transparent">
             mdi-eye
           </v-icon>
+          | view
         </v-btn>
         <v-btn
-          icon
+          text
           :class="{ 'show-btn-edit': hover }"
           :color="transparent"
           @click.prevent="editPermission(permission)"
@@ -73,14 +73,15 @@
           <v-icon :class="{ 'show-btn-edit': hover }" :color="transparent">
             mdi-pencil
           </v-icon>
+          | edit
         </v-btn>
 
-        <v-btn icon :class="{ 'show-btn-remove': hover }" 
-          :color="transparent"
-          @click="deletePermission(permission.id)">
+        <v-btn text :class="{ 'show-btn-remove': hover }" :color="transparent"
+          @click="deletePermission(permission.id)" >
           <v-icon :class="{ 'show-btn-remove': hover }" :color="transparent">
             mdi-delete
           </v-icon>
+          | remove 
         </v-btn>
       </v-card-actions>
       <!--BTN HOVER-->
@@ -91,7 +92,7 @@
           height="100%"
         >
           <v-card-text class="pb-0">
-            <p class="text-h4 text--primary">Discription</p>
+            <p class="text-h4 text--primary">DISCRIPTION</p>
             <p>
               {{ permission.description }}
             </p>
@@ -123,7 +124,7 @@ export default {
   methods: {
     editPermission(permission) {
       this.$emit("permissiontEdit", permission);
-      console.log("permission edit",permission)
+      console.log("permission edit", permission);
     },
     deletePermission(id) {
       this.$emit("permissionToDelete", id);
@@ -153,17 +154,20 @@ h3 {
 }
 
 .show-btn-detail {
-  color: white !important;
-  background: #4281f5;
+  color: blueviolet !important;
+  font-weight: 400;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .show-btn-remove {
-  color: red !important;
-  background: #4281f5;
+  color: orangered !important;
+  font-weight: 400;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .show-btn-edit {
   color: #20de20 !important;
-  background: #4281f5;
+  font-weight: 400;
+  font-family: "Times New Roman", Times, serif;
 }
 </style>
