@@ -1,6 +1,7 @@
 <template>
   <div class="text-center">
     <v-btn
+      v-if="userRole === 'ADMIN'"
       depressed
       @click.stop="showCreateForm"
       bottom
@@ -41,6 +42,9 @@
                 prepend-icon="mdi-email"
                 required
               ></v-text-field>
+              <v-alert dense outlined type="error" v-if="messageError !== ''">
+                {{ messageError }}
+              </v-alert>
 
               <v-text-field
                 v-if="dialogMode !== 'edit'"
@@ -58,21 +62,10 @@
                 v-model="role"
                 :items="roles"
                 :rules="roleRules"
-                prepend-icon="mdi-key"
+                prepend-icon="mdi-account-star"
                 label="Select"
                 required
               ></v-select>
-
-              <v-file-input
-                v-if="
-                  role !== null && role === 'SOCIAL AFFAIL OFFICER' && dialogMode !== 'edit'
-                "
-                :rules="profileRules"
-                v-model="profile"
-                label="Choose image profile"
-                filled
-                prepend-icon="mdi-camera"
-              ></v-file-input>
 
               <v-combobox
                 v-if="role === 'STUDENT'"
@@ -81,6 +74,8 @@
                 label="Choose"
                 v-model="student"
                 :items="students"
+                item-text="first_name"
+                item-value="id"
               >
               </v-combobox>
             </v-form>
@@ -110,27 +105,48 @@
 
     <!-- TABLE -->
 
-    <div class="container mt-12">
+    <div class="container">
+      <v-alert
+        type="success"
+        class="mt-6"
+        elevation="12"
+        v-if="messageAlert !== ''"
+        dismissible
+        border="left"
+        colored-border
+      >
+        {{ messageAlert }}
+      </v-alert>
       <user-search
+        class="mt-12"
         @searchByusername="searchUsername"
         @SelectRole="selectByRole"
       >
-      
       </user-search>
-      <v-simple-table>
+      <v-simple-table class="mb-12">
         <template v-slot:default>
-          <thead>
+          <thead class="tableHead">
             <tr>
               <th>PROFILE</th>
               <th>USERNAME</th>
               <th>EMAIL</th>
               <th>ROLE</th>
-              <th class="text-center">ACTION</th>
+              <th v-if="userRole === 'ADMIN'">ACTION</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="!isSearch">
             <user-card
               v-for="user of users"
+              :key="user.id"
+              :user="user"
+              @requestToDeleteUser="showDeleteDialog"
+              @requestToEdit="showEditForm"
+            >
+            </user-card>
+          </tbody>
+          <tbody v-else>
+            <user-card
+              v-for="user of contain_users_search"
               :key="user.id"
               :user="user"
               @requestToDeleteUser="showDeleteDialog"
@@ -145,21 +161,18 @@
 </template>
 
 <script>
-// IMPORT AXIOS ----------------------------------------
 import axios from "../../api/api.js";
-
-// IMPORT USER FORM SEARCH ----------------------------------------
 import UserFormSearch from "../pages/users/userFormSearch.vue";
-
-// IMPORT USER CARD ----------------------------------------
 import UserCard from "../pages/users/userCard.vue";
 export default {
   components: {
     "user-search": UserFormSearch,
     "user-card": UserCard,
   },
+  props: ["userdata"],
   data() {
     return {
+      userRole: "",
       userId: null,
       valid: true,
       url: "http://localhost:8000/storage/images/",
@@ -167,7 +180,14 @@ export default {
       show1: false,
       dialogMode: "create",
       roles: ["SOCIAL AFFAIL OFFICER", "STUDENT"],
+      notStudentRole: ["STUDENT"],
       students: [],
+      images: [
+        "https://i.pinimg.com/236x/92/8f/c8/928fc874edae45b141ac45bdc157a70b.jpg",
+        "https://i.pinimg.com/236x/c4/d3/e2/c4d3e2dd8797e6d7d5b07dbfc338d054.jpg",
+        "https://i.pinimg.com/236x/3f/87/6c/3f876cc74af0f155af84306443b3ea56.jpg",
+        "https://i.pinimg.com/236x/97/7f/e7/977fe798cf2c3a037e7aa9af6ce4b9d1.jpg",
+      ],
       // DATA FROM INPUT ----------------------------------------
       username: null,
       email: null,
@@ -177,8 +197,16 @@ export default {
       profile: "",
       // RULE OF INPUT DATA ----------------------------------------
       usernameRules: [(v) => !!v || "Username is required"],
-      emailRules: [(v) => !!v || "Email is required", (v) => /.+@.+\..+/.test(v) || "E-mail must be valid"],
-      passwordRules: [(v) => !!v || "Password is required"],
+      emailRules: [
+        (v) => !!v || "Email is required",
+        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+      ],
+      passwordRules: [
+        (v) => !!v || "Password is required",
+        (v) =>
+          (v && v.length <= 8 && v.length >= 4) ||
+          "Password must be at least 4 and less than 8 characters",
+      ],
       studentRules: [(v) => !!v || "Student is required"],
       roleRules: [(v) => !!v || "Role is required"],
       profileRules: [(v) => !!v || "Profile is required"],
@@ -187,6 +215,10 @@ export default {
       userAction: {},
       dialogDisplay: false,
       isSearch: false,
+      contain_users_search: [],
+      // MESSAGE DATA
+      messageError: "",
+      messageAlert: "",
     };
   },
   computed: {
@@ -228,6 +260,13 @@ export default {
     },
   },
   methods: {
+    // **********************|~GET USER FROM BACKEND~|********************** //
+    getUsers() {
+      axios.get("/users").then((res) => {
+        this.users = res.data;
+      });
+    },
+
     // **********************|~SHOW CREATE FORM DIALOG~|********************** //
     showCreateForm() {
       this.dialogMode = "create";
@@ -239,6 +278,8 @@ export default {
       this.student = null;
       this.role = null;
       this.profile = "";
+      this.messageError = "";
+      this.messageAlert = "";
     },
     // **********************|~SHOW REMOVE DIALOG~|********************** //
     showDeleteDialog(id) {
@@ -247,7 +288,7 @@ export default {
       };
       this.dialogMode = "delete";
       this.dialog = true;
-      
+      this.messageAlert = "";
     },
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
@@ -272,6 +313,8 @@ export default {
       } else {
         this.role = this.userAction.role;
       }
+      this.messageError = "";
+      this.messageAlert = "";
     },
     updateUser() {
       if (this.userAction.role === "ADMIN") {
@@ -284,36 +327,51 @@ export default {
       };
       axios
         .put("/users/" + this.userAction.id, myNewUserData)
-        .then((res) => {
-          console.log(res.data);
+        .then((response) => {
+          console.log(response.data);
           this.getUsers();
           this.closeDialog();
+          this.messageAlert = "Update successfully!";
         })
         .catch((error) => {
-          console.log(error.res.data.errors);
+          if (error.response.status === 500) {
+            this.messageError =
+              "The email has already been taken by other user!";
+          }
         });
     },
 
     // **********************|~CREATE NEW USER~|********************** //
     createUser() {
       if (this.$refs.form.validate()) {
-        let userInfo = new FormData();
-        userInfo.append("username", this.username);
-        userInfo.append("email", this.email);
-        userInfo.append("password", this.password);
-        userInfo.append("password_confirmation", this.password);
-        userInfo.append("roles", this.role);
-        userInfo.append("profile", this.profile);
+        const imageRadom = Math.floor(Math.random() * this.images.length);
+        this.profile = this.images[imageRadom];
 
+        let student_id = "";
+        if(this.student !== null) {
+          student_id = this.student.id
+        }
+
+        let userInfo = {
+          username: this.username,
+          email: this.email,
+          password: this.password,
+          password_confirmation: this.password,
+          roles: this.role,
+          student_id: student_id,
+          profile: this.profile,
+          
+        };
         axios
           .post("/register", userInfo)
           .then((response) => {
             this.users.push(response.data.user);
-            localStorage.setItem("token", response.data.token);
             this.closeDialog();
+            this.messageAlert = "Create succussfully !";
           })
           .catch((error) => {
-            console.log(error.response.data.errors);
+            this.messageError = error.response.data.errors.email[0];
+            console.log(this.messageError);
           });
       }
     },
@@ -324,6 +382,7 @@ export default {
       axios.delete("/users/" + id).then(() => {
         this.users = this.users.filter((user) => user.id !== id);
         this.closeDialog();
+        this.messageAlert = "Delete succussfully!";
       });
     },
 
@@ -338,37 +397,69 @@ export default {
       }
     },
 
-    // **********************|~GET USERS~|********************** //
-    getUsers() {
-      axios.get("/users").then((res) => {
-        this.users = res.data;
-      });
-    },
-
+    //==========================SEARCH USER BY USERNAME============================================================
     // Search By Username-----------------------------------------------------------------------------
-    searchUsername(username) {
-      if (username !== "") {
-        console.log(username);
-        this.users = this.users.filter((users) =>
-          users.username.toLowerCase().includes(username.toLowerCase())
+    searchUsername(username_key, role_key) {
+      if (
+        (username_key !== "" && role_key !== "ALL") ||
+        (username_key === "" && role_key !== "ALL")
+      ) {
+        console.log(username_key);
+        this.contain_users_search = this.users.filter(
+          (user) =>
+            user.username.toLowerCase().includes(username_key.toLowerCase()) &&
+            user.roles.toLowerCase().includes(role_key.toLowerCase())
         );
       } else {
-        this.getUsers();
+        this.contain_users_search = this.users.filter((user) =>
+          user.username.toLowerCase().includes(username_key.toLowerCase())
+        );
       }
       this.isSearch = true;
     },
     //Search By select roles---------------------------------------------------------------------------
-    selectByRole(roleName) {
-      if (roleName === "ALL") {
+    selectByRole(role_key) {
+      if (role_key === "ALL") {
         this.getUsers();
+        this.isSearch = false;
       } else {
-        this.users = this.users.filter((user) => user.roles === roleName);
+        console.log(role_key);
+        this.contain_users_search = this.users.filter((user) =>
+          user.roles.toLowerCase().includes(role_key.toLowerCase())
+        );
+        this.isSearch = true;
       }
     },
   },
   mounted() {
     this.getUsers();
     this.userId = localStorage.getItem("userId");
+    this.userRole = localStorage.getItem("role");
+
+    axios
+      .get("/students")
+      .then((res) => {
+        this.students = res.data;
+      })
+      .catch((error) => {
+        console.log(error.res.data.errors);
+      });
   },
 };
 </script>
+
+<style scoped>
+.text-center {
+  background: url(https://cdn.pixabay.com/photo/2017/02/05/15/04/stones-2040340_960_720.jpg)
+    fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100vh;
+  max-height: auto;
+}
+
+.tableHead {
+  background: #03a9f4;
+}
+</style>

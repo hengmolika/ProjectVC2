@@ -12,8 +12,13 @@
           @keyup="searchUsername"
         ></v-text-field>
         <!--*~*~*~*~*~*~*~*~*~*~*~*~[BTN SEARCH]~*~*~*~*~*~*~*~*~*~*~*~*-->
-        <v-btn color="info" class="ms-1" height="47" @click.prevent="clearText">
-          Clear
+        <v-btn color="error" class="ms-1" height="48" @click.prevent="clearText">
+          <v-icon
+          dark
+          left
+        >
+          mdi-minus-circle
+        </v-icon>clear
         </v-btn>
       </v-col>
       <!--*~*~*~*~*~*~*~*~*~*~*~*~[SELECT]~*~*~*~*~*~*~*~*~*~*~*~*-->
@@ -37,16 +42,16 @@ export default {
     return {
       keySearchUsername: "",
       keyRoles: ["ALL", "SOCIAL AFFAIL OFFICER", "STUDENT"],
-      keySelectByRole: "All",
+      keySelectByRole: "ALL",
     };
   },
   methods: {
     searchUsername() {
-      this.$emit("searchByusername", this.keySearchUsername);
+      this.$emit("searchByusername", this.keySearchUsername,this.keySelectByRole);
     },
 
-    SelectUserRole() {
-      this.$emit("SelectRole", this.keySelectByRole);
+    SelectUserRole(){
+        this.$emit("SelectRole",this.keySelectByRole);
     },
 
     clearText() {
