@@ -371,7 +371,7 @@ export default {
         (username_key !== "" && role_key !== "ALL") ||
         (username_key === "" && role_key !== "ALL")
       ) {
-        console.log(username_key);
+        
         this.contain_users_search = this.users.filter(
           (user) =>
             user.username.toLowerCase().includes(username_key.toLowerCase()) &&

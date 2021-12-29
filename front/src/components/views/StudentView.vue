@@ -107,7 +107,11 @@
       <v-alert dense text type="success" v-if="this.messageAlert !== ''" dismissible elevation="2">
         {{ messageAlert }}
       </v-alert>
+      <student-form-search
+      
+      >
 
+      </student-form-search>
       <v-simple-table>
         <template v-slot:default>
           <thead>
@@ -137,10 +141,13 @@
 </template>
 <script>
 import axios from "../../api/api.js";
+import StudentFormSearch from "../pages/students/StudentFormSearch.vue";
+
 import StudentCard from "../pages/students/StudentCard.vue";
 export default {
   components: {
     "student-card": StudentCard,
+    "student-form-search": StudentFormSearch,
   },
   data() {
     return {
@@ -154,6 +161,7 @@ export default {
       dialogDisplay: false,
       student_class: [],
       messageAlert: "",
+      isSearch : false,
       class: [],
       items: [
         { class_group: "SNA 2021" },
@@ -163,17 +171,6 @@ export default {
         { class_group: "WEB 2022 A" },
         { class_group: "WEB 2022 B" },
         { class_group: "SNA 2023" },
-        { class_group: "WEB 2023 A" },
-        { class_group: "WEB 2023 B" },
-        { class_group: "SNA 2024" },
-        { class_group: "WEB 2024 A" },
-        { class_group: "WEB 2024 B" },
-        { class_group: "SNA 2025" },
-        { class_group: "WEB 2025 A" },
-        { class_group: "WEB 2025 B" },
-        { class_group: "SNA 2026" },
-        { class_group: "WEB 2026 A" },
-        { class_group: "WEB 2026 B" },
       ],
 
       // Data from input
@@ -226,9 +223,16 @@ export default {
     onConfirm() {
       if (this.dialogMode === "create") {
         this.creatStudent();
+        
       }
     },
+    
+    
 
+    
+    
+
+    // },
     // **********************|~CREATE NEW STUDENT~|********************** //
     creatStudent() {
       if (this.$refs.form.validate()) {
@@ -236,26 +240,22 @@ export default {
         studentInfo.append("first_name", this.first_name);
         studentInfo.append("last_name", this.last_name);
         studentInfo.append("gender", this.gender);
-        studentInfo.append("class", this.class_name);
         studentInfo.append("profile", this.profile);
         studentInfo.append("phone", this.phonenumber);
+        studentInfo.append("class", this.class_name);
+        
         console.log(studentInfo);
         axios
           .post("/students", studentInfo)
-          .then(() => {
+          .then((res) => {
             this.closeDialog();
             this.getStudent();
             this.messageAlert = "Created success";
+            console.log(res.data);
           })
           .catch((error) => {
-            console.log("dsdsd", error.response.data.errors);
+            console.log(error.res.data.errors);
           });
-        console.log(this.class_name);
-        console.log(this.phonenumber);
-        console.log(this.last_name);
-        console.log(this.first_name);
-        console.log(this.gender);
-        console.log(this.profile);
       }
     },
   },
@@ -283,10 +283,10 @@ export default {
     },
   },
   mounted() {
-    axios.get("/class").then((res) => {
-      this.student_class = JSON.stringify(res.data.class);
-      console.log(this.student_class);
-    });
+    // axios.get("/class").then((res) => {
+    //   this.student_class = JSON.stringify(res.data.class);
+    //   console.log(this.student_class);
+    // });
 
     this.getStudent();
   },

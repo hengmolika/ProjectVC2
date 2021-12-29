@@ -18,7 +18,7 @@
                 <div><v-divider></v-divider></div>
               </v-list-item-content>
             </v-list-item>
-
+            
             <v-card-actions>
               <v-icon text class="ma-2">mdi-email</v-icon>
               <div class="overline">
