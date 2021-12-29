@@ -153,7 +153,7 @@
           :key="permission.id"
           :permission="permission"
           @permissiontEdit="showEditForm"
-           @permissionToDelete="showDialogDelete"
+          @permissionToDelete="showDialogDelete"
         ></permission-card>
       </div>
     </v-container>
@@ -256,8 +256,9 @@ export default {
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
       this.dialog = false;
-      if (this.dialogMode !== "delete") {
+      if (this.dialogMode === "create") {
         this.$refs.form.reset();
+        this.student_id = 0;
       }
     },
 
@@ -338,19 +339,22 @@ export default {
         student_id: this.student_id,
       };
       
-      console.log("infomation of permission",this.leave_type, this.description, this.student_id, this.endDae, this.start_date)
-
-      console.log("fsyrd", this.endDate);
+      console.log("infomation of permission",permission_info)
       axios
         .put("/permissions/" + edit_id, permission_info)
         .then((response) => {
-          console.log(response.data);
+          console.log("response data",response.data);
           this.messageAlert = "Update success";
           this.getPermissions();
+          
         })
         .catch((error) => {
           console.log(error.response.data.errors);
         });
+
+        this.$refs.form.reset();
+        this.student_id = 0;
+
     },
 
     //------------------------------ DELETE PERMISSION------------------------

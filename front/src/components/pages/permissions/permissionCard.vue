@@ -76,7 +76,7 @@
           | edit
         </v-btn>
 
-        <v-btn text v-if="role !== 'STUDENT' "
+        <v-btn text v-if="role !== 'STUDENT' " :class="{ 'show-btn-remove': hover }" :color="transparent"
           @click="deletePermission(permission.id)" >
           <v-icon :class="{ 'show-btn-remove': hover }" :color="transparent">
             mdi-delete

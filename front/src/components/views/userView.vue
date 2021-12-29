@@ -440,10 +440,6 @@ export default {
     axios
       .get("/students")
       .then((res) => {
-        // for (let student of res.data) {
-        //   let myStudent = (student.first_name + " " + student.last_name)
-        //   this.students.push(myStudent)
-        // }
         this.students = res.data;
       })
       .catch((error) => {
