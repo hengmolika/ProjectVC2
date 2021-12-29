@@ -57,7 +57,7 @@
                 prepend-icon="mdi-school"
                 label="Class"
                 :rules="classRules"
-                :items="items"
+                :items="student_class"
                 item-text="class_group"
                 required
               >
@@ -116,7 +116,8 @@
         {{ messageAlert }}
       </v-alert>
       <student-form-search
-      @searchByStudentname="searchStudentname"
+        @searchByStudentname="searchStudentName"
+        @SelectClass="selectByClass"
       >
       </student-form-search>
       <v-simple-table>
@@ -142,9 +143,9 @@
             >
             </student-card>
           </tbody>
-          <tbody v-else>
+           <tbody v-else>
             <student-card
-              v-for="student in containStudents"
+              v-for="student in contain_student_search"
               :key="student.id"
               :student="student"
               @studentEdit="showEditForm"
@@ -159,12 +160,14 @@
 </template>
 <script>
 import axios from "../../api/api.js";
+import StudentFormSearch from "../pages/students/StudentFormSearch.vue";
+
 import StudentCard from "../pages/students/StudentCard.vue";
-import StudentFormSearch from "../pages/students/StudentFormSearch.vue"
+
 export default {
   components: {
     "student-card": StudentCard,
-    "student-form-search": StudentFormSearch
+    "student-form-search": StudentFormSearch,
   },
   data() {
     return {
@@ -178,29 +181,10 @@ export default {
       studentAction: {},
       dialogDisplay: false,
       student_class: [],
-      messageAlert: "",
-      class: [],
-      items: [
-        { class_group: "SNA 2021" },
-        { class_group: "WEB 2021 A" },
-        { class_group: "WEB 2021 B" },
-        { class_group: "SNA 2022" },
-        { class_group: "WEB 2022 A" },
-        { class_group: "WEB 2022 B" },
-        { class_group: "SNA 2023" },
-        { class_group: "WEB 2023 A" },
-        { class_group: "WEB 2023 B" },
-        { class_group: "SNA 2024" },
-        { class_group: "WEB 2024 A" },
-        { class_group: "WEB 2024 B" },
-        { class_group: "SNA 2025" },
-        { class_group: "WEB 2025 A" },
-        { class_group: "WEB 2025 B" },
-        { class_group: "SNA 2026" },
-        { class_group: "WEB 2026 A" },
-        { class_group: "WEB 2026 B" },
-      ],
 
+      messageAlert: "",
+      contain_student_search: [],
+      isSearch: false,
       // Data from input
       first_name: null,
       last_name: null,
@@ -217,8 +201,7 @@ export default {
       phonenumberRules: [(v) => !!v || "PhoneNumber is required"],
       profileRules: [(v) => !!v || "Profile is required"],
       // data get from backend
-      isSearch: false,
-      containStudents: []
+
     };
   },
   methods: {
@@ -287,6 +270,7 @@ export default {
       }
     },
 
+    // },
     // **********************|~CREATE NEW STUDENT~|********************** //
     creatStudent() {
       if (this.$refs.form.validate()) {
@@ -294,9 +278,10 @@ export default {
         studentInfo.append("first_name", this.first_name);
         studentInfo.append("last_name", this.last_name);
         studentInfo.append("gender", this.gender);
-        studentInfo.append("class", this.class_name);
         studentInfo.append("profile", this.profile);
         studentInfo.append("phone", this.phonenumber);
+        studentInfo.append("class", this.class_name);
+
         console.log(studentInfo);
         axios.post("/students", studentInfo).then(() => {
           this.closeDialog();
@@ -335,25 +320,55 @@ export default {
         this.closeDialog();
       });
     },
-    // ------------------------ SEARCH STUDENT FUNCTION -------------------\\
-    searchStudentname(stu_name_key,class_key){
-      if(
-        (stu_name_key !== "" && class_key !== "") ||
-        (stu_name_key === "" && class_key !== "ALL")
+
+    //==========================SEARCH PERMISSION BY USERNAME AND CLASS ============================================================
+    // Search By Username-----------------------------------------------------------------------------
+    searchStudentName(stu_name_key, class_key) {
+      if (
+        (stu_name_key !== "" && class_key !== "ALL CLASS") ||
+        (stu_name_key === "" && class_key !== "ALL CLASS")
       ) {
-        this.containStudents = this.students.filter(
-        (stu) =>
-        (stu.first_name.toLowerCase()).includes(stu_name_key.toLowerCase()) &&
-        stu.class.toLowerCase().includes(class_key.toLowerCase())
- 
+        console.log("search", stu_name_key, class_key);
+        this.contain_student_search = this.students.filter(
+          (student) =>
+            (student.first_name
+              .toLowerCase()
+              .includes(stu_name_key.toLowerCase()) ||
+              student.last_name
+                .toLowerCase()
+                .includes(stu_name_key.toLowerCase())) &&
+            student.class
+              .toLowerCase()
+              .includes(class_key.toLowerCase())
         );
       } else {
-        this.containStudents = this.students.filter((stu) => stu.first_name.toLowerCase().includes(stu_name_key.toLowerCase()));
+        this.contain_student_search = this.students.filter(
+          (student) =>
+            student.first_name
+              .toLowerCase()
+              .includes(stu_name_key.toLowerCase()) ||
+            student.last_name
+              .toLowerCase()
+              .includes(stu_name_key.toLowerCase())
+        );
       }
-
-
       this.isSearch = true;
-
+    },
+    //Search By select Class---------------------------------------------------------------------------
+    selectByClass(class_key) {
+      if (class_key === "ALL CLASS") {
+        this.getStudent();
+        this.isSearch = false;
+      } else {
+        console.log(class_key);
+        this.contain_student_search = this.students.filter(
+          (student) =>
+            student.class
+              .toLowerCase()
+              .includes(class_key.toLowerCase())
+        );
+        this.isSearch = true;
+      }
     },
   },
   computed: {
@@ -392,11 +407,11 @@ export default {
     },
   },
   mounted() {
-    // axios.get("/class").then((res) => {
-    //   this.student_class = JSON.stringify(res.data.class);
-    //   console.log(this.student_class);
-    // });
-    this.role = localStorage.getItem("role");
+    axios.get("/class").then((res) => {
+      this.student_class = res.data.class;
+      console.log(this.student_class);
+    });
+
     this.getStudent();
   },
 };
@@ -406,4 +421,3 @@ export default {
 .tableHead {
   background: #00b7ff;
 }
-</style>
