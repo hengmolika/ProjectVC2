@@ -13,7 +13,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        return Student::latest()->get();
+        return Student::with('permissions')->latest()->get();
     }
 
     /**

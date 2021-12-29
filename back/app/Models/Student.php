@@ -14,4 +14,14 @@ class Student extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+    protected $hidden = [
+        "created_at",
+        "updated_at"
+    ];
+    
+    public function permissions()
+    {
+        return $this->hasMany(Permission::class);
+    }
 }

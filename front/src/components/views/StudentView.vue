@@ -350,7 +350,7 @@ export default {
       } else {
         this.containStudents = this.students.filter((stu) => stu.first_name.toLowerCase().includes(stu_name_key.toLowerCase()));
       }
-      console.log(stu_name_key);
+
 
       this.isSearch = true;
 

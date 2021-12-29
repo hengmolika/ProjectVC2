@@ -23,6 +23,7 @@ class UserController extends Controller
         $user->roles = $request->roles;
         $user->password = bcrypt($request->password);
         $user->profile = $request->profile;
+        $user->student_id = $request->student_id;
         $user->save();
 
         //create token is a key can access to api
