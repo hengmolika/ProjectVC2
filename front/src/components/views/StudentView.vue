@@ -115,7 +115,10 @@
       >
         {{ messageAlert }}
       </v-alert>
-
+      <student-form-search
+      @searchByStudentname="searchStudentname"
+      >
+      </student-form-search>
       <v-simple-table>
         <template v-slot:default>
           <thead>
@@ -129,9 +132,19 @@
               <th class="text-center" v-if="role !== 'STUDENT'">Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="!isSearch">
             <student-card
               v-for="student in students"
+              :key="student.id"
+              :student="student"
+              @studentEdit="showEditForm"
+              @studentDelete="showDeleteDialog"
+            >
+            </student-card>
+          </tbody>
+          <tbody v-else>
+            <student-card
+              v-for="student in containStudents"
               :key="student.id"
               :student="student"
               @studentEdit="showEditForm"
@@ -147,9 +160,11 @@
 <script>
 import axios from "../../api/api.js";
 import StudentCard from "../pages/students/StudentCard.vue";
+import StudentFormSearch from "../pages/students/StudentFormSearch.vue"
 export default {
   components: {
     "student-card": StudentCard,
+    "student-form-search": StudentFormSearch
   },
   data() {
     return {
@@ -201,8 +216,9 @@ export default {
       classRules: [(v) => !!v || "Class is required"],
       phonenumberRules: [(v) => !!v || "PhoneNumber is required"],
       profileRules: [(v) => !!v || "Profile is required"],
-
       // data get from backend
+      isSearch: false,
+      containStudents: []
     };
   },
   methods: {
@@ -215,7 +231,7 @@ export default {
         })
         .catch((error) => {
           console.log(error.res.data.errors);
-        });
+      });
     },
     // **********************|~SHOW CREATE FORM DIALOG~|********************** //
     showCreateForm() {
@@ -318,6 +334,26 @@ export default {
         this.messageAlert = "Delete success";
         this.closeDialog();
       });
+    },
+    // ------------------------ SEARCH STUDENT FUNCTION -------------------\\
+    searchStudentname(stu_name_key,class_key){
+      if(
+        (stu_name_key !== "" && class_key !== "") ||
+        (stu_name_key === "" && class_key !== "ALL")
+      ) {
+        this.containStudents = this.students.filter(
+        (stu) =>
+        (stu.first_name.toLowerCase()).includes(stu_name_key.toLowerCase()) &&
+        stu.class.toLowerCase().includes(class_key.toLowerCase())
+ 
+        );
+      } else {
+        this.containStudents = this.students.filter((stu) => stu.first_name.toLowerCase().includes(stu_name_key.toLowerCase()));
+      }
+      console.log(stu_name_key);
+
+      this.isSearch = true;
+
     },
   },
   computed: {

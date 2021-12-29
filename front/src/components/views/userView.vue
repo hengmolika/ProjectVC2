@@ -428,6 +428,19 @@ export default {
     this.userId = localStorage.getItem("userId");
     this.userRole = localStorage.getItem("role");
 
+    axios
+        .get("/students")
+        .then((res) => {
+        
+          for (let student of res.data) {
+            let myStudent= (student.first_name + " " + student.last_name)
+            this.students.push(myStudent)
+          }
+        })
+        .catch((error) => {
+          console.log(error.res.data.errors);
+    });
+
   },
 };
 
