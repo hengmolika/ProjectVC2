@@ -56,9 +56,8 @@
                 prepend-icon="mdi-school"
                 label="Class"
                 :rules="classRules"
-                :items="items"
+                :items="student_class"
                 item-text="class_group"
-                item-value="class_group"
                 required
               >
               </v-select>
@@ -72,6 +71,7 @@
               ></v-text-field>
 
               <v-file-input
+                v-if="dialogMode !== 'edit'"
                 v-model="profile"
                 :rules="profileRules"
                 label="Choose profile image "
@@ -86,7 +86,7 @@
         <div v-else>
           <v-card-text class="mt-5">
             <v-alert outlined type="error" prominent border="left">
-              Are you sure to delete this user?
+              Are you sure to delete this student?
             </v-alert>
           </v-card-text>
         </div>
@@ -104,13 +104,20 @@
     </v-dialog>
 
     <div class="container mt-12">
-      <v-alert dense text type="success" v-if="this.messageAlert !== ''" dismissible elevation="2">
+      <v-alert
+        dense
+        text
+        type="success"
+        v-if="this.messageAlert !== ''"
+        dismissible
+        elevation="2"
+      >
         {{ messageAlert }}
       </v-alert>
       <student-form-search
-      
+        @searchByStudentname="searchStudentName"
+        @SelectClass="selectByClass"
       >
-
       </student-form-search>
       <v-simple-table>
         <template v-slot:default>
@@ -122,20 +129,31 @@
               <th>Gender</th>
               <th>Class_name</th>
               <th>Phone Number</th>
-              <th>Action</th>
+              <th class="text-center">Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="!isSearch">
             <student-card
               v-for="student in students"
               :key="student.id"
               :student="student"
+              @studentEdit="showEditForm"
+              @studentDelete="showDeleteDialog"
+            >
+            </student-card>
+          </tbody>
+           <tbody v-else>
+            <student-card
+              v-for="student in contain_student_search"
+              :key="student.id"
+              :student="student"
+              @studentEdit="showEditForm"
+              @studentDelete="showDeleteDialog"
             >
             </student-card>
           </tbody>
         </template>
       </v-simple-table>
-
     </div>
   </div>
 </template>
@@ -160,19 +178,10 @@ export default {
       studentAction: {},
       dialogDisplay: false,
       student_class: [],
-      messageAlert: "",
-      isSearch : false,
-      class: [],
-      items: [
-        { class_group: "SNA 2021" },
-        { class_group: "WEB 2021 A" },
-        { class_group: "WEB 2021 B" },
-        { class_group: "SNA 2022" },
-        { class_group: "WEB 2022 A" },
-        { class_group: "WEB 2022 B" },
-        { class_group: "SNA 2023" },
-      ],
 
+      messageAlert: "",
+      contain_student_search: [],
+      isSearch: false,
       // Data from input
       first_name: null,
       last_name: null,
@@ -198,7 +207,7 @@ export default {
         .get("/students")
         .then((res) => {
           this.students = res.data;
-          console.log(this.students);
+          // console.log(this.students);
         })
         .catch((error) => {
           console.log(error.res.data.errors);
@@ -209,8 +218,36 @@ export default {
       this.dialogMode = "create";
       this.dialog = true;
       this.messageAlert = "";
-    },
 
+      if (this.dialogMode === "create") {
+        this.$refs.form.reset();
+      }
+    },
+    // ---------------------------- SHOW EDIT FORM --------------------------- \\
+    showEditForm(studentData) {
+      this.dialogMode = "edit";
+      this.dialog = true;
+      this.messageAlert = "";
+
+      this.studentAction = studentData;
+
+      console.log(this.studentAction.id);
+
+      this.first_name = studentData.first_name;
+      this.last_name = studentData.last_name;
+      this.gender = studentData.gender;
+      this.class_name = studentData.class;
+      this.phonenumber = studentData.phone;
+      this.profile = studentData.profile;
+    },
+    // **********************|~SHOW REMOVE DIALOG~|********************** //
+    showDeleteDialog(id) {
+      this.studentAction = {
+        id: id,
+      };
+      this.dialogMode = "delete";
+      this.dialog = true;
+    },
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
       this.dialog = false;
@@ -223,14 +260,12 @@ export default {
     onConfirm() {
       if (this.dialogMode === "create") {
         this.creatStudent();
-        
+      } else if (this.dialogMode === "edit") {
+        this.updateStudent();
+      } else {
+        this.deleteStudent();
       }
     },
-    
-    
-
-    
-    
 
     // },
     // **********************|~CREATE NEW STUDENT~|********************** //
@@ -243,19 +278,93 @@ export default {
         studentInfo.append("profile", this.profile);
         studentInfo.append("phone", this.phonenumber);
         studentInfo.append("class", this.class_name);
-        
+
         console.log(studentInfo);
-        axios
-          .post("/students", studentInfo)
-          .then((res) => {
-            this.closeDialog();
-            this.getStudent();
-            this.messageAlert = "Created success";
-            console.log(res.data);
-          })
-          .catch((error) => {
-            console.log(error.res.data.errors);
-          });
+        axios.post("/students", studentInfo).then(() => {
+          this.closeDialog();
+          this.getStudent();
+          this.messageAlert = "Created success";
+          console.log(this.messageAlert);
+        });
+      }
+    },
+
+    // ---------------------------------- UPDAE STUDENT ------------------------ \\
+    updateStudent() {
+      let newData = {
+        first_name: this.first_name,
+        last_name: this.last_name,
+        gender: this.gender,
+        class: this.class_name,
+        phone: this.phonenumber,
+      };
+
+      axios
+        .put("/students/" + this.studentAction.id, newData)
+        .then((response) => {
+          console.log(response.data);
+          this.messageAlert = "Update success";
+          this.getStudent();
+          this.closeDialog();
+        });
+    },
+    // **********************|~REMOVE STUDENT~|********************** //
+    deleteStudent() {
+      let id = this.studentAction.id;
+      axios.delete("/students/" + id).then(() => {
+        this.students = this.students.filter((student) => student.id !== id);
+        this.messageAlert = "Delete success";
+        this.closeDialog();
+      });
+    },
+
+    //==========================SEARCH PERMISSION BY USERNAME AND CLASS ============================================================
+    // Search By Username-----------------------------------------------------------------------------
+    searchStudentName(stu_name_key, class_key) {
+      if (
+        (stu_name_key !== "" && class_key !== "ALL CLASS") ||
+        (stu_name_key === "" && class_key !== "ALL CLASS")
+      ) {
+        console.log("search", stu_name_key, class_key);
+        this.contain_student_search = this.students.filter(
+          (student) =>
+            (student.first_name
+              .toLowerCase()
+              .includes(stu_name_key.toLowerCase()) ||
+              student.last_name
+                .toLowerCase()
+                .includes(stu_name_key.toLowerCase())) &&
+            student.class
+              .toLowerCase()
+              .includes(class_key.toLowerCase())
+        );
+      } else {
+        this.contain_student_search = this.students.filter(
+          (student) =>
+            student.first_name
+              .toLowerCase()
+              .includes(stu_name_key.toLowerCase()) ||
+            student.last_name
+              .toLowerCase()
+              .includes(stu_name_key.toLowerCase())
+        );
+      }
+      this.isSearch = true;
+    },
+    //Search By select Class---------------------------------------------------------------------------
+    selectByClass(class_key) {
+      if (class_key === "ALL CLASS") {
+        this.getStudent();
+        this.isSearch = false;
+      } else {
+        console.log(class_key);
+        this.contain_student_search = this.students.filter(
+          (student) =>
+            student.class
+              .toLowerCase()
+              .includes(class_key.toLowerCase())
+        );
+        this.isSearch = true;
       }
     },
   },
@@ -264,6 +373,10 @@ export default {
       let message = "";
       if (this.dialogMode === "create") {
         message = "CREATE NEW STUDENT";
+      } else if (this.dialogMode === "edit") {
+        message = "UPDATE STUDENT";
+      } else if (this.dialogMode === "delete") {
+        message = "DELETE STUDENT";
       }
       return message;
     },
@@ -271,6 +384,10 @@ export default {
       let message = "";
       if (this.dialogMode === "create") {
         message = "CREATE";
+      } else if (this.dialogMode === "edit") {
+        message = "UPDATE";
+      } else if (this.dialogMode === "delete") {
+        message = "REMOVE";
       }
       return message;
     },
@@ -278,15 +395,19 @@ export default {
       let message = "";
       if (this.dialogMode === "create") {
         message = "primary";
+      } else if (this.dialogMode === "edit") {
+        message = "success";
+      } else if (this.dialogMode === "delete") {
+        message = "error";
       }
       return message;
     },
   },
   mounted() {
-    // axios.get("/class").then((res) => {
-    //   this.student_class = JSON.stringify(res.data.class);
-    //   console.log(this.student_class);
-    // });
+    axios.get("/class").then((res) => {
+      this.student_class = res.data.class;
+      console.log(this.student_class);
+    });
 
     this.getStudent();
   },

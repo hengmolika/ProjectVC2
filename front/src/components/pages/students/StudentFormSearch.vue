@@ -8,10 +8,11 @@
           label="Search by studentname...*"
           solo
           prepend-inner-icon="mdi-magnify"
+          @keyup="searchStudentname"
           
         ></v-text-field>
         <!--*~*~*~*~*~*~*~*~*~*~*~*~[BTN SEARCH]~*~*~*~*~*~*~*~*~*~*~*~*-->
-        <v-btn color="info" class="ms-1" height="47" >
+        <v-btn color="info" class="ms-1" height="47" @click.prevent = "clearText()" >
           Clear
         </v-btn>
       </v-col>
@@ -20,8 +21,9 @@
         <v-select
           label="Search by classname..."
           solo
-          :items="keyClass"
+          :items="classes"
           v-model="keySelectByClass"
+          @change="SelectStudentClass"
          
         ></v-select>
       </v-col>
@@ -30,40 +32,42 @@
 </template>
 
 <script>
+import axios from "../../../api/api.js";
 export default {
-  // emits: ["searchByStudentname", "SelectClass"],
+  emits: ["searchByStudentname", "SelectClass"],
+
   data() {
     return {
+      keySelectByClass: "ALL CLASS",
       keySearchStudentname: "",
-      keyClass: [
-        "SNA 2021",
-        "WEB 2021 A",
-        "WEB 2021 B",
-        "SNA 2022",
-        "WEB 2022 A",
-        "WEB 2022 B",
-        "SNA 2023",
-      ],
-      keySelectByClass: "ALL",
+      classes: [],
+
     };
   },
   methods: {
-    // searchStudentname() {
-    //   this.$emit(
-    //     "searchByStudentname",
-    //     this.keySearchStudentname,
-    //     this.keySelectByClass
-    //   );
-    // },
-    // SelectStudentClass() {
-    //   this.$emit("SelectClass", this.keySelectByClass);
-    // },
+    searchStudentname() {
+      this.$emit(
+        "searchByStudentname",
+        this.keySearchStudentname,
+        this.keySelectByClass
+      );
+    },
+    SelectStudentClass() {
+      this.$emit("SelectClass", this.keySelectByClass);
+    },
 
-    // clearText() {
-    //   this.keySearchStudentname = "";
-    //   this.searchStudentname();
-    // },
+    clearText() {
+      this.keySearchStudentname = "";
+      this.searchStudentname();
+    },
   },
+  mounted(){
+    axios.get("/class").then((res) => {
+      this.classes = res.data.class;
+      this.classes.unshift("ALL CLASS")
+      console.log(this.classes);
+    });
+  }
 };
 </script>
 
