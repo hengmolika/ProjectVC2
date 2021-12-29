@@ -29,7 +29,7 @@
               <v-form ref="form" v-model="valid">
                 <v-col cols="12" class="d-flex">
                   <v-icon>mdi-account</v-icon>
-                  <select v-model="student_id" class="mb-3">
+                  <select v-model="student_id" class="mb-3" >
                     <option
                       v-for="student of contain_students"
                       :key="student.id"
@@ -53,7 +53,7 @@
                         <v-text-field
                           v-model="startDate"
                           :rules="startDateRules"
-                          label="Picker without buttons"
+                          label="Leave on *"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
@@ -79,7 +79,7 @@
                         <v-text-field
                           v-model="endDate"
                           :rules="endDateRules"
-                          label="Picker without buttons"
+                          label="Back on *"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
@@ -176,7 +176,7 @@ export default {
       dialogMode: "create",
       permissionAction: {},
       dialogDisplay: false,
-      messageAlert:"",
+      messageAlert: "",
 
       startDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
@@ -242,7 +242,7 @@ export default {
       return message;
     },
   },
-   
+
   methods: {
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
@@ -258,9 +258,8 @@ export default {
       this.dialog = true;
       this.startDate = null;
       this.endDate = null;
-   
     },
-     // ---------------------------- SHOW EDIT FORM --------------------------- \\
+    // ---------------------------- SHOW EDIT FORM --------------------------- \\
     showEditForm(permissionData) {
       this.dialogMode = "edit";
       this.dialog = true;
@@ -268,7 +267,7 @@ export default {
 
       this.permissionAction = permissionData;
 
-      console.log("hello",permissionData);
+      console.log("hello", permissionData);
 
       this.startDate = permissionData.start_date;
       this.endDate = permissionData.end_date;
@@ -281,7 +280,7 @@ export default {
       if (this.dialogMode === "create") {
         this.addPermission();
         this.closeDialog();
-      }else if(this.dialogMode === "edit"){
+      } else if (this.dialogMode === "edit") {
         this.closeDialog();
         this.updatePermission(this.permissionAction.id);
       }
@@ -309,7 +308,6 @@ export default {
 
     // ---------------------------------- UPDADE PERMISSION ------------------------ \\
     updatePermission(edit_id) {
-      
       let permission_info = {
         start_date: this.startDate,
         end_date: this.endDate,
@@ -318,15 +316,17 @@ export default {
         student_id: this.student_id,
       };
 
-      console.log('fsyrd',this.endDate);
-      axios.put('/permissions/' + edit_id, permission_info)
-      .then(response => {
-        console.log(response.data);
-        this.messageAlert = "Update success";
-        this.getPermissions();
-      }).catch(error=>{
-        console.log(error.response.data.errors);
-      })
+      console.log("fsyrd", this.endDate);
+      axios
+        .put("/permissions/" + edit_id, permission_info)
+        .then((response) => {
+          console.log(response.data);
+          this.messageAlert = "Update success";
+          this.getPermissions();
+        })
+        .catch((error) => {
+          console.log(error.response.data.errors);
+        });
     },
 
     getPermissions() {
@@ -348,11 +348,13 @@ export default {
           (permission) =>
             (permission.students.first_name
               .toLowerCase()
-              .includes(username_key.toLowerCase()) || permission.students.last_name
+              .includes(username_key.toLowerCase()) ||
+              permission.students.last_name
+                .toLowerCase()
+                .includes(username_key.toLowerCase())) &&
+            permission.students.class
               .toLowerCase()
-              .includes(username_key.toLowerCase())) &&
-              (permission.students.class.toLowerCase()
-                .includes(class_key.toLowerCase()))
+              .includes(class_key.toLowerCase())
         );
       } else {
         this.contain_permission_search = this.permissions_data.filter(
@@ -383,8 +385,6 @@ export default {
         this.isSearch = true;
       }
     },
-
-
   },
   mounted() {
     this.getPermissions();
