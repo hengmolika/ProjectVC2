@@ -210,7 +210,7 @@ export default {
         .get("/students")
         .then((res) => {
           this.students = res.data;
-          // console.log(this.students);
+          console.log("get student",this.students);
         })
         .catch((error) => {
           console.log(error.res.data.errors);

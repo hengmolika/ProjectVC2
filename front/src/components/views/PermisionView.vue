@@ -376,9 +376,7 @@ export default {
         console.log("search", username_key, class_key);
         this.contain_permission_search = this.permissions_data.filter(
           (permission) =>
-            (permission.students.first_name
-              .toLowerCase()
-              .includes(username_key.toLowerCase()) ||
+            (permission.students.first_name.toLowerCase().includes(username_key.toLowerCase()) ||
               permission.students.last_name
                 .toLowerCase()
                 .includes(username_key.toLowerCase())) &&
