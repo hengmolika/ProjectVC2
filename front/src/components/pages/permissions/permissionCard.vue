@@ -1,6 +1,6 @@
 <template>
   <!--~!~!~!~!~!~!~!~!~!~!~|CARD|~!~!~!~!~!~!~!~!~!~!~-->
-  <v-hover v-slot="{ hover }" class="mt-5">
+  <v-hover v-slot="{ hover }" class="mt-3">
     <v-card
       id="card"
       class="mx-auto"

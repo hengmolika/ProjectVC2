@@ -35,22 +35,20 @@
                     :key="student.id"
                     :value="student.id"
                   >
-                    <img :src="stu_profile + student.profile" alt="" />
                     {{ student.first_name }}
                     {{ student.last_name }}
                   </option>
                 </select>
               </v-col>
               <!--**************|~SELECT DISCIPLINE TYPE~|**************-->
-              <v-col cols="12">
+              <v-col class="d-flex" cols="12">
                 <v-select
                   prepend-icon="mdi-format-list-bulleted-type"
-                  v-model="discipline_type"
-                  :items="items"
-                  chips
-                  label="SELECT TYPE*"
-                  multiple
+                  v-model="notic_type"
+                  :items="discipline_type"
+                  label="Select notic type"
                   solo
+                  :rules="notic_type_rule"
                 ></v-select>
               </v-col>
               <!--**************|~SELECT DATE~|**************-->
@@ -61,17 +59,17 @@
                   :nudge-right="40"
                   transition="scale-transition"
                   offset-y
+                  min-width="auto"
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       v-model="discipline_date"
-                      :rules="discipline_date_rule"
-                      label="DATE*"
-                      prepend-icon="mdi-calendar-multiple-check"
+                      :rules="date_rule"
+                      label="Back on *"
+                      prepend-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
                       v-on="on"
-                      solo
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -83,10 +81,12 @@
               <!--**************|~DESCRIPTION~|**************-->
               <v-col cols="12">
                 <v-textarea
+                  v-model="description"
                   prepend-icon="mdi-comment"
                   solo
                   label="DESCRIPTION*"
                   rows="1"
+                  :rules="descriptionRule"
                 ></v-textarea>
               </v-col>
             </v-form>
@@ -107,21 +107,38 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="warning" @click="closeDialog"> close </v-btn>
-          <v-btn :color="dialogColor" :disabled="!valid">
+          <v-btn
+            :color="dialogColor"
+            :disabled="!valid || student_id === 0"
+            @click="onConfirm"
+          >
             {{ dialogButton }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <!--~~~~~~~~~~~~~~~~~~~~~~~~|FORM SEARCH|~~~~~~~~~~~~~~~~~~~~~~~~-->
-    <disciplines-search></disciplines-search>
-    <!--~~~~~~~~~~~~~~~~~~~~~~~~|CARD|~~~~~~~~~~~~~~~~~~~~~~~~-->
-    <disciplines-card
-      v-for="discipline of DisciplineData"
-      :key="discipline.id"
-      :discipline="discipline"
-    >
-    </disciplines-card>
+    <div class="container mt-5">
+      <!--~~~~~~~~~~~~~~~~~~~~~~~~|ALERT INFORMATION|~~~~~~~~~~~~~~~~~~~~~~~~-->
+      <v-alert
+        dense
+        text
+        type="success"
+        v-if="this.messageAlert !== ''"
+        dismissible
+        elevation="2"
+      >
+        {{ messageAlert }}
+      </v-alert>
+      <!--~~~~~~~~~~~~~~~~~~~~~~~~|FORM SEARCH|~~~~~~~~~~~~~~~~~~~~~~~~-->
+      <disciplines-search></disciplines-search>
+      <!--~~~~~~~~~~~~~~~~~~~~~~~~|CARD|~~~~~~~~~~~~~~~~~~~~~~~~-->
+      <disciplines-card
+        v-for="discipline of DisciplineData"
+        :key="discipline.id"
+        :discipline="discipline"
+      >
+      </disciplines-card>
+    </div>
   </v-container>
 </template>
 
@@ -140,9 +157,13 @@ export default {
     return {
       DisciplineData: [],
       ListOfStudents: [],
+      discipline_type: [],
       dialogMode: "create",
       dialog: false,
+      messageAlert: "",
       student_id: 0,
+      notic_type: "",
+      description: "",
       discipline_date: new Date(
         Date.now() - new Date().getTimezoneOffset() * 60000
       )
@@ -150,6 +171,10 @@ export default {
         .substr(0, 10),
 
       isDateSelected: false,
+
+      date_rule: [(v) => !!v || "Please select date"],
+      notic_type_rule: [(v) => !!v || "Please select notic type"],
+      descriptionRule: [(v) => !!v || "Please input description detail"],
     };
   },
   computed: {
@@ -201,15 +226,48 @@ export default {
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
       this.dialog = false;
-      if (this.dialogMode === "create") {
+      if (this.dialogMode !== "delete") {
         this.$refs.form.reset();
         this.student_id = 0;
       }
     },
+    // **********************|~CONFIRM DIALOG~|********************** //
+    onConfirm() {
+      if (this.dialogMode === "create") {
+        this.addDiscipline();
+        this.$refs.form.reset();
+      }
+    },
+
     // **********************|~SHOW CREATE FORM DIALOG~|********************** //
     showCreateForm() {
       this.dialogMode = "create";
       this.dialog = true;
+      this.messageAlert = "";
+      // this.$refs.form.reset();
+    },
+    // **********************|~ADD DISCIPLINE~|********************** //
+    addDiscipline() {
+      if (this.$refs.form.validate()) {
+        let disciplines_data = {
+          student_id: this.student_id,
+          discipline_type: this.notic_type,
+          date: this.discipline_date,
+          description: this.description,
+        };
+        axios
+          .post("/disciplines", disciplines_data)
+          .then((response) => {
+            console.log("discipline response data", response.data);
+            this.closeDialog();
+            this.getDisciplines();
+            this.messageAlert = "Created success";
+          })
+          .catch((error) => {
+            console.log(error.response.data.errors);
+          });
+      }
+      console.log("hello");
     },
   },
   mounted() {
@@ -219,6 +277,11 @@ export default {
     axios.get("/students").then((response) => {
       this.ListOfStudents = response.data;
       console.log("student lisht", this.ListOfStudents);
+    });
+
+    axios.get("/discipline_type").then((response) => {
+      this.discipline_type = response.data.disciplines;
+      console.log("discipline type", this.discipline_type);
     });
   },
 };
