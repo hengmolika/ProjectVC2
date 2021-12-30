@@ -29,7 +29,7 @@
               <v-form ref="form" v-model="valid">
                 <v-col cols="12" class="d-flex">
                   <v-icon>mdi-account</v-icon>
-                  <select v-model="student_id" class="mb-3" >
+                  <select v-model="student_id" class="mb-3">
                     <option
                       v-for="student of contain_students"
                       :key="student.id"
@@ -133,11 +133,13 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|-REMOVE DIALOG-|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
       <permission-search
         @searchByStudentName="searchStudentPermission"
         @SelectByClass="SelectClass"
       >
       </permission-search>
+      <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|-IF NOT SEARCH-|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
       <div v-if="!isSearch">
         <permission-card
           v-for="permission of permissions_data"
@@ -147,6 +149,7 @@
           @permissionToDelete="showDialogDelete"
         ></permission-card>
       </div>
+      <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|-IF SEARCH-|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
       <div v-else>
         <permission-card
           v-for="permission of contain_permission_search"
@@ -159,11 +162,11 @@
     </v-container>
   </section>
 </template>
+
 <script>
 import axios from "../../api/api.js";
 import PermissionSearch from "../pages/permissions/permissionSearch.vue";
 import PermissionCard from "../pages/permissions/permissionCard.vue";
-// import moment from "moment";
 export default {
   components: {
     "permission-card": PermissionCard,
@@ -291,10 +294,8 @@ export default {
       this.dialog = true;
       this.permissionAction = {
         delete_id: id,
-      }
-      
+      };
     },
-    
 
     onConfirm() {
       if (this.dialogMode === "create") {
@@ -303,7 +304,7 @@ export default {
       } else if (this.dialogMode === "edit") {
         this.closeDialog();
         this.updatePermission(this.permissionAction.id);
-      }else if(this.dialogMode === "delete") {
+      } else if (this.dialogMode === "delete") {
         this.deletePermission(this.permissionAction.delete_id);
         this.closeDialog();
       }
@@ -338,31 +339,31 @@ export default {
         description: this.description,
         student_id: this.student_id,
       };
-      
-      console.log("infomation of permission",permission_info)
+
+      console.log("infomation of permission", permission_info);
       axios
         .put("/permissions/" + edit_id, permission_info)
         .then((response) => {
-          console.log("response data",response.data);
+          console.log("response data", response.data);
           this.messageAlert = "Update success";
           this.getPermissions();
-          
         })
         .catch((error) => {
           console.log(error.response.data.errors);
         });
 
-        this.$refs.form.reset();
-        this.student_id = 0;
-
+      this.$refs.form.reset();
+      this.student_id = 0;
     },
 
     //------------------------------ DELETE PERMISSION------------------------
     deletePermission(id) {
       axios.delete("/permissions/" + id).then(() => {
-        this.permissions_data = this.permissions_data.filter((permission) => permission.id !== id);
+        this.permissions_data = this.permissions_data.filter(
+          (permission) => permission.id !== id
+        );
         this.messageAlert = "Delete success !";
-        console.log('delete successful');
+        console.log("delete successful");
       });
     },
 
@@ -429,7 +430,7 @@ export default {
       console.log("student", this.contain_students);
     });
 
-    this.role = localStorage.getItem("role")
+    this.role = localStorage.getItem("role");
   },
 };
 </script>
