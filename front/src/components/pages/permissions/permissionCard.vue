@@ -8,48 +8,50 @@
       :elevation="hover ? 24 : 6"
       :class="{ 'on-hover': hover }"
     >
-      <v-list-item>
-        <!--USER PROFILE-->
-        <v-list-item-avatar height="80" width="80" class="mb-14">
-          <v-img size="100" :src="url + permission.students.profile"> </v-img>
-        </v-list-item-avatar>
-        <v-list-item-content class="ml-5">
-          <div class="text-h7 text-overline">
-            {{ permission.students.class }}
-          </div>
-          <!--STUDENT NAME-->
-          <div class="d-flex">
-            <v-list-item-title class="text-h5 orange--text">
-              {{ permission.students.first_name }}
-              {{ permission.students.last_name }}
-            </v-list-item-title>
-          </div>
+      <v-card-text>
+        <v-list-item>
+          <!--USER PROFILE-->
+          <v-list-item-avatar height="80" width="80" class="mb-14">
+            <v-img size="100" :src="url + permission.students.profile"> </v-img>
+          </v-list-item-avatar>
+          <v-list-item-content class="ml-5">
+            <div class="text-h7 text-overline">
+              {{ permission.students.class }}
+            </div>
+            <!--STUDENT NAME-->
+            <div class="d-flex">
+              <v-list-item-title class="text-h5 orange--text">
+                {{ permission.students.first_name }}
+                {{ permission.students.last_name }}
+              </v-list-item-title>
+            </div>
 
-          <!--REQUEST-->
-          <v-list-item-content class="text-h7 mb-0 text-overline">
-            Leave Type: {{ permission.reason }}
+            <!--REQUEST-->
+            <v-list-item-content class="text-h7 mb-0 text-overline">
+              Leave Type: {{ permission.reason }}
+            </v-list-item-content>
+
+            <!--DATE TIME -->
+            <v-divider class="mt-0"></v-divider>
+            <v-list-item-subtitle class="mt-0 d-flex">
+              <div class="text-h6 text-overline">
+                <strong> Leave on: </strong>
+                <v-icon class="blue--text">mdi-calendar-text</v-icon>
+                <strong> {{ permission.start_date }} </strong>
+              </div>
+              <div class="text-h6 ml-10 text-overline">
+                <strong>Come back on: </strong>
+                <v-icon class="red--text">mdi-calendar-text</v-icon>
+                <strong> {{ permission.end_date }}</strong>
+              </div>
+              <div class="text-h6 ml-10 text-overline">
+                <v-icon class="orange--text">mdi-calendar-text</v-icon>
+                <strong> Amount:</strong> <strong v-html="((new Date(permission.end_date)).getTime() - (new Date(permission.start_date)).getTime()) / (1000 * 3600 * 24)" ></strong> | DAYS
+              </div>
+            </v-list-item-subtitle> 
           </v-list-item-content>
-
-          <!--DATE TIME -->
-          <v-divider class="mt-0"></v-divider>
-          <v-list-item-subtitle class="mt-0 d-flex">
-            <div class="text-h6 text-overline">
-              <strong> Leave on:</strong>
-              <v-icon class="blue--text">mdi-calendar-text</v-icon>
-              <strong> {{ permission.start_date }} </strong>
-            </div>
-            <div class="text-h6 ml-10 text-overline">
-              <strong>Come back on:</strong>
-              <v-icon class="red--text">mdi-calendar-text</v-icon>
-              <strong> {{ permission.end_date }}</strong>
-            </div>
-            <div class="text-h6 ml-10 text-overline">
-              <v-icon class="orange--text">mdi-calendar-text</v-icon>
-              <strong>On:</strong> 3 | DAYS
-            </div>
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
+        </v-list-item>
+      </v-card-text>
 
       <!--BTN HOVER-->
       <v-card-actions>
@@ -106,6 +108,8 @@
       </v-expand-transition>
     </v-card>
   </v-hover>
+
+  
 </template>
 
 <!--~!~!~!~!~!~!~!~!~!~!~|SCRIPT|~!~!~!~!~!~!~!~!~!~!~-->
@@ -119,6 +123,7 @@ export default {
       transparent: "rgba(255, 255, 255, 0)",
       url: "http://localhost:8000/storage/images/",
       role: "",
+      reveal: false,
     };
   },
   computed: {},

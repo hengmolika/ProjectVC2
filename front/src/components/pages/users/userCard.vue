@@ -13,9 +13,9 @@
       <v-list-item-avatar>
         <v-img
           :src="
-            user.profile !== ''
+            user.student === null
               ? user.profile
-              : 'https://cdn.pixabay.com/photo/2019/08/11/18/59/icon-4399701__340.png'
+              : url + user.student.profile
           "
         ></v-img>
       </v-list-item-avatar>

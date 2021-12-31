@@ -2,6 +2,7 @@
   <section>
     <v-container class="mt-5">
       <v-btn
+        v-if="role !== 'STUDENT'"
         depressed
         @click.stop="showCreateForm"
         bottom
@@ -26,19 +27,36 @@
           </v-toolbar>
           <div v-if="dialogMode !== 'delete'">
             <v-card-text class="mt-2">
-              <v-form ref="form" v-model="valid">
-                <v-col cols="12" class="d-flex">
-                  <v-icon>mdi-account</v-icon>
-                  <select v-model="student_id" class="mb-3" >
-                    <option
-                      v-for="student of contain_students"
-                      :key="student.id"
-                      :value="student.id"
-                    >
-                      {{ student.first_name }} {{ student.last_name }}
-                    </option>
-                  </select>
-                </v-col>
+              <v-form ref="form" v-model="valid" lazy-validation>
+                <v-combobox
+                  :rules="studentRules"
+                  prepend-icon="mdi-account-multiple"
+                  label="Choose"
+                  v-model="student_id"
+                  :items="contain_students"
+                  item-text="first_name"
+                  item-value="id"
+                  :return-object="true"
+                >
+                  <template v-slot:item="data">
+                    <template>
+                      <v-list-item-avatar>
+                        <img :src="url + data.item.profile" />
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          v-html="
+                            data.item.first_name + ' ' + data.item.last_name
+                          "
+                        ></v-list-item-title>
+                        <v-list-item-subtitle
+                          v-html="data.item.class"
+                        ></v-list-item-subtitle>
+                      </v-list-item-content>
+                    </template>
+                  </template>
+                </v-combobox>
+
                 <v-row align="center">
                   <v-col cols="6">
                     <v-menu
@@ -63,6 +81,7 @@
                       <v-date-picker
                         v-model="startDate"
                         @input="isDateSelected1 = false"
+                        :min="nowDate"
                       ></v-date-picker>
                     </v-menu>
                   </v-col>
@@ -89,10 +108,15 @@
                       <v-date-picker
                         v-model="endDate"
                         @input="isDateSelected2 = false"
+                        :min="nowDate"
                       ></v-date-picker>
                     </v-menu>
                   </v-col>
                 </v-row>
+
+                <v-alert v-if="messageError !== '' " text type="error" icon="mdi-alert-octagon">
+                  {{messageError}}
+                </v-alert>
 
                 <v-select
                   v-model="leave_type"
@@ -102,13 +126,15 @@
                   label="Select Reason"
                   required
                 ></v-select>
-                <v-text-field
+                <v-textarea
                   v-model="description"
                   :rules="descriptionRules"
+                  auto-grow
+                  rows="1"
                   label="Description"
                   prepend-icon="mdi-comment-text"
                   required
-                ></v-text-field>
+                ></v-textarea>
               </v-form>
             </v-card-text>
           </div>
@@ -116,7 +142,7 @@
           <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|-REMOVE DIALOG-|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
           <div v-else>
             <v-card-text class="mt-5">
-              <v-alert outlined type="error" prominent border="left">
+              <v-alert outlined type="error" border="left">
                 Are you sure to delete this permission?
               </v-alert>
             </v-card-text>
@@ -133,12 +159,24 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-alert
+        type="success"
+        class="mt-6"
+        elevation="12"
+        v-if="messageAlert !== ''"
+        dismissible
+        border="left"
+        colored-border
+      >
+        {{ messageAlert }}
+      </v-alert>
       <permission-search
+        class="mt-3"
         @searchByStudentName="searchStudentPermission"
         @SelectByClass="SelectClass"
       >
       </permission-search>
-      <div v-if="!isSearch">
+      <div v-if="!isSearch" class="mb-12">
         <permission-card
           v-for="permission of permissions_data"
           :key="permission.id"
@@ -147,7 +185,7 @@
           @permissionToDelete="showDialogDelete"
         ></permission-card>
       </div>
-      <div v-else>
+      <div v-else class="mb-12">
         <permission-card
           v-for="permission of contain_permission_search"
           :key="permission.id"
@@ -180,6 +218,9 @@ export default {
       permissionAction: {},
       dialogDisplay: false,
       messageAlert: "",
+      messageError: "",
+
+      url: "http://localhost:8000/storage/images/",
 
       startDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
@@ -187,11 +228,12 @@ export default {
       endDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
+      nowDate: new Date().toISOString().slice(0, 10),
 
       isSearchStudentPermission: false,
       isDateSelected1: false,
       isDateSelected2: false,
-      student_id: 0,
+      student_id: null,
       leave_type: null,
       description: null,
 
@@ -204,6 +246,7 @@ export default {
       endDateRules: [(v) => !!v || "End date is required"],
       leave_typeRules: [(v) => !!v || "Leave type is required"],
       descriptionRules: [(v) => !!v || "description is required"],
+      studentRules: [(v) => !!v || "Student is required"],
     };
   },
 
@@ -250,15 +293,13 @@ export default {
     getPermissions() {
       axios.get("/permissions").then((response) => {
         this.permissions_data = response.data;
-        // console.log(this.permissions_data);
       });
     },
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
       this.dialog = false;
-      if (this.dialogMode === "create") {
+      if (this.dialogMode !== "delete") {
         this.$refs.form.reset();
-        this.student_id = 0;
       }
     },
 
@@ -268,22 +309,25 @@ export default {
       this.dialog = true;
       this.startDate = null;
       this.endDate = null;
+
+      this.messageAlert = "";
+      this.messageError = "";
     },
     // ---------------------------- SHOW EDIT FORM --------------------------- \\
     showEditForm(permissionData) {
       this.dialogMode = "edit";
       this.dialog = true;
       this.messageAlert = "";
+      this.messageError = "";
 
       this.permissionAction = permissionData;
-
-      console.log("hello", permissionData);
 
       this.startDate = permissionData.start_date;
       this.endDate = permissionData.end_date;
       this.description = permissionData.description;
       this.leave_type = permissionData.reason;
-      this.student_id = permissionData.student_id;
+      console.log(permissionData);
+      this.student_id = permissionData.students.first_name;
     },
     //----------------------- SHOW DIALOG DELETE -----------------------------------
     showDialogDelete(id) {
@@ -291,78 +335,94 @@ export default {
       this.dialog = true;
       this.permissionAction = {
         delete_id: id,
-      }
-      
+      };
+      this.messageAlert = "";
     },
-    
 
     onConfirm() {
       if (this.dialogMode === "create") {
         this.addPermission();
-        this.closeDialog();
       } else if (this.dialogMode === "edit") {
-        this.closeDialog();
         this.updatePermission(this.permissionAction.id);
-      }else if(this.dialogMode === "delete") {
+      } else if (this.dialogMode === "delete") {
         this.deletePermission(this.permissionAction.delete_id);
-        this.closeDialog();
       }
     },
 
     addPermission() {
-      let permission_info = {
-        start_date: this.startDate,
-        end_date: this.endDate,
-        reason: this.leave_type,
-        description: this.description,
-        student_id: this.student_id,
-      };
-      console.log(permission_info);
-      axios
-        .post("/permissions", permission_info)
-        .then((response) => {
-          console.log(response.data);
-          this.getPermissions();
-        })
-        .catch((error) => {
-          console.log(error.response.data.errors);
-        });
+      if (this.$refs.form.validate()) {
+        let permission_info = {
+          start_date: this.startDate,
+          end_date: this.endDate,
+          reason: this.leave_type,
+          description: this.description,
+          student_id: this.student_id.id,
+        };
+        axios
+          .post("/permissions", permission_info)
+          .then((response) => {
+            console.log(response.data);
+            this.getPermissions();
+            this.closeDialog();
+            this.messageAlert =
+              "Congratulation ! You have created one permission successfully !";
+            this.messageError = "";
+          })
+          .catch((error) => {
+            if (error.response.status === 422) {
+              this.messageError =
+                "Permission start date cannot after permission end date !";
+            }
+          });
+      }
     },
 
     // ---------------------------------- UPDADE PERMISSION ------------------------ \\
     updatePermission(edit_id) {
-      let permission_info = {
-        start_date: this.startDate,
-        end_date: this.endDate,
-        reason: this.leave_type,
-        description: this.description,
-        student_id: this.student_id,
-      };
-      
-      console.log("infomation of permission",permission_info)
-      axios
-        .put("/permissions/" + edit_id, permission_info)
-        .then((response) => {
-          console.log("response data",response.data);
-          this.messageAlert = "Update success";
-          this.getPermissions();
-          
-        })
-        .catch((error) => {
-          console.log(error.response.data.errors);
-        });
+      if (this.$refs.form.validate()) {
+        let studentId = "";
+        if (this.student_id.id !== undefined) {
+          studentId = this.student_id.id;
+        } else {
+          studentId = this.permissionAction.student_id;
+        }
 
-        this.$refs.form.reset();
-        this.student_id = 0;
+        let permission_info = {
+          start_date: this.startDate,
+          end_date: this.endDate,
+          reason: this.leave_type,
+          description: this.description,
+          student_id: studentId,
+        };
 
+        axios
+          .put("/permissions/" + edit_id, permission_info)
+          .then((response) => {
+            console.log("response data", response.data);
+            this.messageAlert = "Update success";
+            this.getPermissions();
+            this.closeDialog();
+            this.messageAlert =
+              "Congratulation ! You have updated on permission successfully !";
+            this.messageError = "";
+          })
+          .catch((error) => {
+            if (error.response.status === 422) {
+              this.messageError =
+                "Permission start date cannot after permission end date !";
+            }
+          });
+      }
     },
 
     //------------------------------ DELETE PERMISSION------------------------
     deletePermission(id) {
       axios.delete("/permissions/" + id).then(() => {
-        this.permissions_data = this.permissions_data.filter((permission) => permission.id !== id);
+        this.permissions_data = this.permissions_data.filter(
+          (permission) => permission.id !== id
+        );
         this.messageAlert = "Delete success !";
-        console.log('delete successful');
+        this.closeDialog();
       });
     },
 
@@ -429,7 +489,7 @@ export default {
       console.log("student", this.contain_students);
     });
 
-    this.role = localStorage.getItem("role")
+    this.role = localStorage.getItem("role");
   },
 };
 </script>

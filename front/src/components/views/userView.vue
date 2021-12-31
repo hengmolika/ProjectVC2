@@ -77,6 +77,21 @@
                 item-text="first_name"
                 item-value="id"
               >
+                <template v-slot:item="data">
+                  <template>
+                    <v-list-item-avatar>
+                      <img :src="url + data.item.profile" />
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        v-html="data.item.first_name"
+                      ></v-list-item-title>
+                      <v-list-item-subtitle
+                        v-html="data.item.class"
+                      ></v-list-item-subtitle>
+                    </v-list-item-content>
+                  </template>
+                </template>
               </v-combobox>
             </v-form>
           </v-card-text>
@@ -305,41 +320,65 @@ export default {
         username: userData.username,
         email: userData.email,
         role: userData.roles,
+        student_id: userData.student_id,
+        student: userData.student
       };
       this.username = this.userAction.username;
       this.email = this.userAction.email;
       if (userData.roles === "ADMIN") {
         this.role = "ADMIN";
+      } else if (userData.roles === "STUDENT") {
+        this.role = this.userAction.role;
+        if (userData.student_id !== null) {
+          this.student = userData.student.first_name;
+        }
       } else {
         this.role = this.userAction.role;
+        this.student = null;
       }
       this.messageError = "";
       this.messageAlert = "";
+      console.log(this.userAction)
     },
     updateUser() {
-      if (this.userAction.role === "ADMIN") {
-        this.role = "ADMIN";
-      }
-      let myNewUserData = {
-        username: this.username,
-        email: this.email,
-        roles: this.role,
-      };
-
-      axios
-        .put("/users/" + this.userAction.id, myNewUserData)
-        .then((response) => {
-          console.log(response.data);
-          this.getUsers();
-          this.closeDialog();
-          this.messageAlert = "Update successfully!";
-        })
-        .catch((error) => {
-          if (error.response.status === 500) {
-            this.messageError =
-              "The email has already been taken by other user!";
+      let student_id = null;
+      if (this.$refs.form.validate()) {
+        if(this.role === "STUDENT") {
+          if (this.student.id !== undefined) {
+            student_id = this.student.id;
+          } else {
+            student_id = this.userAction.student_id
           }
+        }
+
+        if (this.userAction.role === "ADMIN") {
+          this.role = "ADMIN";
+        } 
+        
+        let myNewUserData = {
+          username: this.username,
+          email: this.email,
+          roles: this.role,
+          student_id: student_id
+        };
+    
+
+        axios
+          .put("/users/" + this.userAction.id, myNewUserData)
+          .then((response) => {
+            console.log(response.data);
+            this.getUsers();
+            this.closeDialog();
+            this.messageAlert = "Update successfully!";
+          })
+          .catch((error) => {
+            if (error.response.status === 500) {
+              this.messageError =
+                "The email has already been taken by other user!";
+            }
         });
+      }
+      console.log(this.userAction)
     },
 
     // **********************|~CREATE NEW USER~|********************** //
@@ -349,8 +388,8 @@ export default {
         this.profile = this.images[imageRadom];
 
         let student_id = "";
-        if(this.student !== null) {
-          student_id = this.student.id
+        if (this.student !== null) {
+          student_id = this.student.id;
         }
 
         let userInfo = {
@@ -361,7 +400,6 @@ export default {
           roles: this.role,
           student_id: student_id,
           profile: this.profile,
-          
         };
         axios
           .post("/register", userInfo)
