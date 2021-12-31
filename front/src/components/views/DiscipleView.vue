@@ -25,7 +25,7 @@
         </v-toolbar>
         <div v-if="dialogMode !== 'delete'">
           <v-card-text class="mt-2">
-            <v-form ref="form" v-model="valid">
+            <v-form ref="form" v-model="valid" lazy-validatio>
               <!--**************|~SELECT STUDENT~|**************-->
               <v-col cols="12" class="d-flex me-4">
                 <v-icon>mdi-school</v-icon>
@@ -97,7 +97,7 @@
         <div v-else>
           <v-card-text class="mt-5">
             <v-alert outlined type="error" prominent border="left">
-              Are you sure to delete this permission?
+              Are you sure to delete this discipline?
             </v-alert>
           </v-card-text>
         </div>
@@ -107,11 +107,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="warning" @click="closeDialog"> close </v-btn>
-          <v-btn
-            :color="dialogColor"
-            :disabled="!valid || student_id === 0"
-            @click="onConfirm"
-          >
+          <v-btn :color="dialogColor" :disabled="!valid" @click="onConfirm">
             {{ dialogButton }}
           </v-btn>
         </v-card-actions>
@@ -136,6 +132,7 @@
         v-for="discipline of DisciplineData"
         :key="discipline.id"
         :discipline="discipline"
+        @disciplineToDelete="showDialogDelete"
       >
       </disciplines-card>
     </div>
@@ -158,7 +155,9 @@ export default {
       DisciplineData: [],
       ListOfStudents: [],
       discipline_type: [],
+      disciplineAction: {},
       dialogMode: "create",
+      valid: true,
       dialog: false,
       messageAlert: "",
       student_id: 0,
@@ -231,11 +230,23 @@ export default {
         this.student_id = 0;
       }
     },
+    //----------------------- SHOW DIALOG DELETE -----------------------------------
+    showDialogDelete(id) {
+      this.dialogMode = "delete";
+      this.dialog = true;
+      this.disciplineAction = {
+        id: id,
+      };
+      console.log("delete", id);
+    },
     // **********************|~CONFIRM DIALOG~|********************** //
     onConfirm() {
       if (this.dialogMode === "create") {
         this.addDiscipline();
         this.$refs.form.reset();
+      } else if (this.dialogMode === "delete") {
+        this.deleteDiscipline(this.disciplineAction.id);
+        this.closeDialog();
       }
     },
 
@@ -267,9 +278,20 @@ export default {
             console.log(error.response.data.errors);
           });
       }
-      console.log("hello");
+    },
+
+    //------------------------------ DELETE DISCIPLINE------------------------
+    deleteDiscipline(id) {
+      axios.delete("/disciplines/" + id).then(() => {
+        this.DisciplineData = this.DisciplineData.filter(
+          (discipline) => discipline.id !== id
+        );
+        this.messageAlert = "Delete success !";
+        this.closeDialog();
+      });
     },
   },
+
   mounted() {
     this.getDisciplines();
 

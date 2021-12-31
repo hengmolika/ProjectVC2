@@ -70,13 +70,13 @@
         <v-card-actions>
           <v-speed-dial :direction="direction">
             <template v-slot:activator>
-              <v-btn icon fab small color="blue" dark @click="isTrue = !isTrue">
+              <v-btn icon fab small color="blue" dark @click="isTrue = !isTrue" >
                 <v-icon>
                   {{ isTrue ? "mdi-close" : "mdi-dots-horizontal" }}
                 </v-icon>
               </v-btn>
             </template>
-            <v-btn fab dark small color="red">
+            <v-btn fab dark small color="red"  @click="toDeleteDiscipline(discipline.id)">
               <v-icon>mdi-delete-sweep</v-icon>
             </v-btn>
 
@@ -150,6 +150,8 @@
 <script>
 export default {
   props: ["discipline", "student"],
+  emits: ["disciplineToDelete"],
+
   data() {
     return {
       stu_profile: "http://localhost:8000/storage/images/",
@@ -158,6 +160,13 @@ export default {
       direction: "left",
     };
   },
+    computed: {},
+    methods: {
+    toDeleteDiscipline(id) {
+      this.$emit("disciplineToDelete", id);
+    },
+  },
+ 
 };
 </script>
 
