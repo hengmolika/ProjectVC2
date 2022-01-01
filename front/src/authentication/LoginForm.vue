@@ -1,24 +1,37 @@
 <template>
-
-  <div class="container p-4 mt-12">
+  <div class="wrapper">
     <v-row>
       <v-col class="card mt-12" lg="6" md="6" sm="8">
-        <v-card elevation="12" shaped tile class="pa-4">
-          <h3 class="font-weight-medium text-center mb-4">
-            WELCOME TO STUDENT LIFE
+        <v-card elevation="12" shaped tile class="pa-4" id="bg">
+          <div class="d-flex justify-center mb-3">
+            <v-img
+              lazy-src="https://picsum.photos/id/11/10/6"
+              max-height="270"
+              max-width="130"
+              src="https://cdn3.iconfinder.com/data/icons/education-1-1/256/School-256.png"
+            ></v-img>
+          </div>
+          <h3 class="font-weight-bold text-center text-h4 orange--text">
+            WELCOME TO
           </h3>
+          <h3 class="font-weight-bold text-center mb-4 text-h6 info--text">
+            STUDENT LIFE
+          </h3>
+
+          <hr class="hr-1" />
 
           <v-alert type="error" dismissible v-if="message === 'fail'">
             Invalid Password or Email
           </v-alert>
 
-          <v-form ref="form" v-model="valid" lazy-validation>
+          <v-form ref="form" v-model="valid" lazy-validation class="mt-7">
             <v-text-field
               v-model="email"
               :rules="emailRules"
               label="E-mail"
               prepend-icon="mdi-email"
               required
+              solo
             ></v-text-field>
 
             <v-text-field
@@ -29,22 +42,26 @@
               :type="show ? 'text' : 'password'"
               prepend-icon="mdi-lock"
               required
+              solo
               @click:append="show = !show"
             ></v-text-field>
-
-            <!-- <v-btn
-                color="error"
-                class="mr-4"
-                @click="reset"
+            <v-btn
+              :disabled="!valid"
+              color="red"
+              dark
+              outlined
+              class="mr-4 mt-3 mb-5"
+              left
+              @click="reset"
             >
-                Clear
-            </v-btn> -->
-
+              reset
+            </v-btn>
             <v-btn
               :disabled="!valid"
               color="info"
-              class="mr-4"
-              right
+              dark
+              class="mr-4 mt-3 mb-5"
+              left
               @click="validate"
             >
               Login
@@ -54,7 +71,6 @@
       </v-col>
     </v-row>
   </div>
-
 </template>
 
 <script>
@@ -99,14 +115,25 @@ export default {
 .card {
   margin: auto;
 }
-.body {
-  /* background: url(https://cdn.pixabay.com/photo/2017/02/05/15/04/stones-2040340_960_720.jpg)
+.wrapper {
+  background: url(https://cdn.pixabay.com/photo/2019/08/06/02/16/mountains-4387209_960_720.jpg)
     fixed;
-  background-size: cover;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
-  background-position: center; */
-  /* min-height: 95vh; */
-  /* max-height: auto; */
-  background: red;
+  background-position: center;
+  height: 100%;
+}
+#bg {
+  background: rgba(255, 255, 255, 0.719);
+}
+hr {
+  background-color: #fff;
+  padding: 0;
+}
+
+hr.hr-1 {
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, #2195f336, #f44336, #2195f336);
 }
 </style>
