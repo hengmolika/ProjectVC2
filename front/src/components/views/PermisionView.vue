@@ -26,7 +26,7 @@
           </v-toolbar>
           <div v-if="dialogMode !== 'delete'">
             <v-card-text class="mt-2">
-              <v-form ref="form" v-model="valid">
+              <v-form ref="form" v-model="valid" lazy-validation>
                 <v-col cols="12" class="d-flex">
                   <v-icon>mdi-account</v-icon>
                   <select v-model="student_id" class="mb-3">
