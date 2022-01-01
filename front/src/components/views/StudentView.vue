@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-btn
-      v-if="role !== 'STUDENT' "
+      v-if="role !== 'STUDENT'"
       @click.stop="showCreateForm"
       depressed
       bottom
@@ -143,7 +143,7 @@
             >
             </student-card>
           </tbody>
-           <tbody v-else>
+          <tbody v-else>
             <student-card
               v-for="student in contain_student_search"
               :key="student.id"
@@ -201,7 +201,6 @@ export default {
       phonenumberRules: [(v) => !!v || "PhoneNumber is required"],
       profileRules: [(v) => !!v || "Profile is required"],
       // data get from backend
-
     };
   },
   methods: {
@@ -210,11 +209,11 @@ export default {
         .get("/students")
         .then((res) => {
           this.students = res.data;
-          console.log("get student",this.students);
+          console.log("get student", this.students);
         })
         .catch((error) => {
           console.log(error.res.data.errors);
-      });
+        });
     },
     // **********************|~SHOW CREATE FORM DIALOG~|********************** //
     showCreateForm() {
@@ -337,9 +336,7 @@ export default {
               student.last_name
                 .toLowerCase()
                 .includes(stu_name_key.toLowerCase())) &&
-            student.class
-              .toLowerCase()
-              .includes(class_key.toLowerCase())
+            student.class.toLowerCase().includes(class_key.toLowerCase())
         );
       } else {
         this.contain_student_search = this.students.filter(
@@ -347,9 +344,7 @@ export default {
             student.first_name
               .toLowerCase()
               .includes(stu_name_key.toLowerCase()) ||
-            student.last_name
-              .toLowerCase()
-              .includes(stu_name_key.toLowerCase())
+            student.last_name.toLowerCase().includes(stu_name_key.toLowerCase())
         );
       }
       this.isSearch = true;
@@ -361,11 +356,8 @@ export default {
         this.isSearch = false;
       } else {
         console.log(class_key);
-        this.contain_student_search = this.students.filter(
-          (student) =>
-            student.class
-              .toLowerCase()
-              .includes(class_key.toLowerCase())
+        this.contain_student_search = this.students.filter((student) =>
+          student.class.toLowerCase().includes(class_key.toLowerCase())
         );
         this.isSearch = true;
       }

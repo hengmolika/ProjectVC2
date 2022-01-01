@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto mt-5" :elevation="hover ? 24 : 6" >
+  <v-card class="mx-auto mt-5" :elevation="hover ? 24 : 6">
     <!--~~~~~~~~~~~~~~~~~~~~~~~~|-USER PROFILE-|~~~~~~~~~~~~~~~~~~~~~~~~-->
     <div class="d-flex justify-space-between">
       <div>
@@ -27,30 +27,43 @@
       </div>
 
       <div class="d-flex me-15 mt-7">
-        <v-img v-if="discipline.discipline_type === 'WARNING LETTER'"
+        <v-img
+          v-if="discipline.discipline_type === 'WARNING LETTER'"
           width="80"
           height="80"
           src="../../../../public/letter.png"
         >
         </v-img>
-        <v-img v-else-if="discipline.discipline_type === 'ORAL WARNING'"
+        <v-img
+          v-else-if="discipline.discipline_type === 'ORAL WARNING'"
           width="80"
           height="80"
           src="../../../../public/overal.png"
         ></v-img>
-        <v-img v-else-if="discipline.discipline_type === 'MISCONDUCT'"
+        <v-img
+          v-else-if="discipline.discipline_type === 'MISCONDUCT'"
           width="80"
           height="80"
           src="../../../../public/misconduct.png"
         >
         </v-img>
-        <v-img v-else
+        <v-img
+          v-else
           width="80"
           height="80"
           src="../../../../public/terminate.png"
         >
         </v-img>
-        <span class="font-weight-bold mt-7 ml-15 text-h5 orange--text text-uppercase">
+        <span
+          class="
+            font-weight-bold
+            mt-7
+            ml-15
+            text-h5
+            orange--text
+            text-uppercase
+          "
+        >
           {{ discipline.discipline_type }}
         </span>
       </div>
@@ -60,10 +73,10 @@
     <div class="d-flex justify-space-between">
       <div class="mt-3">
         <!--~~~~~~~~~~~~~~~~~~~~~~~~|-CALENDAR-|~~~~~~~~~~~~~~~~~~~~~~~~-->
-        <v-list-tile-title class="black--text ms-5 text-overline">
+        <v-card-title class="ms-5 text-overline">
           <v-icon class="orange--text ms-1">mdi-calendar-text</v-icon>
           <strong class="ml-3">{{ discipline.date }}</strong>
-        </v-list-tile-title>
+        </v-card-title>
       </div>
       <div>
         <!--~~~~~~~~~~~~~~~~~~~~~~~~|-BUTTON ACTION-|~~~~~~~~~~~~~~~~~~~~~~~~-->
@@ -97,43 +110,53 @@
       <v-card transition="scale-transition">
         <v-card-text v-show="show">
           <div class="d-flex">
-           <div class="d-flex me-15 mt-7">
-        <v-img v-if="discipline.discipline_type === 'WARNING LETTER'"
-          width="80"
-          height="80"
-          src="../../../../public/letter.png"
-        >
-        </v-img>
-        <v-img v-else-if="discipline.discipline_type === 'ORAL WARNING'"
-          width="80"
-          height="80"
-          src="../../../../public/overal.png"
-        ></v-img>
-        <v-img v-else-if="discipline.discipline_type === 'MISCONDUCT'"
-          width="80"
-          height="80"
-          src="../../../../public/misconduct.png"
-        >
-        </v-img>
-        <v-img v-else
-          width="80"
-          height="80"
-          src="../../../../public/terminate.png"
-        >
-        </v-img>
-        <span class="font-weight-bold mt-7 ml-5 text-h5 orange--text text-uppercase">
-          {{ discipline.discipline_type }}
-        </span>
-      </div>
+            <div class="d-flex me-15">
+              <v-img
+                v-if="discipline.discipline_type === 'WARNING LETTER'"
+                width="80"
+                height="80"
+                src="../../../../public/letter.png"
+              >
+              </v-img>
+              <v-img
+                v-else-if="discipline.discipline_type === 'ORAL WARNING'"
+                width="80"
+                height="80"
+                src="../../../../public/overal.png"
+              ></v-img>
+              <v-img
+                v-else-if="discipline.discipline_type === 'MISCONDUCT'"
+                width="80"
+                height="80"
+                src="../../../../public/misconduct.png"
+              >
+              </v-img>
+              <v-img
+                v-else
+                width="80"
+                height="80"
+                src="../../../../public/terminate.png"
+              >
+              </v-img>
+              <span
+                class="
+                  font-weight-bold
+                  mt-7
+                  ml-5
+                  text-h5
+                  orange--text
+                  text-uppercase
+                "
+              >
+                {{ discipline.discipline_type }}
+              </span>
+            </div>
             <v-divider
               vertical
               class="ms-2 font-weight-bold"
               color="#FFC107"
             ></v-divider>
             <div class="ms-5">
-              <p class="font-weight-bold text-h6 orange--text text-uppercase">
-                {{discipline.discipline_type}}
-              </p>
               <span class="font-weight-bold">
                 <strong class="orange--text">REASON: </strong>
                 {{ discipline.description }}
@@ -156,6 +179,7 @@ export default {
       show: false,
       isTrue: false,
       direction: "left",
+      hover:false,
     };
   },
 };

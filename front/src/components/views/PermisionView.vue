@@ -127,7 +127,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="warning" @click="closeDialog"> close </v-btn>
-            <v-btn :color="dialogColor" :disabled="!valid" @click="onConfirm">
+            <v-btn :color="dialogColor" :disabled="!valid"  @click="onConfirm">
               {{ dialogButton }}
             </v-btn>
           </v-card-actions>
@@ -253,7 +253,6 @@ export default {
     getPermissions() {
       axios.get("/permissions").then((response) => {
         this.permissions_data = response.data;
-        // console.log(this.permissions_data);
       });
     },
     // **********************|~CLOSE FORM DIALOG~|********************** //

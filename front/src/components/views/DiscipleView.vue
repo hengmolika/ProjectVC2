@@ -130,14 +130,27 @@
         {{ messageAlert }}
       </v-alert>
       <!--~~~~~~~~~~~~~~~~~~~~~~~~|FORM SEARCH|~~~~~~~~~~~~~~~~~~~~~~~~-->
-      <disciplines-search></disciplines-search>
+      <disciplines-search
+        @searchByAny="searchAnyKey"
+        @selectByType="selectType"
+      ></disciplines-search>
       <!--~~~~~~~~~~~~~~~~~~~~~~~~|CARD|~~~~~~~~~~~~~~~~~~~~~~~~-->
-      <disciplines-card
-        v-for="discipline of DisciplineData"
-        :key="discipline.id"
-        :discipline="discipline"
-      >
-      </disciplines-card>
+      <div v-if="!isSearch">
+        <disciplines-card
+          v-for="discipline of DisciplineData"
+          :key="discipline.id"
+          :discipline="discipline"
+        >
+        </disciplines-card>
+      </div>
+      <div v-else>
+        <disciplines-card
+          v-for="discipline of contain_discipline_search"
+          :key="discipline.id"
+          :discipline="discipline"
+        >
+        </disciplines-card>
+      </div>
     </div>
   </v-container>
 </template>
@@ -155,11 +168,16 @@ export default {
   },
   data() {
     return {
+      stu_profile: "http://localhost:8000/storage/images/",
       DisciplineData: [],
+      contain_discipline_search: [],
       ListOfStudents: [],
       discipline_type: [],
+      isSearch: false,
+      key_notic:"",
       dialogMode: "create",
       dialog: false,
+      valid : false,
       messageAlert: "",
       student_id: 0,
       notic_type: "",
@@ -219,8 +237,13 @@ export default {
     // **********************|~GET DISCIPLINE~|********************** //
     getDisciplines() {
       axios.get("/disciplines").then((response) => {
-        this.DisciplineData = response.data;
-        console.log("dgdsgsdgf", this.DisciplineData);
+        if(!this.isSearch){
+          this.DisciplineData = response.data;
+        }else{
+          this.contain_discipline_search = response.data.filter(
+          (discipline) =>
+            discipline.discipline_type.toLowerCase().includes(this.key_notic.toLowerCase()))
+        }
       });
     },
     // **********************|~CLOSE FORM DIALOG~|********************** //
@@ -257,8 +280,7 @@ export default {
         };
         axios
           .post("/disciplines", disciplines_data)
-          .then((response) => {
-            console.log("discipline response data", response.data);
+          .then(() => {
             this.closeDialog();
             this.getDisciplines();
             this.messageAlert = "Created success";
@@ -267,7 +289,60 @@ export default {
             console.log(error.response.data.errors);
           });
       }
-      console.log("hello");
+    },
+
+    // **********************[SEARCH PERMISSION BY USERNAME AND CLASS]**********************//
+    // ------------------------------(Search By Username)---------------------------------
+    searchAnyKey(any_key, type_key) {
+      if (
+        (any_key !== "" && type_key !== "ALL TYPE") ||
+        (any_key === "" && type_key !== "ALL TYPE")
+      ) {
+        console.log(any_key, type_key);
+        this.contain_discipline_search = this.DisciplineData.filter(
+          (discipline) =>
+            (discipline.students.first_name.toLowerCase().includes(any_key.toLowerCase()) ||
+              discipline.students.last_name
+                .toLowerCase()
+                .includes(any_key.toLowerCase()) || discipline.students.class
+                .toLowerCase()
+                .includes(any_key.toLowerCase())) &&
+            discipline.discipline_type
+              .toLowerCase()
+              .includes(type_key.toLowerCase())
+        );
+      } else {
+        this.contain_discipline_search = this.DisciplineData.filter(
+          (discipline) =>
+            discipline.students.first_name
+              .toLowerCase()
+              .includes(any_key.toLowerCase()) ||
+            discipline.students.last_name
+              .toLowerCase()
+              .includes(any_key.toLowerCase()) ||
+            discipline.students.class
+              .toLowerCase()
+              .includes(any_key.toLowerCase())
+        );
+      }
+      this.isSearch = true;
+    },
+    //----------------------------(Search By select Class)-------------------------------------
+    selectType(type_key) {
+      if (type_key === "ALL TYPE") {
+        this.getDisciplines();
+        this.isSearch = false;
+      } else {
+        console.log(type_key);
+        this.key_notic = type_key;
+        this.contain_discipline_search = this.DisciplineData.filter(
+          (discipline) =>
+            discipline.discipline_type
+              .toLowerCase()
+              .includes(type_key.toLowerCase())
+        );
+        this.isSearch = true;
+      }
     },
   },
   mounted() {
@@ -276,12 +351,10 @@ export default {
     // **********************|~GET STUDENT~|********************** //
     axios.get("/students").then((response) => {
       this.ListOfStudents = response.data;
-      console.log("student lisht", this.ListOfStudents);
     });
-
+  // **********************|~GET DISCIPLINE NOTIC TYPE~|********************** //
     axios.get("/discipline_type").then((response) => {
       this.discipline_type = response.data.disciplines;
-      console.log("discipline type", this.discipline_type);
     });
   },
 };

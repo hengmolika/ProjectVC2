@@ -4,23 +4,26 @@
       <!--*~*~*~*~*~*~*~*~*~*~*~*~[SEARCH]~*~*~*~*~*~*~*~*~*~*~*~*-->
       <v-col class="d-flex" cols="12" sm="4">
         <v-text-field
-          v-model="keySearchPermission"
-          label="Search student*"
+          v-model="keySearch"
+          @keyup="addSearchStudent"
+          label="Search Student Or Class*"
           solo
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
         <!--*~*~*~*~*~*~*~*~*~*~*~*~[BTN SEARCH]~*~*~*~*~*~*~*~*~*~*~*~*-->
-        <v-btn color="info ms-2 p-4" height="47">
-          <v-icon>mdi-account-search</v-icon>
+        <v-btn color="orange white--text ms-2 p-4" height="47"
+        @click="clearText">
+          Clear
         </v-btn>
       </v-col>
       <!--*~*~*~*~*~*~*~*~*~*~*~*~[SELECT]~*~*~*~*~*~*~*~*~*~*~*~*-->
-      <v-col class="d-flex" cols="12" sm="2">
+      <v-col class="d-flex" cols="6" sm="3">
         <v-select
-          :items="items"
-          label="Display sort by*"
+          :items="discipline_type"
+          label="Sort By Notic Type *"
           solo
-          v-model="className"
+          v-model="notic_type"
+          @change="addSelectType"
         ></v-select>
       </v-col>
     </v-row>
@@ -28,40 +31,38 @@
 </template>
 
 <script>
+import axios from "../../../api/api.js";
 export default {
-  emits: ["searchByStudentName", "SelectByClass"],
+  emits: ["searchByAny", "selectByType"],
   data() {
     return {
-      items: [
-        "All Class",
-        "WEB 2021 A",
-        "WEB 2021 B",
-        "WEB 2022 A",
-        "WEB 2022 B",
-        "SNA 2021",
-        "SNA 2022",
-      ],
-      className: "All Class",
-      keySearchPermission: "",
+      notic_type: "ALL TYPE",
+      keySearch: "",
+      discipline_type: [],
     };
   },
   methods: {
-    searchStudentPermission() {
+    addSearchStudent() {
       this.$emit(
-        "searchByStudentName",
-        this.keySearchPermission,
-        this.className
+        "searchByAny",
+        this.keySearch,
+        this.notic_type
       );
-      console.log(this.keySearchPermission);
     },
-    SelectClass() {
-      this.$emit("SelectByClass", this.className);
+    addSelectType() {
+      this.$emit("selectByType", this.notic_type);
     },
 
     clearText() {
-      this.keySearchPermission = "";
-      this.searchStudentPermission();
+      this.keySearch = "";
+      this.addSearchStudent();
     },
+  },
+  mounted() {
+    axios.get("/discipline_type").then((response) => {
+      this.discipline_type = response.data.disciplines;
+      this.discipline_type.unshift('ALL TYPE');
+    });
   },
 };
 </script>
