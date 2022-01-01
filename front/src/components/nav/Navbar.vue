@@ -24,6 +24,13 @@
 
           <v-divider></v-divider>
 
+          <v-list-item :to="{ path: '/dashboard' }">
+            <v-list-item-icon>
+              <v-icon>mdi-view-dashboard</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>DASHBOARD</v-list-item-title>
+          </v-list-item>
+
           <v-list-item :to="{ path: '/user' }">
             <v-list-item-icon>
               <v-icon>mdi-account-group-outline</v-icon>
@@ -38,14 +45,14 @@
             <v-list-item-title>STUDENT</v-list-item-title>
           </v-list-item>
 
-          <v-list-item :to="{ path: '/permission' }">
+          <v-list-item :to="{ path: '/permision' }">
             <v-list-item-icon>
               <v-icon>mdi-account-multiple</v-icon>
             </v-list-item-icon>
             <v-list-item-title>PERMISSION</v-list-item-title>
           </v-list-item>
 
-          <v-list-item :to="{ path: '/disciples' }">
+          <v-list-item :to="{ path: '/discipline' }">
             <v-list-item-icon>
               <v-icon>mdi-account-multiple</v-icon>
             </v-list-item-icon>
@@ -75,18 +82,18 @@
                 }}
               </v-icon>
             </v-list-item-icon>
-            <v-list-item-title> {{
-                  $vuetify.theme.dark
-                    ? "LIGHT MODE"
-                    : "DARK MODE"
-                }}</v-list-item-title>
+            <v-list-item-title>
+              {{
+                $vuetify.theme.dark ? "LIGHT MODE" : "DARK MODE"
+              }}</v-list-item-title
+            >
           </v-list-item>
           <!--~*~*~*~*~*~*~*~*~*~*~*~*~*~*|END OF DARK MOOD|~*~*~*~*~*~*~*~*~*~*~*~*~*~*-->
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar>
+    <v-toolbar elevation="12">
       <span class="hidden-md-and-up">
         <v-app-bar-nav-icon @click="showSideBar"> </v-app-bar-nav-icon>
       </span>
@@ -119,33 +126,43 @@
       <h5 class="hidden-md-and-up">STUDENT LIFE</h5>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn active-class="grey-5 info--text" text :to="{ path: '/user' }">
-          <v-icon left active-class="grey-5 info--text"
+        <v-btn
+          active-class="info"
+          text
+          :to="{ path: '/dashboard' }"
+        >
+          <v-icon left active-class="info"
+            >mdi-view-dashboard</v-icon
+          >
+          DASHBOARD
+        </v-btn>
+        <v-btn active-class="info" text :to="{ path: '/user' }" v-if="userdata.roles === 'ADMIN' ">
+          <v-icon left active-class="info"
             >mdi-account-group-outline</v-icon
           >
           USER
         </v-btn>
-        <v-btn active-class="grey-5 info--text" text :to="{ path: '/student' }">
-          <v-icon left active-class="grey-5 info--text">mdi-school</v-icon>
+        <v-btn active-class="info" text :to="{ path: '/student' }">
+          <v-icon left active-class="info">mdi-school</v-icon>
           STUDENT
         </v-btn>
         <v-btn
-          active-class="grey-5 info--text"
+          active-class="info"
           text
-          :to="{ path: '/permission' }"
+          :to="{ path: '/permision' }"
         >
-          <v-icon left active-class="grey-5 info--text"
+          <v-icon left active-class="info"
             >mdi-account-star</v-icon
           >
           PERMISSION
         </v-btn>
 
         <v-btn
-          active-class="grey-5 info--text"
+          active-class="info"
           text
-          :to="{ path: '/disciples' }"
+          :to="{ path: '/discipline' }"
         >
-          <v-icon left active-class="grey-5 info--text"
+          <v-icon left active-class="info"
             >mdi-account-multiple-outline</v-icon
           >
           DISCIPLINE
@@ -165,7 +182,6 @@
               $vuetify.theme.dark ? "mdi-weather-night" : "mdi-weather-sunny"
             }}
           </v-icon>
-          
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>

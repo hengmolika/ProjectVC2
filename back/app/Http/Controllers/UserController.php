@@ -23,6 +23,7 @@ class UserController extends Controller
         $user->roles = $request->roles;
         $user->password = bcrypt($request->password);
         $user->profile = $request->profile;
+        $user->student_id = $request->student_id;
         $user->save();
 
         //create token is a key can access to api
@@ -59,7 +60,7 @@ class UserController extends Controller
     }
     public function index()
     {
-        return User::get();
+        return User::with(['student'])->get();
     }
     
     public function show($id)
@@ -78,6 +79,7 @@ class UserController extends Controller
         $user->username = $request->username;
         $user->email = $request->email;
         $user->roles = $request->roles;
+        $user->student_id = $request->student_id;
         $user->save();
 
         return response()->json(['message' => 'user updated!', "data" => $user], 200);

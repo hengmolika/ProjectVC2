@@ -8,23 +8,23 @@
     </nav-app>
 
     <v-main>
-      <router-view @requestLogin="Login" :message="messageError"> </router-view>
+      <router-view @requestLogin="Login" :message="messageError" :userdata="user"> </router-view>
     </v-main>
-    <footer-app v-if="!$route.path.includes('login')"></footer-app>
+    <!-- <footer-app v-if="!$route.path.includes('login')"></footer-app> -->
   </v-app>
 </template>
 
 <script>
 import axios from "./api/api.js";
 import NavBar from "./components/nav/Navbar.vue";
-import Footer from "./components/nav/Footer.vue";
+// import Footer from "./components/nav/Footer.vue";
 
 export default {
   name: "App",
 
   components: {
     "nav-app": NavBar,
-    "footer-app": Footer,
+    // "footer-app": Footer,
   },
   data() {
     return {
@@ -40,7 +40,10 @@ export default {
           this.user = response.data.user;
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("userId", response.data.user.id);
-          this.$router.push("/user");
+          localStorage.setItem("role", response.data.user.roles);
+         
+          this.$router.push("/")
+    
         })
         .catch((error) => {
           if (error.response.status === 401) {
@@ -61,13 +64,14 @@ export default {
   },
   mounted() {
     
-    if (localStorage.userId) {
+    if (localStorage.userId && localStorage.token) {
       axios.get("/users/" + localStorage.userId).then((response) => {
         this.user = response.data;
       });
-      axios.defaults.headers.common["Authorization"] =
-      "Bearer " + localStorage.getItem("token");
-    }
+
+      // axios.defaults.headers.common["Authorization"] =
+      // "Bearer " + localStorage.getItem("token");
+    } 
   },
 };
 </script>

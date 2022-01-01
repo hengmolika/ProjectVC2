@@ -1,8 +1,9 @@
 <template>
+
   <div class="container p-4 mt-12">
     <v-row>
       <v-col class="card mt-12" lg="6" md="6" sm="8">
-        <v-card elevation="2" shaped tile class="pa-4">
+        <v-card elevation="12" shaped tile class="pa-4">
           <h3 class="font-weight-medium text-center mb-4">
             WELCOME TO STUDENT LIFE
           </h3>
@@ -32,12 +33,12 @@
             ></v-text-field>
 
             <!-- <v-btn
-                            color="error"
-                            class="mr-4"
-                            @click="reset"
-                        >
-                            Clear
-                        </v-btn> -->
+                color="error"
+                class="mr-4"
+                @click="reset"
+            >
+                Clear
+            </v-btn> -->
 
             <v-btn
               :disabled="!valid"
@@ -53,6 +54,7 @@
       </v-col>
     </v-row>
   </div>
+
 </template>
 
 <script>
@@ -96,5 +98,15 @@ export default {
 <style scoped>
 .card {
   margin: auto;
+}
+.body {
+  /* background: url(https://cdn.pixabay.com/photo/2017/02/05/15/04/stones-2040340_960_720.jpg)
+    fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; */
+  /* min-height: 95vh; */
+  /* max-height: auto; */
+  background: red;
 }
 </style>

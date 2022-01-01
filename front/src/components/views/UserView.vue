@@ -1,6 +1,7 @@
 <template>
   <div class="text-center">
     <v-btn
+      v-if="userRole === 'ADMIN'"
       depressed
       @click.stop="showCreateForm"
       bottom
@@ -41,6 +42,9 @@
                 prepend-icon="mdi-email"
                 required
               ></v-text-field>
+              <v-alert dense outlined type="error" v-if="messageError !== ''">
+                {{ messageError }}
+              </v-alert>
 
               <v-text-field
                 v-if="dialogMode !== 'edit'"
@@ -58,21 +62,10 @@
                 v-model="role"
                 :items="roles"
                 :rules="roleRules"
-                prepend-icon="mdi-key"
+                prepend-icon="mdi-account-star"
                 label="Select"
                 required
               ></v-select>
-
-              <!-- <v-file-input
-                v-if="
-                  role !== null && role === 'SOCIAL AFFAIL OFFICER' && dialogMode !== 'edit'
-                "
-                :rules="profileRules"
-                v-model="profile"
-                label="Choose image profile"
-                filled
-                prepend-icon="mdi-camera"
-              ></v-file-input> -->
 
               <v-combobox
                 v-if="role === 'STUDENT'"
@@ -81,6 +74,8 @@
                 label="Choose"
                 v-model="student"
                 :items="students"
+                item-text="first_name"
+                item-value="id"
               >
               </v-combobox>
             </v-form>
@@ -110,21 +105,33 @@
 
     <!-- TABLE -->
 
-    <div class="container mt-12">
+    <div class="container">
+      <v-alert
+        type="success"
+        class="mt-6"
+        elevation="12"
+        v-if="messageAlert !== ''"
+        dismissible
+        border="left"
+        colored-border
+      >
+        {{ messageAlert }}
+      </v-alert>
       <user-search
+        class="mt-12"
         @searchByusername="searchUsername"
         @SelectRole="selectByRole"
       >
       </user-search>
-      <v-simple-table>
+      <v-simple-table class="mb-12">
         <template v-slot:default>
-          <thead>
+          <thead class="tableHead">
             <tr>
               <th>PROFILE</th>
               <th>USERNAME</th>
               <th>EMAIL</th>
               <th>ROLE</th>
-              <th class="text-center">ACTION</th>
+              <th v-if="userRole === 'ADMIN'">ACTION</th>
             </tr>
           </thead>
           <tbody v-if="!isSearch">
@@ -154,21 +161,18 @@
 </template>
 
 <script>
-// IMPORT AXIOS ----------------------------------------
 import axios from "../../api/api.js";
-
-// IMPORT USER FORM SEARCH ----------------------------------------
 import UserFormSearch from "../pages/users/userFormSearch.vue";
-
-// IMPORT USER CARD ----------------------------------------
 import UserCard from "../pages/users/userCard.vue";
 export default {
   components: {
     "user-search": UserFormSearch,
     "user-card": UserCard,
   },
+  props: ["userdata"],
   data() {
     return {
+      userRole: "",
       userId: null,
       valid: true,
       url: "http://localhost:8000/storage/images/",
@@ -176,6 +180,7 @@ export default {
       show1: false,
       dialogMode: "create",
       roles: ["SOCIAL AFFAIL OFFICER", "STUDENT"],
+      notStudentRole: ["STUDENT"],
       students: [],
       images: [
         "https://i.pinimg.com/236x/92/8f/c8/928fc874edae45b141ac45bdc157a70b.jpg",
@@ -196,7 +201,12 @@ export default {
         (v) => !!v || "Email is required",
         (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
       ],
-      passwordRules: [(v) => !!v || "Password is required"],
+      passwordRules: [
+        (v) => !!v || "Password is required",
+        (v) =>
+          (v && v.length <= 8 && v.length >= 4) ||
+          "Password must be at least 4 and less than 8 characters",
+      ],
       studentRules: [(v) => !!v || "Student is required"],
       roleRules: [(v) => !!v || "Role is required"],
       profileRules: [(v) => !!v || "Profile is required"],
@@ -206,6 +216,9 @@ export default {
       dialogDisplay: false,
       isSearch: false,
       contain_users_search: [],
+      // MESSAGE DATA
+      messageError: "",
+      messageAlert: "",
     };
   },
   computed: {
@@ -247,6 +260,13 @@ export default {
     },
   },
   methods: {
+    // **********************|~GET USER FROM BACKEND~|********************** //
+    getUsers() {
+      axios.get("/users").then((res) => {
+        this.users = res.data;
+      });
+    },
+
     // **********************|~SHOW CREATE FORM DIALOG~|********************** //
     showCreateForm() {
       this.dialogMode = "create";
@@ -258,6 +278,8 @@ export default {
       this.student = null;
       this.role = null;
       this.profile = "";
+      this.messageError = "";
+      this.messageAlert = "";
     },
     // **********************|~SHOW REMOVE DIALOG~|********************** //
     showDeleteDialog(id) {
@@ -266,6 +288,7 @@ export default {
       };
       this.dialogMode = "delete";
       this.dialog = true;
+      this.messageAlert = "";
     },
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
@@ -290,7 +313,8 @@ export default {
       } else {
         this.role = this.userAction.role;
       }
-
+      this.messageError = "";
+      this.messageAlert = "";
     },
     updateUser() {
       if (this.userAction.role === "ADMIN") {
@@ -304,22 +328,30 @@ export default {
 
       axios
         .put("/users/" + this.userAction.id, myNewUserData)
-        .then((res) => {
-          console.log(res.data);
+        .then((response) => {
+          console.log(response.data);
           this.getUsers();
           this.closeDialog();
+          this.messageAlert = "Update successfully!";
         })
         .catch((error) => {
-          console.log(error.res.data.errors);
+          if (error.response.status === 500) {
+            this.messageError =
+              "The email has already been taken by other user!";
+          }
         });
     },
 
     // **********************|~CREATE NEW USER~|********************** //
     createUser() {
       if (this.$refs.form.validate()) {
-
         const imageRadom = Math.floor(Math.random() * this.images.length);
         this.profile = this.images[imageRadom];
+
+        let student_id = "";
+        if(this.student !== null) {
+          student_id = this.student.id
+        }
 
         let userInfo = {
           username: this.username,
@@ -327,17 +359,20 @@ export default {
           password: this.password,
           password_confirmation: this.password,
           roles: this.role,
+          student_id: student_id,
           profile: this.profile,
+          
         };
         axios
           .post("/register", userInfo)
           .then((response) => {
             this.users.push(response.data.user);
-            localStorage.setItem("token", response.data.token);
             this.closeDialog();
+            this.messageAlert = "Create succussfully !";
           })
           .catch((error) => {
-            console.log(error.response.data.errors);
+            this.messageError = error.response.data.errors.email[0];
+            console.log(this.messageError);
           });
       }
     },
@@ -348,6 +383,7 @@ export default {
       axios.delete("/users/" + id).then(() => {
         this.users = this.users.filter((user) => user.id !== id);
         this.closeDialog();
+        this.messageAlert = "Delete succussfully!";
       });
     },
 
@@ -360,13 +396,6 @@ export default {
       } else if (this.dialogMode === "edit") {
         this.updateUser();
       }
-    },
-
-    // **********************|~GET USERS~|********************** //
-    getUsers() {
-      axios.get("/users").then((res) => {
-        this.users = res.data;
-      });
     },
 
     //==========================SEARCH USER BY USERNAME============================================================
@@ -406,6 +435,36 @@ export default {
   mounted() {
     this.getUsers();
     this.userId = localStorage.getItem("userId");
+    this.userRole = localStorage.getItem("role");
+
+    axios
+      .get("/students")
+      .then((res) => {
+        // for (let student of res.data) {
+        //   let myStudent = (student.first_name + " " + student.last_name)
+        //   this.students.push(myStudent)
+        // }
+        this.students = res.data;
+      })
+      .catch((error) => {
+        console.log(error.res.data.errors);
+      });
   },
 };
 </script>
+
+<style scoped>
+.text-center {
+  background: url(https://cdn.pixabay.com/photo/2017/02/05/15/04/stones-2040340_960_720.jpg)
+    fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100vh;
+  max-height: auto;
+}
+
+.tableHead {
+  background: #03a9f4;
+}
+</style>
