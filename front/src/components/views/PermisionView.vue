@@ -114,8 +114,13 @@
                   </v-col>
                 </v-row>
 
-                <v-alert v-if="messageError !== '' " text type="error" icon="mdi-alert-octagon">
-                  {{messageError}}
+                <v-alert
+                  v-if="messageError !== ''"
+                  text
+                  type="error"
+                  icon="mdi-alert-octagon"
+                >
+                  {{ messageError }}
                 </v-alert>
 
                 <v-select
@@ -241,6 +246,7 @@ export default {
       contain_students: [],
       contain_permission_search: [],
       isSearch: false,
+      key_class_search: "",
 
       startDateRules: [(v) => !!v || "Start date is required"],
       endDateRules: [(v) => !!v || "End date is required"],
@@ -292,7 +298,15 @@ export default {
   methods: {
     getPermissions() {
       axios.get("/permissions").then((response) => {
-        this.permissions_data = response.data;
+        if (!this.isSearch) {
+          this.permissions_data = response.data;
+        } else {
+          this.contain_permission_search = response.data.filter((permission) =>
+            permission.students.class
+              .toLowerCase()
+              .includes(this.key_class_search.toLowerCase())
+          );
+        }
       });
     },
     // **********************|~CLOSE FORM DIALOG~|********************** //
@@ -421,6 +435,9 @@ export default {
         this.permissions_data = this.permissions_data.filter(
           (permission) => permission.id !== id
         );
+        this.contain_permission_search = this.contain_permission_search.filter(
+          (permission) => permission.id !== id
+        );
         this.messageAlert = "Delete success !";
         this.closeDialog();
       });
@@ -465,6 +482,7 @@ export default {
         this.getPermissions();
         this.isSearch = false;
       } else {
+        this.key_class_search = class_key;
         console.log(class_key);
         this.contain_permission_search = this.permissions_data.filter(
           (permission) =>

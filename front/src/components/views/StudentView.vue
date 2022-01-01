@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-btn
-      v-if="role !== 'STUDENT' "
+      v-if="role !== 'STUDENT'"
       @click.stop="showCreateForm"
       depressed
       bottom
@@ -143,7 +143,7 @@
             >
             </student-card>
           </tbody>
-           <tbody v-else>
+          <tbody v-else>
             <student-card
               v-for="student in contain_student_search"
               :key="student.id"
@@ -185,6 +185,7 @@ export default {
       messageAlert: "",
       contain_student_search: [],
       isSearch: false,
+      key_class_search: "",
       // Data from input
       first_name: null,
       last_name: null,
@@ -201,7 +202,6 @@ export default {
       phonenumberRules: [(v) => !!v || "PhoneNumber is required"],
       profileRules: [(v) => !!v || "Profile is required"],
       // data get from backend
-
     };
   },
   methods: {
@@ -209,12 +209,19 @@ export default {
       axios
         .get("/students")
         .then((res) => {
-          this.students = res.data;
-          // console.log(this.students);
+          if (!this.isSearch) {
+            this.students = res.data;
+          } else {
+            this.contain_student_search = res.data.filter((student) =>
+              student.class
+                .toLowerCase()
+                .includes(this.key_class_search.toLowerCase())
+            );
+          }
         })
         .catch((error) => {
           console.log(error.res.data.errors);
-      });
+        });
     },
     // **********************|~SHOW CREATE FORM DIALOG~|********************** //
     showCreateForm() {
@@ -316,6 +323,7 @@ export default {
       let id = this.studentAction.id;
       axios.delete("/students/" + id).then(() => {
         this.students = this.students.filter((student) => student.id !== id);
+        this.contain_student_search = this.contain_student_search.filter((student) => student.id !== id);
         this.messageAlert = "Delete success";
         this.closeDialog();
       });
@@ -337,9 +345,7 @@ export default {
               student.last_name
                 .toLowerCase()
                 .includes(stu_name_key.toLowerCase())) &&
-            student.class
-              .toLowerCase()
-              .includes(class_key.toLowerCase())
+            student.class.toLowerCase().includes(class_key.toLowerCase())
         );
       } else {
         this.contain_student_search = this.students.filter(
@@ -347,9 +353,7 @@ export default {
             student.first_name
               .toLowerCase()
               .includes(stu_name_key.toLowerCase()) ||
-            student.last_name
-              .toLowerCase()
-              .includes(stu_name_key.toLowerCase())
+            student.last_name.toLowerCase().includes(stu_name_key.toLowerCase())
         );
       }
       this.isSearch = true;
@@ -360,12 +364,10 @@ export default {
         this.getStudent();
         this.isSearch = false;
       } else {
+        this.key_class_search = class_key;
         console.log(class_key);
-        this.contain_student_search = this.students.filter(
-          (student) =>
-            student.class
-              .toLowerCase()
-              .includes(class_key.toLowerCase())
+        this.contain_student_search = this.students.filter((student) =>
+          student.class.toLowerCase().includes(class_key.toLowerCase())
         );
         this.isSearch = true;
       }

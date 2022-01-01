@@ -1,7 +1,10 @@
 <template>
   <div class="text-center">
     <v-btn
+<<<<<<< HEAD
+=======
       v-if="userRole === 'ADMIN'"
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
       depressed
       @click.stop="showCreateForm"
       bottom
@@ -42,9 +45,12 @@
                 prepend-icon="mdi-email"
                 required
               ></v-text-field>
+<<<<<<< HEAD
+=======
               <v-alert dense outlined type="error" v-if="messageError !== ''">
                 {{ messageError }}
               </v-alert>
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
 
               <v-text-field
                 v-if="dialogMode !== 'edit'"
@@ -62,11 +68,29 @@
                 v-model="role"
                 :items="roles"
                 :rules="roleRules"
+<<<<<<< HEAD
+                prepend-icon="mdi-key"
+=======
                 prepend-icon="mdi-account-star"
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
                 label="Select"
                 required
               ></v-select>
 
+<<<<<<< HEAD
+              <!-- <v-file-input
+                v-if="
+                  role !== null && role === 'SOCIAL AFFAIL OFFICER' && dialogMode !== 'edit'
+                "
+                :rules="profileRules"
+                v-model="profile"
+                label="Choose image profile"
+                filled
+                prepend-icon="mdi-camera"
+              ></v-file-input> -->
+
+=======
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
               <v-combobox
                 v-if="role === 'STUDENT'"
                 :rules="studentRules"
@@ -74,9 +98,28 @@
                 label="Choose"
                 v-model="student"
                 :items="students"
+<<<<<<< HEAD
+              >
+=======
                 item-text="first_name"
                 item-value="id"
               >
+                <template v-slot:item="data">
+                  <template>
+                    <v-list-item-avatar>
+                      <img :src="url + data.item.profile" />
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        v-html="data.item.first_name"
+                      ></v-list-item-title>
+                      <v-list-item-subtitle
+                        v-html="data.item.class"
+                      ></v-list-item-subtitle>
+                    </v-list-item-content>
+                  </template>
+                </template>
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
               </v-combobox>
             </v-form>
           </v-card-text>
@@ -105,6 +148,10 @@
 
     <!-- TABLE -->
 
+<<<<<<< HEAD
+    <div class="container mt-12">
+      <user-search
+=======
     <div class="container">
       <v-alert
         type="success"
@@ -119,19 +166,30 @@
       </v-alert>
       <user-search
         class="mt-12"
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
         @searchByusername="searchUsername"
         @SelectRole="selectByRole"
       >
       </user-search>
+<<<<<<< HEAD
+      <v-simple-table>
+        <template v-slot:default>
+          <thead>
+=======
       <v-simple-table class="mb-12">
         <template v-slot:default>
           <thead class="tableHead">
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
             <tr>
               <th>PROFILE</th>
               <th>USERNAME</th>
               <th>EMAIL</th>
               <th>ROLE</th>
+<<<<<<< HEAD
+              <th class="text-center">ACTION</th>
+=======
               <th v-if="userRole === 'ADMIN'">ACTION</th>
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
             </tr>
           </thead>
           <tbody v-if="!isSearch">
@@ -161,18 +219,33 @@
 </template>
 
 <script>
+<<<<<<< HEAD
+// IMPORT AXIOS ----------------------------------------
+import axios from "../../api/api.js";
+
+// IMPORT USER FORM SEARCH ----------------------------------------
+import UserFormSearch from "../pages/users/userFormSearch.vue";
+
+// IMPORT USER CARD ----------------------------------------
+=======
 import axios from "../../api/api.js";
 import UserFormSearch from "../pages/users/userFormSearch.vue";
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
 import UserCard from "../pages/users/userCard.vue";
 export default {
   components: {
     "user-search": UserFormSearch,
     "user-card": UserCard,
   },
+<<<<<<< HEAD
+  data() {
+    return {
+=======
   props: ["userdata"],
   data() {
     return {
       userRole: "",
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
       userId: null,
       valid: true,
       url: "http://localhost:8000/storage/images/",
@@ -180,7 +253,10 @@ export default {
       show1: false,
       dialogMode: "create",
       roles: ["SOCIAL AFFAIL OFFICER", "STUDENT"],
+<<<<<<< HEAD
+=======
       notStudentRole: ["STUDENT"],
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
       students: [],
       images: [
         "https://i.pinimg.com/236x/92/8f/c8/928fc874edae45b141ac45bdc157a70b.jpg",
@@ -201,25 +277,31 @@ export default {
         (v) => !!v || "Email is required",
         (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
       ],
+<<<<<<< HEAD
+      passwordRules: [(v) => !!v || "Password is required"],
+=======
       passwordRules: [
         (v) => !!v || "Password is required",
         (v) =>
           (v && v.length <= 8 && v.length >= 4) ||
           "Password must be at least 4 and less than 8 characters",
       ],
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
       studentRules: [(v) => !!v || "Student is required"],
       roleRules: [(v) => !!v || "Role is required"],
       profileRules: [(v) => !!v || "Profile is required"],
       // DATA GET FROM BACKEND ----------------------------------------
       users: [],
-      isSearch: false,
-      contain_users_search: [],
-      key_role_search:"",
       userAction: {},
       dialogDisplay: false,
+      isSearch: false,
+      contain_users_search: [],
+<<<<<<< HEAD
+=======
       // MESSAGE DATA
       messageError: "",
       messageAlert: "",
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
     };
   },
   computed: {
@@ -261,21 +343,16 @@ export default {
     },
   },
   methods: {
+<<<<<<< HEAD
+=======
     // **********************|~GET USER FROM BACKEND~|********************** //
     getUsers() {
       axios.get("/users").then((res) => {
-        if (!this.isSearch) {
-          this.users = res.data;
-        } else {
-          this.contain_users_search = res.data.filter((user) =>
-            user.roles
-              .toLowerCase()
-              .includes(this.key_role_search.toLowerCase())
-          );
-        }
+        this.users = res.data;
       });
     },
 
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
     // **********************|~SHOW CREATE FORM DIALOG~|********************** //
     showCreateForm() {
       this.dialogMode = "create";
@@ -287,8 +364,11 @@ export default {
       this.student = null;
       this.role = null;
       this.profile = "";
+<<<<<<< HEAD
+=======
       this.messageError = "";
       this.messageAlert = "";
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
     },
     // **********************|~SHOW REMOVE DIALOG~|********************** //
     showDeleteDialog(id) {
@@ -297,7 +377,10 @@ export default {
       };
       this.dialogMode = "delete";
       this.dialog = true;
+<<<<<<< HEAD
+=======
       this.messageAlert = "";
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
     },
     // **********************|~CLOSE FORM DIALOG~|********************** //
     closeDialog() {
@@ -314,16 +397,21 @@ export default {
         username: userData.username,
         email: userData.email,
         role: userData.roles,
+<<<<<<< HEAD
+=======
+        student_id: userData.student_id,
+        student: userData.student
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
       };
       this.username = this.userAction.username;
       this.email = this.userAction.email;
       if (userData.roles === "ADMIN") {
         this.role = "ADMIN";
+<<<<<<< HEAD
       } else {
         this.role = this.userAction.role;
       }
-      this.messageError = "";
-      this.messageAlert = "";
+
     },
     updateUser() {
       if (this.userAction.role === "ADMIN") {
@@ -337,52 +425,118 @@ export default {
 
       axios
         .put("/users/" + this.userAction.id, myNewUserData)
-        .then((response) => {
-          console.log(response.data);
+        .then((res) => {
+          console.log(res.data);
           this.getUsers();
           this.closeDialog();
-          this.messageAlert = "Update successfully!";
         })
         .catch((error) => {
-          if (error.response.status === 500) {
-            this.messageError =
-              "The email has already been taken by other user!";
-          }
+          console.log(error.res.data.errors);
         });
+=======
+      } else if (userData.roles === "STUDENT") {
+        this.role = this.userAction.role;
+        if (userData.student_id !== null) {
+          this.student = userData.student.first_name;
+        }
+      } else {
+        this.role = this.userAction.role;
+        this.student = null;
+      }
+      this.messageError = "";
+      this.messageAlert = "";
+      console.log(this.userAction)
+    },
+    updateUser() {
+      let student_id = null;
+      if (this.$refs.form.validate()) {
+        if(this.role === "STUDENT") {
+          if (this.student.id !== undefined) {
+            student_id = this.student.id;
+          } else {
+            student_id = this.userAction.student_id
+          }
+        }
+
+        if (this.userAction.role === "ADMIN") {
+          this.role = "ADMIN";
+        } 
+        
+        let myNewUserData = {
+          username: this.username,
+          email: this.email,
+          roles: this.role,
+          student_id: student_id
+        };
+    
+
+        axios
+          .put("/users/" + this.userAction.id, myNewUserData)
+          .then((response) => {
+            console.log(response.data);
+            this.getUsers();
+            this.closeDialog();
+            this.messageAlert = "Update successfully!";
+          })
+          .catch((error) => {
+            if (error.response.status === 500) {
+              this.messageError =
+                "The email has already been taken by other user!";
+            }
+        });
+      }
+      console.log(this.userAction)
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
     },
 
     // **********************|~CREATE NEW USER~|********************** //
     createUser() {
       if (this.$refs.form.validate()) {
+<<<<<<< HEAD
+
+        const imageRadom = Math.floor(Math.random() * this.images.length);
+        this.profile = this.images[imageRadom];
+
+=======
         const imageRadom = Math.floor(Math.random() * this.images.length);
         this.profile = this.images[imageRadom];
 
         let student_id = "";
-        if(this.student !== null) {
-          student_id = this.student.id
+        if (this.student !== null) {
+          student_id = this.student.id;
         }
 
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
         let userInfo = {
           username: this.username,
           email: this.email,
           password: this.password,
           password_confirmation: this.password,
           roles: this.role,
+<<<<<<< HEAD
+=======
           student_id: student_id,
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
           profile: this.profile,
-          
         };
         axios
           .post("/register", userInfo)
           .then((response) => {
             this.users.push(response.data.user);
-            this.getUsers();
+<<<<<<< HEAD
+            localStorage.setItem("token", response.data.token);
+            this.closeDialog();
+          })
+          .catch((error) => {
+            console.log(error.response.data.errors);
+=======
             this.closeDialog();
             this.messageAlert = "Create succussfully !";
           })
           .catch((error) => {
             this.messageError = error.response.data.errors.email[0];
             console.log(this.messageError);
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
           });
       }
     },
@@ -392,9 +546,11 @@ export default {
       let id = this.userAction.id;
       axios.delete("/users/" + id).then(() => {
         this.users = this.users.filter((user) => user.id !== id);
-        this.contain_users_search = this.contain_users_search.filter((user) => user.id !== id);
         this.closeDialog();
+<<<<<<< HEAD
+=======
         this.messageAlert = "Delete succussfully!";
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
       });
     },
 
@@ -409,6 +565,16 @@ export default {
       }
     },
 
+<<<<<<< HEAD
+    // **********************|~GET USERS~|********************** //
+    getUsers() {
+      axios.get("/users").then((res) => {
+        this.users = res.data;
+      });
+    },
+
+=======
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
     //==========================SEARCH USER BY USERNAME============================================================
     // Search By Username-----------------------------------------------------------------------------
     searchUsername(username_key, role_key) {
@@ -435,8 +601,7 @@ export default {
         this.getUsers();
         this.isSearch = false;
       } else {
-        this.key_role_search = role_key;
-        // console.log("hello",this.key_role_search);
+        console.log(role_key);
         this.contain_users_search = this.users.filter((user) =>
           user.roles.toLowerCase().includes(role_key.toLowerCase())
         );
@@ -447,15 +612,16 @@ export default {
   mounted() {
     this.getUsers();
     this.userId = localStorage.getItem("userId");
+<<<<<<< HEAD
+  },
+};
+</script>
+=======
     this.userRole = localStorage.getItem("role");
 
     axios
       .get("/students")
       .then((res) => {
-        // for (let student of res.data) {
-        //   let myStudent = (student.first_name + " " + student.last_name)
-        //   this.students.push(myStudent)
-        // }
         this.students = res.data;
       })
       .catch((error) => {
@@ -480,3 +646,4 @@ export default {
   background: #03a9f4;
 }
 </style>
+>>>>>>> 2ba55be41eba78ea2facac7cf07c1b77b6a7a4da
