@@ -278,7 +278,7 @@ export default {
       this.dialogMode = "create";
       this.dialog = true;
       this.messageAlert = "";
-      // this.$refs.form.reset();
+      this.discipline_date = null;
     },
     // **********************|~ADD DISCIPLINE~|********************** //
     addDiscipline() {
@@ -357,7 +357,7 @@ export default {
         this.isSearch = false;
       } else {
         console.log(type_key);
-        this.key_notic = type_key;
+        this.key_notic_search = type_key;
         this.contain_discipline_search = this.DisciplineData.filter(
           (discipline) =>
             discipline.discipline_type

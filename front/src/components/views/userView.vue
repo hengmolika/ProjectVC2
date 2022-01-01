@@ -212,10 +212,11 @@ export default {
       profileRules: [(v) => !!v || "Profile is required"],
       // DATA GET FROM BACKEND ----------------------------------------
       users: [],
-      userAction: {},
-      dialogDisplay: false,
       isSearch: false,
       contain_users_search: [],
+      key_role_search:"",
+      userAction: {},
+      dialogDisplay: false,
       // MESSAGE DATA
       messageError: "",
       messageAlert: "",
@@ -263,7 +264,15 @@ export default {
     // **********************|~GET USER FROM BACKEND~|********************** //
     getUsers() {
       axios.get("/users").then((res) => {
-        this.users = res.data;
+        if (!this.isSearch) {
+          this.users = res.data;
+        } else {
+          this.contain_users_search = res.data.filter((user) =>
+            user.roles
+              .toLowerCase()
+              .includes(this.key_role_search.toLowerCase())
+          );
+        }
       });
     },
 
@@ -325,6 +334,7 @@ export default {
         email: this.email,
         roles: this.role,
       };
+
       axios
         .put("/users/" + this.userAction.id, myNewUserData)
         .then((response) => {
@@ -366,6 +376,7 @@ export default {
           .post("/register", userInfo)
           .then((response) => {
             this.users.push(response.data.user);
+            this.getUsers();
             this.closeDialog();
             this.messageAlert = "Create succussfully !";
           })
@@ -381,6 +392,7 @@ export default {
       let id = this.userAction.id;
       axios.delete("/users/" + id).then(() => {
         this.users = this.users.filter((user) => user.id !== id);
+        this.contain_users_search = this.contain_users_search.filter((user) => user.id !== id);
         this.closeDialog();
         this.messageAlert = "Delete succussfully!";
       });
@@ -423,7 +435,8 @@ export default {
         this.getUsers();
         this.isSearch = false;
       } else {
-        console.log(role_key);
+        this.key_role_search = role_key;
+        // console.log("hello",this.key_role_search);
         this.contain_users_search = this.users.filter((user) =>
           user.roles.toLowerCase().includes(role_key.toLowerCase())
         );
@@ -439,6 +452,10 @@ export default {
     axios
       .get("/students")
       .then((res) => {
+        // for (let student of res.data) {
+        //   let myStudent = (student.first_name + " " + student.last_name)
+        //   this.students.push(myStudent)
+        // }
         this.students = res.data;
       })
       .catch((error) => {
