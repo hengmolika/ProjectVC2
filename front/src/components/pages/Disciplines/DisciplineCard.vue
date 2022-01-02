@@ -93,7 +93,7 @@
               <v-icon>mdi-delete-sweep</v-icon>
             </v-btn>
 
-            <v-btn fab dark small color="indigo">
+            <v-btn fab dark small color="indigo" @click="toEditDiscipline(discipline)">
               <v-icon>mdi-account-edit</v-icon>
             </v-btn>
             <v-btn fab dark small color="orange" @click="show = !show">
@@ -173,7 +173,7 @@
 <script>
 export default {
   props: ["discipline", "student"],
-  emits: ["disciplineToDelete"],
+  emits: ["disciplineToDelete","disciplineToEdit" ],
 
   data() {
     return {
@@ -189,6 +189,10 @@ export default {
     toDeleteDiscipline(id) {
       this.$emit("disciplineToDelete", id);
     },
+    toEditDiscipline(discipline){
+      this.$emit("disciplineToEdit",discipline);
+
+    }
   },
  
 };

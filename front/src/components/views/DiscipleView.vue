@@ -137,6 +137,7 @@
           :key="discipline.id"
           :discipline="discipline"
           @disciplineToDelete="showDialogDelete"
+          @disciplineToEdit="showDialogEdit"
         >
         </disciplines-card>
       </div>
@@ -146,6 +147,7 @@
           :key="discipline.id"
           :discipline="discipline"
           @disciplineToDelete="showDialogDelete"
+          @disciplineToEdit="showDialogEdit"
         >
         </disciplines-card>
       </div>
@@ -172,12 +174,13 @@ export default {
       ListOfStudents: [],
       discipline_type: [],
       isSearch: false,
-      key_notic_search:"",
+      key_notic_search: "",
       disciplineAction: {},
       dialogMode: "create",
       valid: true,
       dialog: false,
       messageAlert: "",
+
       student_id: 0,
       notic_type: "",
       description: "",
@@ -236,12 +239,14 @@ export default {
     // **********************|~GET DISCIPLINE~|********************** //
     getDisciplines() {
       axios.get("/disciplines").then((response) => {
-        if(!this.isSearch){
+        if (!this.isSearch) {
           this.DisciplineData = response.data;
-        }else{
-          this.contain_discipline_search = response.data.filter(
-          (discipline) =>
-            discipline.discipline_type.toLowerCase().includes(this.key_notic_search.toLowerCase()))
+        } else {
+          this.contain_discipline_search = response.data.filter((discipline) =>
+            discipline.discipline_type
+              .toLowerCase()
+              .includes(this.key_notic_search.toLowerCase())
+          );
         }
       });
     },
@@ -262,6 +267,16 @@ export default {
       };
       console.log("delete", id);
     },
+    showDialogEdit(discipline) {
+      this.dialogMode = "edit";
+      this.dialog = true;
+      this.disciplineAction = discipline;
+      this.student_id = discipline.student_id;
+      this.notic_type = discipline.discipline_type;
+      this.discipline_date = discipline.date;
+      this.description = discipline.description;
+    },
+
     // **********************|~CONFIRM DIALOG~|********************** //
     onConfirm() {
       if (this.dialogMode === "create") {
@@ -270,7 +285,29 @@ export default {
       } else if (this.dialogMode === "delete") {
         this.deleteDiscipline(this.disciplineAction.id);
         this.closeDialog();
+      } else if (this.dialogMode === "edit") {
+        this.updateDiscipline();
       }
+    },
+
+    updateDiscipline() {
+      let newDiscipline = {
+        student_id: this.student_id,
+        discipline_type: this.notic_type,
+        date: this.discipline_date,
+        description: this.description,
+      };
+      axios
+        .put("/disciplines/" + this.disciplineAction.id, newDiscipline)
+        .then((res) => {
+          console.log(res.data);
+          this.getDisciplines();
+          this.closeDialog();
+          this.messageAlert = " Update successfully!";
+        })
+        .catch((error) => {
+          console.log(error.res.data.errors);
+        });
     },
 
     // **********************|~SHOW CREATE FORM DIALOG~|********************** //
@@ -324,10 +361,13 @@ export default {
         console.log(any_key, type_key);
         this.contain_discipline_search = this.DisciplineData.filter(
           (discipline) =>
-            (discipline.students.first_name.toLowerCase().includes(any_key.toLowerCase()) ||
+            (discipline.students.first_name
+              .toLowerCase()
+              .includes(any_key.toLowerCase()) ||
               discipline.students.last_name
                 .toLowerCase()
-                .includes(any_key.toLowerCase()) || discipline.students.class
+                .includes(any_key.toLowerCase()) ||
+              discipline.students.class
                 .toLowerCase()
                 .includes(any_key.toLowerCase())) &&
             discipline.discipline_type
@@ -367,7 +407,6 @@ export default {
         this.isSearch = true;
       }
     },
-    
   },
 
   mounted() {
@@ -377,7 +416,7 @@ export default {
     axios.get("/students").then((response) => {
       this.ListOfStudents = response.data;
     });
-  // **********************|~GET DISCIPLINE NOTIC TYPE~|********************** //
+    // **********************|~GET DISCIPLINE NOTIC TYPE~|********************** //
     axios.get("/discipline_type").then((response) => {
       this.discipline_type = response.data.disciplines;
     });
