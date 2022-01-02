@@ -125,7 +125,7 @@
       </user-search>
       <v-simple-table class="mb-12">
         <template v-slot:default>
-          <thead class="tableHead">
+          <thead class="tableHead font-weight-bold text-caption">
             <tr>
               <th>PROFILE</th>
               <th>USERNAME</th>
@@ -135,7 +135,7 @@
             </tr>
           </thead>
           <tbody v-if="!isSearch">
-            <user-card
+            <user-card class="font-weight-medium text-caption"
               v-for="user of users"
               :key="user.id"
               :user="user"
