@@ -1,6 +1,6 @@
 <template>
   <!--~!~!~!~!~!~!~!~!~!~!~|CARD|~!~!~!~!~!~!~!~!~!~!~-->
-  <v-hover v-slot="{ hover }" class="mt-5">
+  <v-hover v-slot="{ hover }" class="mt-3">
     <v-card
       id="card"
       class="mx-auto"
@@ -66,7 +66,8 @@
           </v-icon>
           | view
         </v-btn>
-        <v-btn v-if="role !== 'STUDENT' "
+        <v-btn
+          v-if="role !== 'STUDENT'"
           text
           :class="{ 'show-btn-edit': hover }"
           :color="transparent"
@@ -78,12 +79,17 @@
           | edit
         </v-btn>
 
-        <v-btn text v-if="role !== 'STUDENT' " :class="{ 'show-btn-remove': hover }" :color="transparent"
-          @click="deletePermission(permission.id)" >
+        <v-btn
+          text
+          v-if="role !== 'STUDENT'"
+          :class="{ 'show-btn-remove': hover }"
+          :color="transparent"
+          @click="deletePermission(permission.id)"
+        >
           <v-icon :class="{ 'show-btn-remove': hover }" :color="transparent">
             mdi-delete
           </v-icon>
-          | remove 
+          | remove
         </v-btn>
       </v-card-actions>
       <!--BTN HOVER-->
@@ -115,7 +121,7 @@
 <!--~!~!~!~!~!~!~!~!~!~!~|SCRIPT|~!~!~!~!~!~!~!~!~!~!~-->
 <script>
 export default {
-  props: ["permission","student"],
+  props: ["permission", "student"],
   emits: ["permissiontEdit", "permissionToDelete"],
 
   data() {
