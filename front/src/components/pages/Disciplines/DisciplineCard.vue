@@ -1,200 +1,126 @@
 <template>
-  <v-card class="mx-auto mt-5" :elevation="hover ? 24 : 6">
-    <!--~~~~~~~~~~~~~~~~~~~~~~~~|-USER PROFILE-|~~~~~~~~~~~~~~~~~~~~~~~~-->
-    <div class="d-flex justify-space-between">
-      <div>
-        <v-card-title>
-          <v-avatar height="70" width="70">
-            <v-img
-              class="elevation-6"
-              :src="stu_profile + discipline.students.profile"
-            ></v-img>
-          </v-avatar>
-          <v-divider
-            vertical
-            class="ms-5 font-weight-bold"
-            color="info"
-          ></v-divider>
-          <!--~~~~~~~~~~~~~~~~~~~~~~~~|-STUDENT NAME & CLASS-|~~~~~~~~~~~~~~~~~~~~~~~~-->
-          <span class="ms-3 font-weight-medium mt-5">
-            {{ discipline.students.first_name }}
-            {{ discipline.students.last_name }}
-            <p class="text-overline">
-              {{ discipline.students.class }}
-            </p>
-          </span>
-        </v-card-title>
-      </div>
-
-      <div class="d-flex me-15 mt-7">
-        <v-img
-          v-if="discipline.discipline_type === 'WARNING LETTER'"
-          width="80"
-          height="80"
-          src="../../../../public/letter.png"
-        >
-        </v-img>
-        <v-img
-          v-else-if="discipline.discipline_type === 'ORAL WARNING'"
-          width="80"
-          height="80"
-          src="../../../../public/overal.png"
-        ></v-img>
-        <v-img
-          v-else-if="discipline.discipline_type === 'MISCONDUCT'"
-          width="80"
-          height="80"
-          src="../../../../public/misconduct.png"
-        >
-        </v-img>
-        <v-img
-          v-else
-          width="80"
-          height="80"
-          src="../../../../public/terminate.png"
-        >
-        </v-img>
-        <span
-          class="
-            font-weight-bold
-            mt-7
-            ml-15
-            text-h5
-            orange--text
-            text-uppercase
-          "
-        >
-          {{ discipline.discipline_type }}
-        </span>
-      </div>
-    </div>
-
-    <v-divider inset class="font-weight-bold"></v-divider>
-    <div class="d-flex justify-space-between">
-      <div class="mt-3">
-        <!--~~~~~~~~~~~~~~~~~~~~~~~~|-CALENDAR-|~~~~~~~~~~~~~~~~~~~~~~~~-->
-        <v-card-title class="ms-5 text-overline">
-          <v-icon class="orange--text ms-1">mdi-calendar-text</v-icon>
-          <strong class="ml-3">{{ discipline.date }}</strong>
-        </v-card-title>
-      </div>
-      <div>
-        <!--~~~~~~~~~~~~~~~~~~~~~~~~|-BUTTON ACTION-|~~~~~~~~~~~~~~~~~~~~~~~~-->
-        <v-card-actions>
-          <v-speed-dial :direction="direction">
-            <template v-slot:activator>
-              <v-btn icon fab small color="blue" dark @click="isTrue = !isTrue" >
-                <v-icon>
-                  {{ isTrue ? "mdi-close" : "mdi-dots-horizontal" }}
+  <v-expansion-panels class="mt-4">
+    <v-expansion-panel>
+      <v-expansion-panel-header>
+        <v-row no-gutters>
+          <v-col cols="3">
+            <div class="d-flex align-center">
+              <div>
+                <v-icon
+                  dark
+                  left
+                  :color="
+                    discipline.discipline_type === 'TERMINATION'
+                      ? 'error'
+                      : discipline.discipline_type === 'WARNING LETTER'
+                      ? 'warning'
+                      : discipline.discipline_type === 'MISCONDUCT'
+                      ? 'red'
+                      : 'warning'
+                  "
+                >
+                  {{
+                    discipline.discipline_type === "TERMINATION"
+                      ? "mdi-cancel"
+                      : discipline.discipline_type === "WARNING LETTER"
+                      ? "mdi-alert"
+                      : discipline.discipline_type === "MISCONDUCT"
+                      ? "mdi-cards"
+                      : "mdi-alert-octagon"
+                  }}
                 </v-icon>
-              </v-btn>
-            </template>
-            <v-btn fab dark small color="red"  @click="toDeleteDiscipline(discipline.id)">
-              <v-icon>mdi-delete-sweep</v-icon>
-            </v-btn>
-
-            <v-btn fab dark small color="indigo" @click="toEditDiscipline(discipline)">
-              <v-icon>mdi-account-edit</v-icon>
-            </v-btn>
-            <v-btn fab dark small color="orange" @click="show = !show">
-              <v-icon>{{
-                show ? "mdi-chevron-up" : "mdi-chevron-down"
-              }}</v-icon>
-            </v-btn>
-          </v-speed-dial>
-        </v-card-actions>
-      </div>
-    </div>
-    <!--~~~~~~~~~~~~~~~~~~~~~~~~|-DETAIL CARD-|~~~~~~~~~~~~~~~~~~~~~~~~-->
-    <v-slide-y-transition>
-      <v-card transition="scale-transition">
-        <v-card-text v-show="show">
-          <div class="d-flex">
-            <div class="d-flex me-15">
-              <v-img
-                v-if="discipline.discipline_type === 'WARNING LETTER'"
-                width="80"
-                height="80"
-                src="../../../../public/letter.png"
-              >
-              </v-img>
-              <v-img
-                v-else-if="discipline.discipline_type === 'ORAL WARNING'"
-                width="80"
-                height="80"
-                src="../../../../public/overal.png"
-              ></v-img>
-              <v-img
-                v-else-if="discipline.discipline_type === 'MISCONDUCT'"
-                width="80"
-                height="80"
-                src="../../../../public/misconduct.png"
-              >
-              </v-img>
-              <v-img
-                v-else
-                width="80"
-                height="80"
-                src="../../../../public/terminate.png"
-              >
-              </v-img>
-              <span
-                class="
-                  font-weight-bold
-                  mt-7
-                  ml-5
-                  text-h5
-                  orange--text
-                  text-uppercase
-                "
-              >
+              </div>
+              <div class="ml-4">
                 {{ discipline.discipline_type }}
-              </span>
+              </div>
             </div>
-            <v-divider
-              vertical
-              class="ms-2 font-weight-bold"
-              color="#FFC107"
-            ></v-divider>
-            <div class="ms-5">
-              <span class="font-weight-bold">
-                <strong class="orange--text">REASON: </strong>
-                {{ discipline.description }}
-              </span>
+          </v-col>
+          <v-col cols="3">
+            <div class="d-flex">
+              <div>
+                <v-img
+                  class="mr-4 rounded"
+                  lazy-src="https://picsum.photos/id/11/10/6"
+                  max-height="50"
+                  max-width="70"
+                  :src="stu_profile + discipline.students.profile"
+                ></v-img>
+              </div>
+              <div>
+                <div>
+                  <h3>
+                    {{ discipline.students.first_name }}
+                    {{ discipline.students.last_name }}
+                  </h3>
+                </div>
+                <div class="grey--text mt-4">
+                  {{ discipline.students.class }}
+                </div>
+              </div>
             </div>
+          </v-col>
+          <v-col cols="3">
+            <v-icon class="green--text">mdi-calendar-text</v-icon>
+            <strong> {{ discipline.date }} </strong>
+          </v-col>
+          <v-col cols="3">
+            <div class="d-flex justify-end mr-4" v-if="role === 'ADMIN' ">
+              <div class="mr-2">
+                <v-btn icon color="success" @click="toEditDiscipline(discipline)">
+                  <v-icon> mdi-account-edit </v-icon>
+                </v-btn>
+              </div>
+              <div>
+                <v-btn icon color="error" @click="toDeleteDiscipline(discipline.id)">
+                  <v-icon> mdi-delete-sweep </v-icon>
+                </v-btn>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+      </v-expansion-panel-header>
+      <v-expansion-panel-content class="mt-4">
+        <v-divider></v-divider>
+        <h4 class="mt-4">REASON</h4>
+
+        <v-alert outlined class="mt-2">
+          <div>
+            {{ discipline.description }}
           </div>
-        </v-card-text>
-      </v-card>
-    </v-slide-y-transition>
-  </v-card>
+        </v-alert>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+  </v-expansion-panels>
 </template>
 
 <!--~~~~~~~~~~~~~~~~~~~~~~~~|SCRIPT|~~~~~~~~~~~~~~~~~~~~~~~~-->
 <script>
 export default {
   props: ["discipline", "student"],
-  emits: ["disciplineToDelete","disciplineToEdit" ],
+  emits: ["disciplineToDelete", "disciplineToEdit"],
 
   data() {
     return {
+      role: "",
       stu_profile: "http://localhost:8000/storage/images/",
       show: false,
       isTrue: false,
       direction: "left",
-      hover:false,
+      hover: false,
     };
   },
-    computed: {},
-    methods: {
+  computed: {},
+  methods: {
     toDeleteDiscipline(id) {
       this.$emit("disciplineToDelete", id);
     },
-    toEditDiscipline(discipline){
-      this.$emit("disciplineToEdit",discipline);
-
-    }
+    toEditDiscipline(discipline) {
+      this.$emit("disciplineToEdit", discipline);
+    },
   },
- 
+  mounted() {
+    this.role = localStorage.getItem("role");
+  },
 };
 </script>
 

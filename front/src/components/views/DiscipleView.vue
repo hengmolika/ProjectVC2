@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <v-btn
+      v-if="role === 'ADMIN'"
       depressed
       @click.stop="showCreateForm"
       bottom
@@ -28,8 +29,8 @@
             <v-form ref="form" v-model="valid" lazy-validation>
               <!--**************|~SELECT STUDENT~|**************-->
               <v-col cols="12" class="d-flex me-4">
-                <v-icon>mdi-school</v-icon>
-                <select v-model="student_id">
+                <!-- <v-icon>mdi-school</v-icon> -->
+                <!-- <select v-model="student_id">
                   <option
                     v-for="student of ListOfStudents"
                     :key="student.id"
@@ -38,7 +39,37 @@
                     {{ student.first_name }}
                     {{ student.last_name }}
                   </option>
-                </select>
+                </select> -->
+
+                <v-combobox
+                  :rules="studentRules"
+                  prepend-icon="mdi-account-multiple"
+                  label="Choose"
+                  v-model="student_id"
+                  :items="ListOfStudents"
+                  item-text="first_name"
+                  item-value="id"
+                  :return-object="true"
+                >
+                  <template v-slot:item="data">
+                    <template>
+                      <v-list-item-avatar>
+                        <img :src="stu_profile + data.item.profile" />
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          v-html="
+                            data.item.first_name + ' ' + data.item.last_name
+                          "
+                        ></v-list-item-title>
+                        <v-list-item-subtitle
+                          v-html="data.item.class"
+                        ></v-list-item-subtitle>
+                      </v-list-item-content>
+                    </template>
+                  </template>
+                </v-combobox>
+
               </v-col>
               <!--**************|~SELECT DISCIPLINE TYPE~|**************-->
               <v-col class="d-flex" cols="12">
@@ -47,7 +78,6 @@
                   v-model="notic_type"
                   :items="discipline_type"
                   label="Select notic type"
-                  solo
                   :rules="notic_type_rule"
                 ></v-select>
               </v-col>
@@ -83,7 +113,7 @@
                 <v-textarea
                   v-model="description"
                   prepend-icon="mdi-comment"
-                  solo
+                  auto-grow
                   label="DESCRIPTION*"
                   rows="1"
                   :rules="descriptionRule"
@@ -168,6 +198,7 @@ export default {
   },
   data() {
     return {
+      role: "",
       stu_profile: "http://localhost:8000/storage/images/",
       DisciplineData: [],
       contain_discipline_search: [],
@@ -181,7 +212,7 @@ export default {
       dialog: false,
       messageAlert: "",
 
-      student_id: 0,
+      student_id: null,
       notic_type: "",
       description: "",
       discipline_date: new Date(
@@ -195,6 +226,7 @@ export default {
       date_rule: [(v) => !!v || "Please select date"],
       notic_type_rule: [(v) => !!v || "Please select notic type"],
       descriptionRule: [(v) => !!v || "Please input description detail"],
+      studentRules: [(v) => !!v || "Student is required!"],
     };
   },
   computed: {
@@ -255,7 +287,7 @@ export default {
       this.dialog = false;
       if (this.dialogMode !== "delete") {
         this.$refs.form.reset();
-        this.student_id = 0;
+        // this.student_id = 0;
       }
     },
     //----------------------- SHOW DIALOG DELETE -----------------------------------
@@ -271,7 +303,7 @@ export default {
       this.dialogMode = "edit";
       this.dialog = true;
       this.disciplineAction = discipline;
-      this.student_id = discipline.student_id;
+      this.student_id = discipline.students.first_name;
       this.notic_type = discipline.discipline_type;
       this.discipline_date = discipline.date;
       this.description = discipline.description;
@@ -284,30 +316,38 @@ export default {
         this.$refs.form.reset();
       } else if (this.dialogMode === "delete") {
         this.deleteDiscipline(this.disciplineAction.id);
-        this.closeDialog();
       } else if (this.dialogMode === "edit") {
         this.updateDiscipline();
       }
     },
 
     updateDiscipline() {
-      let newDiscipline = {
-        student_id: this.student_id,
-        discipline_type: this.notic_type,
-        date: this.discipline_date,
-        description: this.description,
-      };
-      axios
-        .put("/disciplines/" + this.disciplineAction.id, newDiscipline)
-        .then((res) => {
-          console.log(res.data);
-          this.getDisciplines();
-          this.closeDialog();
-          this.messageAlert = " Update successfully!";
-        })
-        .catch((error) => {
-          console.log(error.res.data.errors);
-        });
+      if (this.$refs.form.validate()) {
+        let studentId = "";
+        if (this.student_id.id !== undefined) {
+          studentId = this.student_id.id;
+        } else {
+          studentId = this.disciplineAction.student_id;
+        }
+        
+        let newDiscipline = {
+          student_id: studentId,
+          discipline_type: this.notic_type,
+          date: this.discipline_date,
+          description: this.description,
+        };
+        axios
+          .put("/disciplines/" + this.disciplineAction.id, newDiscipline)
+          .then((res) => {
+            console.log(res.data);
+            this.getDisciplines();
+            this.closeDialog();
+            this.messageAlert = "Congratulation, you have updated!";
+          })
+          .catch((error) => {
+            console.log(error.res.data.errors);
+          });
+      }
     },
 
     // **********************|~SHOW CREATE FORM DIALOG~|********************** //
@@ -321,7 +361,7 @@ export default {
     addDiscipline() {
       if (this.$refs.form.validate()) {
         let disciplines_data = {
-          student_id: this.student_id,
+          student_id: this.student_id.id,
           discipline_type: this.notic_type,
           date: this.discipline_date,
           description: this.description,
@@ -411,6 +451,7 @@ export default {
 
   mounted() {
     this.getDisciplines();
+    this.role = localStorage.getItem("role");
 
     // **********************|~GET STUDENT~|********************** //
     axios.get("/students").then((response) => {

@@ -415,6 +415,7 @@ export default {
     });
 
     this.getStudent();
+    this.role = localStorage.getItem('role');
   },
 };
 </script>
