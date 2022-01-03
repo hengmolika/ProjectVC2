@@ -121,7 +121,7 @@ export default {
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
-  height: 100%;
+  height: 102%;
 }
 #bg {
   background: rgba(255, 255, 255, 0.719);

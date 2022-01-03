@@ -126,45 +126,30 @@
       <h5 class="hidden-md-and-up">STUDENT LIFE</h5>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
+        <v-btn active-class="info" text :to="{ path: '/dashboard' }">
+          <v-icon left active-class="info">mdi-view-dashboard</v-icon>
+          DASHBOARD
+        </v-btn>
         <v-btn
           active-class="info"
           text
-          :to="{ path: '/dashboard' }"
+          :to="{ path: '/user' }"
+          v-if="userdata.roles === 'ADMIN'"
         >
-          <v-icon left active-class="info"
-            >mdi-view-dashboard</v-icon
-          >
-          DASHBOARD
-        </v-btn>
-        <v-btn active-class="info" text :to="{ path: '/user' }" v-if="userdata.roles === 'ADMIN' ">
-          <v-icon left active-class="info"
-            >mdi-account-group-outline</v-icon
-          >
+          <v-icon left active-class="info">mdi-account-group-outline</v-icon>
           USER
         </v-btn>
         <v-btn active-class="info" text :to="{ path: '/student' }">
           <v-icon left active-class="info">mdi-school</v-icon>
           STUDENT
         </v-btn>
-        <v-btn
-          active-class="info"
-          text
-          :to="{ path: '/permision' }"
-        >
-          <v-icon left active-class="info"
-            >mdi-account-star</v-icon
-          >
+        <v-btn active-class="info" text :to="{ path: '/permision' }">
+          <v-icon left active-class="info">mdi-account-star</v-icon>
           PERMISSION
         </v-btn>
 
-        <v-btn
-          active-class="info"
-          text
-          :to="{ path: '/discipline' }"
-        >
-          <v-icon left active-class="info"
-            >mdi-account-multiple-outline</v-icon
-          >
+        <v-btn active-class="info" text :to="{ path: '/discipline' }">
+          <v-icon left active-class="info">mdi-account-multiple-outline</v-icon>
           DISCIPLINE
         </v-btn>
         <v-btn
