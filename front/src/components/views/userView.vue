@@ -125,7 +125,7 @@
       </user-search>
       <v-simple-table class="mb-12">
         <template v-slot:default>
-          <thead class="tableHead">
+          <thead class="tableHead font-weight-bold text-caption">
             <tr>
               <th>PROFILE</th>
               <th>USERNAME</th>
@@ -135,7 +135,7 @@
             </tr>
           </thead>
           <tbody v-if="!isSearch">
-            <user-card
+            <user-card class="font-weight-medium text-caption"
               v-for="user of users"
               :key="user.id"
               :user="user"
@@ -214,7 +214,7 @@ export default {
       users: [],
       isSearch: false,
       contain_users_search: [],
-      key_role_search:"",
+      key_role_search: "",
       userAction: {},
       dialogDisplay: false,
       // MESSAGE DATA
@@ -358,8 +358,8 @@ export default {
         this.profile = this.images[imageRadom];
 
         let student_id = "";
-        if(this.student !== null) {
-          student_id = this.student.id
+        if (this.student !== null) {
+          student_id = this.student.id;
         }
 
         let userInfo = {
@@ -370,7 +370,6 @@ export default {
           roles: this.role,
           student_id: student_id,
           profile: this.profile,
-          
         };
         axios
           .post("/register", userInfo)
@@ -392,7 +391,9 @@ export default {
       let id = this.userAction.id;
       axios.delete("/users/" + id).then(() => {
         this.users = this.users.filter((user) => user.id !== id);
-        this.contain_users_search = this.contain_users_search.filter((user) => user.id !== id);
+        this.contain_users_search = this.contain_users_search.filter(
+          (user) => user.id !== id
+        );
         this.closeDialog();
         this.messageAlert = "Delete succussfully!";
       });

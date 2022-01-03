@@ -123,7 +123,7 @@
       <v-simple-table>
         <template v-slot:default>
           <thead>
-            <tr class="tableHead">
+            <tr class="tableHead font-weight-bold text-caption">
               <th>Profile</th>
               <th>FirstName</th>
               <th>LastName</th>
@@ -134,7 +134,7 @@
             </tr>
           </thead>
           <tbody v-if="!isSearch">
-            <student-card
+            <student-card class="font-weight-bold"
               v-for="student in students"
               :key="student.id"
               :student="student"
@@ -144,7 +144,7 @@
             </student-card>
           </tbody>
           <tbody v-else>
-            <student-card
+            <student-card class="font-weight-medium text-caption"
               v-for="student in contain_student_search"
               :key="student.id"
               :student="student"
@@ -415,6 +415,7 @@ export default {
     });
 
     this.getStudent();
+    this.role = localStorage.getItem('role');
   },
 };
 </script>
@@ -423,3 +424,4 @@ export default {
 .tableHead {
   background: #00b7ff;
 }
+</style>

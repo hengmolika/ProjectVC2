@@ -8,6 +8,8 @@ import StudentView from '../components/views/StudentView.vue'
 import DiscipleView from '../components/views/DiscipleView.vue'
 import PermisionView from '../components/views/PermisionView.vue'
 import PageNotFound from '../components/views/notFound.vue'
+import StudentDetailView from '../components/views/StudentDetailView.vue'
+
 
 Vue.use(VueRouter)
 
@@ -21,6 +23,10 @@ const routes = [{
   {
     path: '/login',
     component: LoginForm
+  },
+  {
+    path: '/studentdetailview',
+    component: StudentDetailView
   },
   {
     path: '/user',
@@ -81,7 +87,7 @@ let authenticationGuard = (to, from, next) => {
         next();
       }
     }
-    
+
   } else {
     if (localStorage.userId) {
       if (to.path === "/login") {

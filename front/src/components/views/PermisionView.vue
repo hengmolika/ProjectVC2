@@ -158,7 +158,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="warning" @click="closeDialog"> close </v-btn>
-            <v-btn :color="dialogColor" :disabled="!valid" @click="onConfirm">
+            <v-btn :color="dialogColor" :disabled="!valid"  @click="onConfirm">
               {{ dialogButton }}
             </v-btn>
           </v-card-actions>
@@ -202,11 +202,11 @@
     </v-container>
   </section>
 </template>
+
 <script>
 import axios from "../../api/api.js";
 import PermissionSearch from "../pages/permissions/permissionSearch.vue";
 import PermissionCard from "../pages/permissions/permissionCard.vue";
-// import moment from "moment";
 export default {
   components: {
     "permission-card": PermissionCard,
@@ -453,9 +453,7 @@ export default {
         console.log("search", username_key, class_key);
         this.contain_permission_search = this.permissions_data.filter(
           (permission) =>
-            (permission.students.first_name
-              .toLowerCase()
-              .includes(username_key.toLowerCase()) ||
+            (permission.students.first_name.toLowerCase().includes(username_key.toLowerCase()) ||
               permission.students.last_name
                 .toLowerCase()
                 .includes(username_key.toLowerCase())) &&

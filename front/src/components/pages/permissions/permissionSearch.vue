@@ -10,18 +10,31 @@
         @keyup="searchStudentPermission"
       ></v-text-field>
       <!--*~*~*~*~*~*~*~*~*~*~*~*~[BTN SEARCH]~*~*~*~*~*~*~*~*~*~*~*~*-->
-      <v-btn color="info ms-2 p-4" height="47" width="95" @click.prevent="clearText"> Search </v-btn>
+      <v-btn
+        color="info ms-2 p-4"
+        height="47"
+        width="95"
+        @click.prevent="clearText"
+      >
+        Search
+      </v-btn>
     </v-col>
     <!--*~*~*~*~*~*~*~*~*~*~*~*~[SELECT]~*~*~*~*~*~*~*~*~*~*~*~*-->
     <v-col class="d-flex" cols="12" sm="2">
-      <v-select :items="items" label="Display sort by*" solo v-model="className" @change="SelectClass"></v-select>
+      <v-select
+        :items="items"
+        label="Display sort by*"
+        solo
+        v-model="className"
+        @change="SelectClass"
+      ></v-select>
     </v-col>
   </v-row>
 </template>
 
 <script>
 export default {
-  emits: ["searchByStudentName","SelectByClass"],
+  emits: ["searchByStudentName", "SelectByClass"],
   data() {
     return {
       items: [
@@ -31,7 +44,7 @@ export default {
         "WEB 2022 A",
         "WEB 2022 B",
         "SNA 2021",
-        "SNA 2022"
+        "SNA 2022",
       ],
       className: "All Class",
       keySearchPermission: "",
@@ -39,17 +52,20 @@ export default {
   },
   methods: {
     searchStudentPermission() {
-      this.$emit("searchByStudentName", this.keySearchPermission,this.className);
+      this.$emit(
+        "searchByStudentName",
+        this.keySearchPermission,
+        this.className
+      );
       console.log(this.keySearchPermission);
     },
-    SelectClass(){
-        this.$emit("SelectByClass",this.className);
+    SelectClass() {
+      this.$emit("SelectByClass", this.className);
     },
 
     clearText() {
       this.keySearchPermission = "";
       this.searchStudentPermission();
-
     },
   },
 };
