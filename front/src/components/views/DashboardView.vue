@@ -1,18 +1,9 @@
 <template>
   <div id="app" class="overflow-hidden">
-    <v-app id="inspire">
-      <!-- <v-banner class="mt-1 mb-1" elevation="12">
-        
-      <div class="d-flex flex-column  align-center">
-        <v-img
-          src="https://www.passerellesnumeriques.org/misc/logo-en.png"
-        ></v-img>
-      </div>
-      </v-banner> -->
-
+    <v-app id="inspire" class="mt-3">
       <v-row>
         <v-col cols="12" lg="12" md="12" sm="12" xs="12">
-          <v-card elevation="24"  class="mx-auto">
+          <v-card elevation="24" class="mx-auto">
             <v-system-bar lights-out></v-system-bar>
             <v-carousel
               cycle
@@ -32,131 +23,27 @@
             </v-carousel>
             <v-list two-line>
               <v-list-item>
-                <v-list-item-avatar>
+                <v-list-item-avatar width="70" height="70">
                   <v-img
                     src="https://www.passerellesnumeriques.org/wp-content/uploads/2016/03/pn-logo.png"
-                    size="500"
+                    size="1000"
                   ></v-img>
                 </v-list-item-avatar>
                 <v-list-item-content>
                   <v-list-item-title
+                    class="info--text font-weight-medium text-h5"
                     >PASSERELLES NUMERIQUES CAMBODIA</v-list-item-title
                   >
-                  <v-list-item-subtitle>STUDENT LIFE</v-list-item-subtitle>
+                  <v-list-item-subtitle
+                    class="orange--text font-weight-medium text-h6"
+                    >STUDENT LIFE</v-list-item-subtitle
+                  >
                 </v-list-item-content>
               </v-list-item>
             </v-list>
           </v-card>
         </v-col>
       </v-row>
-      <!--*****************************|~CARD~|*****************************-->
-      <template>
-        <v-container>
-          <v-layout>
-            <v-row>
-              <v-col cols="6" lg="4" md="4" sm="6" xs="12">
-                <v-card class="mx-auto mt-3 mb-3" max-width="400">
-                  <v-img
-                    class="white--text align-end"
-                    height="200px"
-                    src="https://www.passerellesnumeriques.org/wp-content/uploads/2016/03/DSC_2053.jpg"
-                  >
-                    <v-card-title>Top 10 Australian beaches</v-card-title>
-                  </v-img>
-
-                  <v-card-subtitle class="pb-0"> Number 10 </v-card-subtitle>
-
-                  <v-card-text class="text--primary">
-                    <div>Whitehaven Beach</div>
-
-                    <div>Whitsunday Island, Whitsunday Islands</div>
-                  </v-card-text>
-
-                  <v-card-actions>
-                    <v-btn color="info" text> Share </v-btn>
-
-                    <v-btn color="info" text> Explore </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-              <v-col cols="6" lg="4" md="4" sm="6" xs="12">
-                <v-card class="mx-auto mt-3 mb-3" max-width="400">
-                  <v-img
-                    class="white--text align-end"
-                    height="200px"
-                    src="https://media-exp1.licdn.com/dms/image/C4E1BAQEL9_UKiZEjcg/company-background_10000/0/1557127841108?e=2159024400&v=beta&t=-QTeY0iL-YCRm9SjiRjHa-8gRx0rfc6MOSCtahQFgAg"
-                  >
-                    <v-card-title>Top 10 Australian beaches</v-card-title>
-                  </v-img>
-
-                  <v-card-subtitle class="pb-0"> Number 10 </v-card-subtitle>
-
-                  <v-card-text class="text--primary">
-                    <div>Whitehaven Beach</div>
-
-                    <div>Whitsunday Island, Whitsunday Islands</div>
-                  </v-card-text>
-
-                  <v-card-actions>
-                    <v-btn color="info" text> Share </v-btn>
-
-                    <v-btn color="info" text> Explore </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-              <v-col cols="6" lg="4" md="4" sm="6" xs="12">
-                <v-card class="mx-auto mt-3 mb-3" max-width="400">
-                  <v-img
-                    class="white--text align-end"
-                    height="200px"
-                    src="https://www.passerellesnumeriques.org/wp-content/uploads/2016/03/PNC_students_outside_classroom_2015-96.jpg"
-                  >
-                    <v-card-title>Top 10 Australian beaches</v-card-title>
-                  </v-img>
-
-                  <v-card-subtitle class="pb-0"> Number 10 </v-card-subtitle>
-
-                  <v-card-text class="text--primary">
-                    <div>Whitehaven Beach</div>
-
-                    <div>Whitsunday Island, Whitsunday Islands</div>
-                  </v-card-text>
-
-                  <v-card-actions>
-                    <v-btn color="info" text> Share </v-btn>
-
-                    <v-btn color="info" text> Explore </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-              <!-- <v-card class="mx-auto mt-3 mb-3" max-width="400">
-                <v-img
-                  class="white--text align-end"
-                  height="200px"
-                  src="https://cdn.pixabay.com/photo/2014/12/16/22/25/sunset-570881_960_720.jpg"
-                >
-                  <v-card-title>Top 10 Australian beaches</v-card-title>
-                </v-img>
-
-                <v-card-subtitle class="pb-0"> Number 10 </v-card-subtitle>
-
-                <v-card-text class="text--primary">
-                  <div>Whitehaven Beach</div>
-
-                  <div>Whitsunday Island, Whitsunday Islands</div>
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-btn color="info" text> Share </v-btn>
-
-                  <v-btn color="info" text> Explore </v-btn>
-                </v-card-actions>
-              </v-card> -->
-            </v-row>
-          </v-layout>
-        </v-container>
-      </template>
-
       <!--**********************************|SUB CARD|***********************************-->
       <template>
         <div class="team">
@@ -176,16 +63,16 @@
                       </v-sheet>
                     </v-list-item-avatar>
                     <v-list-item-content>
-                      <div class="overline text-right">Article</div>
+                      <div class="overline text-right">List of students</div>
                       <v-list-item-title class="headline mb-1 text-right"
-                        >523614</v-list-item-title
+                        >313.230.00</v-list-item-title
                       >
                       <div><v-divider></v-divider></div>
                     </v-list-item-content>
                   </v-list-item>
                   <v-card-actions>
-                    <v-icon text class="ma-2">mdi-account</v-icon>
-                    <div class="overline">Iyad</div>
+                    <v-icon text class="ma-2">mdi-school</v-icon>
+                    <div class="overline">STUDENT</div>
                   </v-card-actions>
                 </v-card>
               </v-flex>
@@ -199,20 +86,20 @@
                         height="80"
                         elevation="10"
                       >
-                        <v-icon dark large>mdi-facebook</v-icon>
+                        <v-icon dark large>mdi-school</v-icon>
                       </v-sheet>
                     </v-list-item-avatar>
                     <v-list-item-content>
-                      <div class="overline text-right">Abonné</div>
+                      <div class="overline text-right">STUDENT ALUMNI</div>
                       <v-list-item-title class="headline mb-1 text-right"
-                        >+700</v-list-item-title
+                        >234.233.000</v-list-item-title
                       >
                       <div><v-divider></v-divider></div>
                     </v-list-item-content>
                   </v-list-item>
                   <v-card-actions>
-                    <v-icon text class="ma-2">mdi-facebook</v-icon>
-                    <div class="overline">AAE IdeaPro</div>
+                    <v-icon text class="ma-2">mdi-school</v-icon>
+                    <div class="overline">GRADUATED</div>
                   </v-card-actions>
                 </v-card>
               </v-flex>
@@ -300,6 +187,63 @@
           </v-container>
         </div>
       </template>
+      <!--*****************************|~GRAP~|*****************************-->
+      <template>
+        <div class="d-flex">
+          <v-card class="mx-auto text-center" width="650">
+            <v-card-text>
+              <v-sheet color="info">
+                <v-sparkline
+                  :value="permission"
+                  color="rgba(255, 255, 255, .7)"
+                  height="100"
+                  padding="24"
+                  stroke-linecap="round"
+                  smooth
+                >
+                  <template v-slot:label="item"> {{ item.value }} % </template>
+                </v-sparkline>
+              </v-sheet>
+            </v-card-text>
+
+            <v-card-text>
+              <div class="text-h5">STUDENT PERMISSION</div>
+            </v-card-text>
+
+            <v-divider></v-divider>
+
+            <v-card-actions class="justify-center">
+              <v-btn block color="info" dark> Go to Report </v-btn>
+            </v-card-actions>
+          </v-card>
+          <v-card class="mx-auto text-center" width="650">
+            <v-card-text>
+              <v-sheet color="purple">
+                <v-sparkline
+                  :value="discipline"
+                  color="rgba(255, 255, 255, .7)"
+                  height="100"
+                  padding="24"
+                  stroke-linecap="round"
+                  smooth
+                >
+                  <template v-slot:label="item"> {{ item.value }} % </template>
+                </v-sparkline>
+              </v-sheet>
+            </v-card-text>
+
+            <v-card-text>
+              <div class="text-h5">STUDENT DISCIPLINE</div>
+            </v-card-text>
+
+            <v-divider></v-divider>
+
+            <v-card-actions class="justify-center">
+              <v-btn block color="purple" dark> Go to Report </v-btn>
+            </v-card-actions>
+          </v-card>
+        </div>
+      </template>
     </v-app>
   </div>
 </template>
@@ -318,6 +262,8 @@ export default {
         "RESPECT",
         "DEMANDING APPROACH",
       ],
+      permission: [423, 446, 675, 510, 590, 610, 760, 900],
+      discipline: [30, 46, 75, 80, 979, 160, 890, 900],
 
       cards: [
         {
@@ -350,3 +296,7 @@ export default {
   },
 };
 </script>
+
+
+<style scoped>
+</style>
