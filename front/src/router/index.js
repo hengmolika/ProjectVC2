@@ -25,8 +25,12 @@ const routes = [{
     component: LoginForm
   },
   {
-    path: '/studentdetailview',
-    component: StudentDetailView
+    path: '/studentDetail/:studentId',
+    component: StudentDetailView,
+    meta: {
+      needLogin: true
+    },
+    props: true
   },
   {
     path: '/user',

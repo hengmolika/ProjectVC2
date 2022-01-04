@@ -77,6 +77,23 @@
                 item-text="first_name"
                 item-value="id"
               >
+                <template v-slot:item="data">
+                  <template>
+                    <v-list-item-avatar>
+                      <img :src="url + data.item.profile" />
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        v-html="
+                          data.item.first_name + ' ' + data.item.last_name
+                        "
+                      ></v-list-item-title>
+                      <v-list-item-subtitle
+                        v-html="data.item.class"
+                      ></v-list-item-subtitle>
+                    </v-list-item-content>
+                  </template>
+                </template>
               </v-combobox>
             </v-form>
           </v-card-text>
@@ -314,6 +331,7 @@ export default {
         username: userData.username,
         email: userData.email,
         role: userData.roles,
+        student_id: userData.student_id
       };
       this.username = this.userAction.username;
       this.email = this.userAction.email;
@@ -321,18 +339,37 @@ export default {
         this.role = "ADMIN";
       } else {
         this.role = this.userAction.role;
+        if(userData.roles === "STUDENT") {
+          this.student = userData.student.first_name
+        }
       }
       this.messageError = "";
       this.messageAlert = "";
+      console.log(userData)
     },
     updateUser() {
       if (this.userAction.role === "ADMIN") {
         this.role = "ADMIN";
       }
+
+      let student_id = "";
+      if(this.role === "STUDENT" || this.userAction.roles === "STUDENT") {
+        if(this.student.id !== undefined) {
+          student_id = this.student.id
+        } else {
+          student_id = this.userAction.student_id;
+        }
+      } else {
+        this.student = "";
+      }
+      console.log(this.student.id, this.role, this.userAction.student_id)
+        
+
       let myNewUserData = {
         username: this.username,
         email: this.email,
         roles: this.role,
+        student_id: student_id,
       };
 
       axios

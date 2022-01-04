@@ -140,6 +140,7 @@
               :student="student"
               @studentEdit="showEditForm"
               @studentDelete="showDeleteDialog"
+              @studentData="getDataFormCard"
             >
             </student-card>
           </tbody>
@@ -150,6 +151,7 @@
               :student="student"
               @studentEdit="showEditForm"
               @studentDelete="showDeleteDialog"
+              @studentData="getDataFormCard"
             >
             </student-card>
           </tbody>
@@ -161,7 +163,6 @@
 <script>
 import axios from "../../api/api.js";
 import StudentFormSearch from "../pages/students/StudentFormSearch.vue";
-
 import StudentCard from "../pages/students/StudentCard.vue";
 
 export default {
@@ -205,6 +206,9 @@ export default {
     };
   },
   methods: {
+    getDataFormCard(student) {
+      console.log(student)
+    },
     getStudent() {
       axios
         .get("/students")

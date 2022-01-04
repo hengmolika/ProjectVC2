@@ -29,6 +29,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     // ------------------------- ROUTE PERMISSION ----------------------------
     Route::get('permissions', [PermissionController::class, 'index']);
     Route::post('permissions', [PermissionController::class, 'store']);
+    Route::get('permissions/{id}', [PermissionController::class, 'show']);
     Route::put('permissions/{id}', [PermissionController::class, 'update']);
     Route::delete('permissions/{id}', [PermissionController::class, 'destroy']);
     //---------------------- GET REASON ROUTE --------------------------------
@@ -36,6 +37,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     //---------------------- ROTE DISCIPLINE -------------------------------
     Route::get('disciplines', [DisciplineController::class, 'index']);
     Route::post('disciplines', [DisciplineController::class, 'store']);
+    Route::get('disciplines/{id}', [DisciplineController::class, 'show']);
     Route::put('disciplines/{id}', [DisciplineController::class, 'update']);
     Route::delete('disciplines/{id}', [DisciplineController::class, 'destroy']);
     //---------------------- GET DISCIPLINE ROUTE --------------------------------

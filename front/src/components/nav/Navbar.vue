@@ -93,7 +93,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar elevation="12">
+    <v-app-bar elevation="6" app>
       <span class="hidden-md-and-up">
         <v-app-bar-nav-icon @click="showSideBar"> </v-app-bar-nav-icon>
       </span>
@@ -169,7 +169,7 @@
           </v-icon>
         </v-btn>
       </v-toolbar-items>
-    </v-toolbar>
+    </v-app-bar>
   </nav>
 </template>
 

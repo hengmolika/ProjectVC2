@@ -43,18 +43,18 @@
                   lazy-src="https://picsum.photos/id/11/10/6"
                   max-height="50"
                   max-width="70"
-                  :src="stu_profile + discipline.students.profile"
+                  :src="stu_profile + student.profile"
                 ></v-img>
               </div>
               <div>
-                <div @click="pushDataToStudentView(discipline.students.id)">
+                <div>
                   <h3>
-                    {{ discipline.students.first_name }}
-                    {{ discipline.students.last_name }}
+                    {{ student.first_name }}
+                    {{ student.last_name }}
                   </h3>
                 </div>
                 <div class="grey--text mt-4">
-                  {{ discipline.students.class }}
+                  {{ student.class }}
                 </div>
               </div>
             </div>
@@ -63,28 +63,20 @@
             <v-icon class="green--text">mdi-calendar-text</v-icon>
             <strong> {{ discipline.date }} </strong>
           </v-col>
-          <v-col cols="3">
-            <div class="d-flex justify-end mr-4" v-if="role === 'ADMIN'">
+          <!-- <v-col cols="3">
+            <div class="d-flex justify-end mr-4" v-if="role === 'ADMIN' ">
               <div class="mr-2">
-                <v-btn
-                  icon
-                  color="success"
-                  @click="toEditDiscipline(discipline)"
-                >
+                <v-btn icon color="success" @click="toEditDiscipline(discipline)">
                   <v-icon> mdi-account-edit </v-icon>
                 </v-btn>
               </div>
               <div>
-                <v-btn
-                  icon
-                  color="error"
-                  @click="toDeleteDiscipline(discipline.id)"
-                >
+                <v-btn icon color="error" @click="toDeleteDiscipline(discipline.id)">
                   <v-icon> mdi-delete-sweep </v-icon>
                 </v-btn>
               </div>
             </div>
-          </v-col>
+          </v-col> -->
         </v-row>
       </v-expansion-panel-header>
       <v-expansion-panel-content class="mt-4">
@@ -105,7 +97,7 @@
 <script>
 export default {
   props: ["discipline", "student"],
-  emits: ["disciplineToDelete", "disciplineToEdit"],
+//   emits: ["disciplineToDelete", "disciplineToEdit"],
 
   data() {
     return {
@@ -119,18 +111,12 @@ export default {
   },
   computed: {},
   methods: {
-    toDeleteDiscipline(id) {
-      this.$emit("disciplineToDelete", id);
-    },
-    toEditDiscipline(discipline) {
-      this.$emit("disciplineToEdit", discipline);
-    },
-    pushDataToStudentView(id) {
-      this.$router.push({
-        path: "/studentDetail/" + id,
-        params: { studentId: id },
-      });
-    },
+    // toDeleteDiscipline(id) {
+    //   this.$emit("disciplineToDelete", id);
+    // },
+    // toEditDiscipline(discipline) {
+    //   this.$emit("disciplineToEdit", discipline);
+    // },
   },
   mounted() {
     this.role = localStorage.getItem("role");

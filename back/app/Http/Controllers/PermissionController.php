@@ -50,7 +50,7 @@ class PermissionController extends Controller
      */
     public function show($id)
     {
-        return Permission::findOrFail($id);
+        return Permission::with('students')->findOrFail($id);
     }
 
     /**
