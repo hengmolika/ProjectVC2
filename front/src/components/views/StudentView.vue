@@ -101,6 +101,7 @@
             {{ dialogButton }}
           </v-btn>
         </v-card-actions>
+
       </v-card>
     </v-dialog>
 
@@ -134,7 +135,8 @@
             </tr>
           </thead>
           <tbody v-if="!isSearch">
-            <student-card class="font-weight-bold"
+            <student-card
+              class="font-weight-bold"
               v-for="student in students"
               :key="student.id"
               :student="student"
@@ -144,7 +146,8 @@
             </student-card>
           </tbody>
           <tbody v-else>
-            <student-card class="font-weight-medium text-caption"
+            <student-card
+              class="font-weight-medium text-caption"
               v-for="student in contain_student_search"
               :key="student.id"
               :student="student"
@@ -211,6 +214,7 @@ export default {
         .then((res) => {
           if (!this.isSearch) {
             this.students = res.data;
+            this.countStudent = res.data.length
           } else {
             this.contain_student_search = res.data.filter((student) =>
               student.class
@@ -323,7 +327,9 @@ export default {
       let id = this.studentAction.id;
       axios.delete("/students/" + id).then(() => {
         this.students = this.students.filter((student) => student.id !== id);
-        this.contain_student_search = this.contain_student_search.filter((student) => student.id !== id);
+        this.contain_student_search = this.contain_student_search.filter(
+          (student) => student.id !== id
+        );
         this.messageAlert = "Delete success";
         this.closeDialog();
       });

@@ -497,12 +497,10 @@ export default {
     // GET REASONS TYPE FROM BACK END=======================================================
     axios.get("/reasons").then((response) => {
       this.contain_leaveType = response.data.reasons;
-      // console.log(this.contain_leaveType);
     });
     // GET AL CONTAIN STUDENT NAME THAT HAVE AT SCHOOL=============================================
     axios.get("/students").then((response) => {
       this.contain_students = response.data;
-      console.log("student", this.contain_students);
     });
 
     this.role = localStorage.getItem("role");
