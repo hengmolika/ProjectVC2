@@ -122,9 +122,9 @@
       >
       </student-form-search>
       <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr class="tableHead font-weight-bold text-caption">
+        <template v-slot:default >
+          <thead >
+            <tr class="tableHead font-weight-bold text-caption" >
               <th>Profile</th>
               <th>FirstName</th>
               <th>LastName</th>
@@ -142,6 +142,7 @@
               :student="student"
               @studentEdit="showEditForm"
               @studentDelete="showDeleteDialog"
+              @studentData="getDataFormCard"
             >
             </student-card>
           </tbody>
@@ -153,6 +154,7 @@
               :student="student"
               @studentEdit="showEditForm"
               @studentDelete="showDeleteDialog"
+              @studentData="getDataFormCard"
             >
             </student-card>
           </tbody>
@@ -164,7 +166,6 @@
 <script>
 import axios from "../../api/api.js";
 import StudentFormSearch from "../pages/students/StudentFormSearch.vue";
-
 import StudentCard from "../pages/students/StudentCard.vue";
 
 export default {
@@ -208,6 +209,9 @@ export default {
     };
   },
   methods: {
+    getDataFormCard(student) {
+      console.log(student)
+    },
     getStudent() {
       axios
         .get("/students")
@@ -421,6 +425,7 @@ export default {
     });
 
     this.getStudent();
+    this.role = localStorage.getItem('role');
   },
 };
 </script>

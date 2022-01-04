@@ -48,7 +48,7 @@ class DisciplineController extends Controller
      */
     public function show($id)
     {
-        return Discipline::findOrFail($id);
+        return Discipline::with('students')->findOrFail($id);
     }
 
     /**

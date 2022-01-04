@@ -11,14 +11,16 @@ class Student extends Model
 
     protected $fillable = ['first_name','last_name','gender','class','profile','phone'];
 
-    public function user(){
-        return $this->belongsTo(User::class);
-    }
+    
 
     protected $hidden = [
         "created_at",
         "updated_at"
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
     
     public function permissions()
     {

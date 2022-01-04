@@ -1,7 +1,7 @@
 <template>
   <v-expansion-panels class="mt-4">
     <v-expansion-panel>
-      <v-expansion-panel-header @mouseover="mouseOver" @mouseout="mouseout">
+      <v-expansion-panel-header>
         <v-row no-gutters>
           <v-col cols="3">
             <div class="d-flex align-center">
@@ -35,7 +35,7 @@
               </div>
             </div>
           </v-col>
-          <v-col cols="4">
+          <v-col cols="3">
             <div class="d-flex">
               <div>
                 <v-img
@@ -43,48 +43,40 @@
                   lazy-src="https://picsum.photos/id/11/10/6"
                   max-height="50"
                   max-width="70"
-                  :src="stu_profile + discipline.students.profile"
+                  :src="stu_profile + student.profile"
                 ></v-img>
               </div>
               <div>
-                <div @click="pushDataToStudentView(discipline.students.id)">
+                <div>
                   <h3>
-                    {{ discipline.students.first_name }}
-                    {{ discipline.students.last_name }}
+                    {{ student.first_name }}
+                    {{ student.last_name }}
                   </h3>
                 </div>
                 <div class="grey--text mt-4">
-                  {{ discipline.students.class }}
+                  {{ student.class }}
                 </div>
               </div>
             </div>
           </v-col>
-          <v-col cols="2">
+          <v-col cols="3">
             <v-icon class="green--text">mdi-calendar-text</v-icon>
             <strong> {{ discipline.date }} </strong>
           </v-col>
-          <v-col cols="3">
-            <div class="d-flex justify-end mr-4" v-if="role === 'ADMIN'">
-              <div class="mr-2" v-show="active">
-                <v-btn
-                  icon
-                  color="success"
-                  @click="toEditDiscipline(discipline)"
-                >
+          <!-- <v-col cols="3">
+            <div class="d-flex justify-end mr-4" v-if="role === 'ADMIN' ">
+              <div class="mr-2">
+                <v-btn icon color="success" @click="toEditDiscipline(discipline)">
                   <v-icon> mdi-account-edit </v-icon>
                 </v-btn>
               </div>
-              <div v-show="active">
-                <v-btn
-                  icon
-                  color="error"
-                  @click="toDeleteDiscipline(discipline.id)"
-                >
-                  <v-icon>mdi-delete</v-icon>
+              <div>
+                <v-btn icon color="error" @click="toDeleteDiscipline(discipline.id)">
+                  <v-icon> mdi-delete-sweep </v-icon>
                 </v-btn>
               </div>
             </div>
-          </v-col>
+          </v-col> -->
         </v-row>
       </v-expansion-panel-header>
       <v-expansion-panel-content class="mt-4">
@@ -105,35 +97,26 @@
 <script>
 export default {
   props: ["discipline", "student"],
-  emits: ["disciplineToDelete", "disciplineToEdit"],
+//   emits: ["disciplineToDelete", "disciplineToEdit"],
 
   data() {
     return {
       role: "",
       stu_profile: "http://localhost:8000/storage/images/",
-      active: false,
+      show: false,
+      isTrue: false,
+      direction: "left",
+      hover: false,
     };
   },
   computed: {},
   methods: {
-    mouseOver() {
-      this.active = true;
-    },
-    mouseout() {
-      this.active = false;
-    },
-    toDeleteDiscipline(id) {
-      this.$emit("disciplineToDelete", id);
-    },
-    toEditDiscipline(discipline) {
-      this.$emit("disciplineToEdit", discipline);
-    },
-    pushDataToStudentView(id) {
-      this.$router.push({
-        path: "/studentDetail/" + id,
-        params: { studentId: id },
-      });
-    },
+    // toDeleteDiscipline(id) {
+    //   this.$emit("disciplineToDelete", id);
+    // },
+    // toEditDiscipline(discipline) {
+    //   this.$emit("disciplineToEdit", discipline);
+    // },
   },
   mounted() {
     this.role = localStorage.getItem("role");
