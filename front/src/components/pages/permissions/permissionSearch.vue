@@ -11,12 +11,16 @@
       ></v-text-field>
       <!--*~*~*~*~*~*~*~*~*~*~*~*~[BTN SEARCH]~*~*~*~*~*~*~*~*~*~*~*~*-->
       <v-btn
-        color="info ms-2 p-4"
+        color="error ms-2 p-4"
         height="47"
         width="95"
         @click.prevent="clearText"
-      >
-        Search
+      > <v-icon
+          dark
+          left
+        >
+          mdi-minus-circle
+        </v-icon>clear
       </v-btn>
     </v-col>
     <!--*~*~*~*~*~*~*~*~*~*~*~*~[SELECT]~*~*~*~*~*~*~*~*~*~*~*~*-->

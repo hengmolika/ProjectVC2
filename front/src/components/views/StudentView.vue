@@ -121,9 +121,9 @@
       >
       </student-form-search>
       <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr class="tableHead font-weight-bold text-caption">
+        <template v-slot:default >
+          <thead >
+            <tr class="tableHead font-weight-bold text-caption" >
               <th>Profile</th>
               <th>FirstName</th>
               <th>LastName</th>
