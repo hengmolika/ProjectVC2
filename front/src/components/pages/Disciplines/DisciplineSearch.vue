@@ -13,7 +13,12 @@
         <!--*~*~*~*~*~*~*~*~*~*~*~*~[BTN SEARCH]~*~*~*~*~*~*~*~*~*~*~*~*-->
         <v-btn color="orange white--text ms-2 p-4" height="47"
         @click="clearText">
-          Clear
+          <v-icon
+          dark
+          left
+        >
+          mdi-minus-circle
+        </v-icon>clear
         </v-btn>
       </v-col>
       <!--*~*~*~*~*~*~*~*~*~*~*~*~[SELECT]~*~*~*~*~*~*~*~*~*~*~*~*-->

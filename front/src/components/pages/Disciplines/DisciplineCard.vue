@@ -1,7 +1,7 @@
 <template>
   <v-expansion-panels class="mt-4">
     <v-expansion-panel>
-      <v-expansion-panel-header>
+      <v-expansion-panel-header @mouseover="mouseOver" @mouseout="mouseout">
         <v-row no-gutters>
           <v-col cols="3">
             <div class="d-flex align-center">
@@ -35,7 +35,7 @@
               </div>
             </div>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="4">
             <div class="d-flex">
               <div>
                 <v-img
@@ -59,19 +59,27 @@
               </div>
             </div>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="2">
             <v-icon class="green--text">mdi-calendar-text</v-icon>
             <strong> {{ discipline.date }} </strong>
           </v-col>
-          <v-col cols="3">
-            <div class="d-flex justify-end mr-4" v-if="role === 'ADMIN' ">
-              <div class="mr-2">
-                <v-btn icon color="success" @click="toEditDiscipline(discipline)">
+          <v-col cols="3" >
+            <div class="d-flex justify-end mr-4" v-if="role === 'ADMIN'">
+              <div class="mr-2" v-show="active">
+                <v-btn
+                  icon
+                  color="success"
+                  @click="toEditDiscipline(discipline)"
+                >
                   <v-icon> mdi-account-edit </v-icon>
                 </v-btn>
               </div>
-              <div>
-                <v-btn icon color="error" @click="toDeleteDiscipline(discipline.id)">
+              <div v-show="active">
+                <v-btn
+                  icon
+                  color="error"
+                  @click="toDeleteDiscipline(discipline.id)"
+                >
                   <v-icon> mdi-delete-sweep </v-icon>
                 </v-btn>
               </div>
@@ -103,14 +111,17 @@ export default {
     return {
       role: "",
       stu_profile: "http://localhost:8000/storage/images/",
-      show: false,
-      isTrue: false,
-      direction: "left",
-      hover: false,
+      active: false,
     };
   },
   computed: {},
   methods: {
+    mouseOver() {
+      this.active = true;
+    },
+    mouseout() {
+      this.active = false;
+    },
     toDeleteDiscipline(id) {
       this.$emit("disciplineToDelete", id);
     },

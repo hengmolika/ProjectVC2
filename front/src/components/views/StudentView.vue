@@ -121,16 +121,16 @@
       >
       </student-form-search>
       <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr class="tableHead font-weight-bold text-caption">
+        <template v-slot:default >
+          <thead >
+            <tr class="tableHead font-weight-bold text-caption" >
               <th>Profile</th>
               <th>FirstName</th>
               <th>LastName</th>
               <th>Gender</th>
               <th>Class_name</th>
               <th>Phone Number</th>
-              <th class="text-center" v-if="role !== 'STUDENT'">Action</th>
+              <!-- <th class="text-center" v-if="role !== 'STUDENT'">Action</th> -->
             </tr>
           </thead>
           <tbody v-if="!isSearch">
