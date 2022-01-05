@@ -46,7 +46,6 @@
               @click:append="show = !show"
             ></v-text-field>
             <v-btn
-              :disabled="!valid"
               color="red"
               dark
               outlined
