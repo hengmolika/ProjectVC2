@@ -135,6 +135,7 @@ export default {
       transparent: "rgba(255, 255, 255, 0)",
       url: "http://localhost:8000/storage/images/",
       role: "",
+      stu_id: "",
       reveal: false,
     };
   },
@@ -148,14 +149,17 @@ export default {
       this.$emit("permissionToDelete", id);
     },
     pushDataToStudentView(id) {
-      this.$router.push({
-        path: "/studentDetail/" + id,
-        params: { studentId: id },
-      });
+      if(this.role !== 'STUDENT') {
+        this.$router.push({
+          path: "/studentDetail/" + id,
+          params: { studentId: id },
+        });
+      }
     },
   },
   mounted() {
     this.role = localStorage.getItem("role");
+    this.stu_id = localStorage.getItem("studentId");
   },
 };
 </script>

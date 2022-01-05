@@ -4,8 +4,9 @@
       <v-card class="mx-auto mt-5" elevation="7">
         <div class="d-flex" id="card-student-info">
           <!--***************|-BUTTON BACK-|***************-->
-          <div class="stu-img">
+          <div class="stu-img" >
             <v-btn
+              v-if="role !== 'STUDENT'"
               class="pa-2 mt-1 ms-1"
               icon
               color="deep-orange"
@@ -20,13 +21,7 @@
                 <div class="stu-profile">
                   <v-avatar height="130" width="130" class="ma-5">
                     <v-img :src="url + studentById.profile"> </v-img>
-                    <!-- <v-fade-transition>
-                      <v-overlay v-if="hover" absolute color="#036358">
-                        <v-btn text fab>
-                          <v-icon>mdi-pencil</v-icon>
-                        </v-btn>
-                      </v-overlay>
-                    </v-fade-transition> -->
+                  
                   </v-avatar>
                 </div>
               </template>
@@ -49,14 +44,6 @@
                     {{ studentById.class }}</v-list-item-subtitle
                   >
                 </div>
-                <!--***************|-STUDENT BATCH-|***************-->
-                <!-- <div class="ms-5">
-                  <v-list-item-subtitle class="text-overline font-weight-bold"
-                    ><v-icon class="orange--text">mdi-school</v-icon> |
-                    <strong class="text-overline info--text">BATCH: </strong>
-                    2021</v-list-item-subtitle
-                  >
-                </div> -->
                 <!--***************|-SCHOOL-|***************-->
                 <div class="ms-5">
                   <v-list-item-subtitle class="text-overline font-weight-bold"
@@ -76,11 +63,6 @@
                 ><strong class="text-overline info--text">Gender: </strong>
                 {{ studentById.gender }}</v-list-item-subtitle
               >
-              <!--***************|-STUDENT EMAIL-|***************-->
-              <!-- <v-list-item-subtitle class="color-info font-weight-bold"
-                ><strong class="text-overline info--text">Email: </strong>
-                phearak.eng@gmail.com</v-list-item-subtitle
-              > -->
               <!--***************|-STUDENT PHONE NUMBER-|***************-->
               <v-list-item-subtitle class="color-info font-weight-bold"
                 ><strong class="text-overline info--text"
@@ -112,7 +94,7 @@
           </v-badge>
         </v-tab>
       </v-card>
-      <v-alert outlined class="mt-4" color="purple">
+      <v-alert outlined class="mt-4" color="purple" v-if="studentById.permissions.length !== 0">
         <student-permission
           v-for="permission of studentById.permissions"
           :key="permission.id"
@@ -140,7 +122,7 @@
           </v-badge>
         </v-tab>
       </v-card>
-      <v-alert outlined class="mt-4" color="purple">
+      <v-alert outlined class="mt-4" color="purple" v-if="studentById.disciplines.length !== 0">
         <student-discipline
           v-for="discipline of studentById.disciplines"
           :key="discipline.id"
@@ -176,6 +158,7 @@ export default {
       studentById: [],
       permissions: [],
       disciplines: [],
+      role: "",
     };
   },
   methods: {
@@ -193,8 +176,17 @@ export default {
     }
   },
   mounted() {
+    this.role = localStorage.getItem('role');
     if (localStorage.userId) {
-      axios.get("/students/" + this.studentId).then((res) => {
+      
+      let studentId = "";
+      if(localStorage.getItem('role') === "STUDENT") {
+        studentId = localStorage.getItem('studentId');
+      } else {
+        studentId = this.studentId;
+      }
+      
+      axios.get("/students/" + studentId).then((res) => {
         this.studentById = res.data;
       });
 

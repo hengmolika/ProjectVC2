@@ -152,7 +152,8 @@
             </tr>
           </thead>
           <tbody v-if="!isSearch">
-            <user-card class="font-weight-medium text-caption"
+            <user-card
+              class="font-weight-medium text-caption"
               v-for="user of users"
               :key="user.id"
               :user="user"
@@ -332,7 +333,7 @@ export default {
         username: userData.username,
         email: userData.email,
         role: userData.roles,
-        student_id: userData.student_id
+        student_id: userData.student_id,
       };
       this.username = this.userAction.username;
       this.email = this.userAction.email;
@@ -340,13 +341,13 @@ export default {
         this.role = "ADMIN";
       } else {
         this.role = this.userAction.role;
-        if(userData.roles === "STUDENT") {
-          this.student = userData.student.first_name
+        if (userData.roles === "STUDENT") {
+          this.student = userData.student.first_name;
         }
       }
       this.messageError = "";
       this.messageAlert = "";
-      console.log(userData)
+      console.log(userData);
     },
     updateUser() {
       if (this.userAction.role === "ADMIN") {
@@ -354,17 +355,16 @@ export default {
       }
 
       let student_id = "";
-      if(this.role === "STUDENT" || this.userAction.roles === "STUDENT") {
-        if(this.student.id !== undefined) {
-          student_id = this.student.id
+      if (this.role === "STUDENT" || this.userAction.roles === "STUDENT") {
+        if (this.student.id !== undefined) {
+          student_id = this.student.id;
         } else {
           student_id = this.userAction.student_id;
         }
       } else {
         this.student = "";
       }
-      console.log(this.student.id, this.role, this.userAction.student_id)
-        
+      console.log(this.student.id, this.role, this.userAction.student_id);
 
       let myNewUserData = {
         username: this.username,

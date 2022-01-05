@@ -7,9 +7,9 @@
             <v-list-item-avatar>
               <v-img
                 :src="
-                  userdata.profile !== ''
+                  userdata.student === null
                     ? userdata.profile
-                    : 'https://cdn.pixabay.com/photo/2019/08/11/18/59/icon-4399701__340.png'
+                    : url + userdata.student.profile
                 "
               ></v-img>
             </v-list-item-avatar>
@@ -108,9 +108,9 @@
             <v-list-item-avatar>
               <v-img
                 :src="
-                  userdata.profile !== ''
+                  userdata.student === null
                     ? userdata.profile
-                    : 'https://cdn.pixabay.com/photo/2019/08/11/18/59/icon-4399701__340.png'
+                    : url + userdata.student.profile
                 "
               ></v-img>
             </v-list-item-avatar>

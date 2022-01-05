@@ -105,7 +105,7 @@
       </v-card>
     </v-dialog>
 
-    <div class="container mt-12">
+    <div class="container mt-12" v-if="role !== 'STUDENT' ">
       <v-alert
         dense
         text
@@ -161,17 +161,22 @@
         </template>
       </v-simple-table>
     </div>
+    <div class="container mt-12" v-else>
+      <student-detail> </student-detail>
+    </div>
   </div>
 </template>
 <script>
 import axios from "../../api/api.js";
 import StudentFormSearch from "../pages/students/StudentFormSearch.vue";
 import StudentCard from "../pages/students/StudentCard.vue";
+import StudentDetail from "./StudentDetailView.vue";
 
 export default {
   components: {
     "student-card": StudentCard,
     "student-form-search": StudentFormSearch,
+    "student-detail": StudentDetail
   },
   data() {
     return {
