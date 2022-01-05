@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 
 import DashboardView from '../components/views/DashboardView.vue'
 import LoginForm from '../authentication/LoginForm.vue'
-import UserView from '../components/views/UserView.vue'
+import UserView from '../components/views/userView.vue'
 import StudentView from '../components/views/StudentView.vue'
 import DiscipleView from '../components/views/DiscipleView.vue'
 import PermisionView from '../components/views/PermisionView.vue'
@@ -104,7 +104,6 @@ let authenticationGuard = (to, from, next) => {
 
 
 const router = new VueRouter({
-  mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
