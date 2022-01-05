@@ -29,18 +29,6 @@
             <v-form ref="form" v-model="valid" lazy-validation>
               <!--**************|~SELECT STUDENT~|**************-->
               <v-col cols="12" class="d-flex me-4">
-                <!-- <v-icon>mdi-school</v-icon> -->
-                <!-- <select v-model="student_id">
-                  <option
-                    v-for="student of ListOfStudents"
-                    :key="student.id"
-                    :value="student.id"
-                  >
-                    {{ student.first_name }}
-                    {{ student.last_name }}
-                  </option>
-                </select> -->
-
                 <v-combobox
                   :rules="studentRules"
                   prepend-icon="mdi-account-multiple"
@@ -156,30 +144,35 @@
         {{ messageAlert }}
       </v-alert>
       <!--~~~~~~~~~~~~~~~~~~~~~~~~|FORM SEARCH|~~~~~~~~~~~~~~~~~~~~~~~~-->
-      <disciplines-search
+      <disciplines-search v-if="role !== 'STUDENT' "
         @searchByAny="searchAnyKey"
         @selectByType="selectType"
       ></disciplines-search>
       <!--~~~~~~~~~~~~~~~~~~~~~~~~|CARD|~~~~~~~~~~~~~~~~~~~~~~~~-->
-      <div v-if="!isSearch">
-        <disciplines-card
-          v-for="discipline of DisciplineData"
-          :key="discipline.id"
-          :discipline="discipline"
-          @disciplineToDelete="showDialogDelete"
-          @disciplineToEdit="showDialogEdit"
-        >
-        </disciplines-card>
+      <div >
+        <div v-if="!isSearch">
+          <disciplines-card
+            v-for="discipline of DisciplineData"
+            :key="discipline.id"
+            :discipline="discipline"
+            @disciplineToDelete="showDialogDelete"
+            @disciplineToEdit="showDialogEdit"
+          >
+          </disciplines-card>
+        </div>
+        <div v-else>
+          <disciplines-card
+            v-for="discipline of contain_discipline_search"
+            :key="discipline.id"
+            :discipline="discipline"
+            @disciplineToDelete="showDialogDelete"
+            @disciplineToEdit="showDialogEdit"
+          >
+          </disciplines-card>
+        </div>
       </div>
-      <div v-else>
-        <disciplines-card
-          v-for="discipline of contain_discipline_search"
-          :key="discipline.id"
-          :discipline="discipline"
-          @disciplineToDelete="showDialogDelete"
-          @disciplineToEdit="showDialogEdit"
-        >
-        </disciplines-card>
+      <div v-if="DisciplineData.length === 0 " class="mt-12">
+        <h1 class="grey--text text-center">Empty!</h1>
       </div>
     </div>
   </v-container>
@@ -271,14 +264,18 @@ export default {
     // **********************|~GET DISCIPLINE~|********************** //
     getDisciplines() {
       axios.get("/disciplines").then((response) => {
-        if (!this.isSearch) {
-          this.DisciplineData = response.data;
+        if(this.role !== 'STUDENT') {
+          if (!this.isSearch) {
+            this.DisciplineData = response.data;
+          } else {
+            this.contain_discipline_search = response.data.filter((discipline) =>
+              discipline.discipline_type
+                .toLowerCase()
+                .includes(this.key_notic_search.toLowerCase())
+            );
+          }
         } else {
-          this.contain_discipline_search = response.data.filter((discipline) =>
-            discipline.discipline_type
-              .toLowerCase()
-              .includes(this.key_notic_search.toLowerCase())
-          );
+          this.DisciplineData = response.data.filter(discipline => discipline.student_id === parseInt(localStorage.getItem("studentId")));
         }
       });
     },
@@ -452,6 +449,7 @@ export default {
   mounted() {
     this.getDisciplines();
     this.role = localStorage.getItem("role");
+    console.log(this.DisciplineData);
 
     // **********************|~GET STUDENT~|********************** //
     axios.get("/students").then((response) => {

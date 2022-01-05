@@ -110,6 +110,7 @@ export default {
   data() {
     return {
       role: "",
+      stu_id: "",
       stu_profile: "http://localhost:8000/storage/images/",
       active: false,
     };
@@ -129,14 +130,17 @@ export default {
       this.$emit("disciplineToEdit", discipline);
     },
     pushDataToStudentView(id) {
-      this.$router.push({
-        path: "/studentDetail/" + id,
-        params: { studentId: id },
-      });
+      if(this.role !== "STUDENT") {
+        this.$router.push({
+          path: "/studentDetail/" + id,
+          params: { studentId: id },
+        });
+      }
     },
   },
   mounted() {
     this.role = localStorage.getItem("role");
+    this.stu_id =  localStorage.getItem("studentId");
   },
 };
 </script>

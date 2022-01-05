@@ -31,7 +31,7 @@
             <v-list-item-title>DASHBOARD</v-list-item-title>
           </v-list-item>
 
-          <v-list-item :to="{ path: '/user' }">
+          <v-list-item :to="{ path: '/user' }" v-if="userdata.roles === 'ADMIN'">
             <v-list-item-icon>
               <v-icon>mdi-account-group-outline</v-icon>
             </v-list-item-icon>

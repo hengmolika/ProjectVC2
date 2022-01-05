@@ -40,6 +40,7 @@ export default {
           this.user = response.data.user;
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("userId", response.data.user.id);
+          localStorage.setItem("studentId", response.data.user.student_id);
           localStorage.setItem("role", response.data.user.roles);
          
           this.$router.push("/")
@@ -56,6 +57,7 @@ export default {
         this.user = null;
         this.messageError = "";
         localStorage.removeItem("userId");
+        localStorage.removeItem("studentId");
         localStorage.removeItem("token");
         this.$router.push("/login");
         console.log(response.data);
@@ -70,7 +72,7 @@ export default {
       });
     }
 
-    if(this.user === []) {
+    if(this.user.length === 0) {
       localStorage.clear()
     }
   },
