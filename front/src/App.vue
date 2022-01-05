@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <nav-app
-      v-if="!$route.path.includes('login')"
+      v-if="isLogin"
       :userdata="user"
       @requestToLogout="Logout"
     >
@@ -30,6 +30,7 @@ export default {
     return {
       user: null,
       messageError: "",
+      isLogin: false
     };
   },
   methods: {
@@ -40,8 +41,9 @@ export default {
           this.user = response.data.user;
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("userId", response.data.user.id);
+          localStorage.setItem("studentId", response.data.user.student_id);
           localStorage.setItem("role", response.data.user.roles);
-         
+          this.isLogin = true;
           this.$router.push("/")
     
         })
@@ -56,8 +58,10 @@ export default {
         this.user = null;
         this.messageError = "";
         localStorage.removeItem("userId");
+        localStorage.removeItem("studentId");
         localStorage.removeItem("token");
         this.$router.push("/login");
+        this.isLogin = false;
         console.log(response.data);
       });
     },
@@ -68,10 +72,15 @@ export default {
       axios.get("/users/" + localStorage.userId).then((response) => {
         this.user = response.data;
       });
+      this.isLogin = true
+    } else {
+      this.isLogin = false;
+    }
 
-      // axios.defaults.headers.common["Authorization"] =
-      // "Bearer " + localStorage.getItem("token");
-    } 
+    if(this.user.length === 0) {
+      localStorage.clear()
+      this.isLogin = false;
+    }
   },
 };
 </script>

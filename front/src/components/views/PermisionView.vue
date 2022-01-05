@@ -176,6 +176,7 @@
         {{ messageAlert }}
       </v-alert>
       <permission-search
+        v-if="role !== 'STUDENT'"
         class="mt-3"
         @searchByStudentName="searchStudentPermission"
         @SelectByClass="SelectClass"
@@ -198,6 +199,9 @@
           @permissiontEdit="showEditForm"
           @permissionToDelete="showDialogDelete"
         ></permission-card>
+      </div>
+      <div v-if="permissions_data.length === 0 " class="mt-12">
+        <h1 class="grey--text text-center">Empty!</h1>
       </div>
     </v-container>
   </section>
@@ -298,14 +302,18 @@ export default {
   methods: {
     getPermissions() {
       axios.get("/permissions").then((response) => {
-        if (!this.isSearch) {
-          this.permissions_data = response.data;
+        if (this.role !== 'STUDENT') {
+          if (!this.isSearch) {
+            this.permissions_data = response.data;
+          } else {
+            this.contain_permission_search = response.data.filter((permission) =>
+              permission.students.class
+                .toLowerCase()
+                .includes(this.key_class_search.toLowerCase())
+            );
+          }
         } else {
-          this.contain_permission_search = response.data.filter((permission) =>
-            permission.students.class
-              .toLowerCase()
-              .includes(this.key_class_search.toLowerCase())
-          );
+          this.permissions_data = response.data.filter(permission => permission.student_id === parseInt(localStorage.getItem("studentId")))
         }
       });
     },
