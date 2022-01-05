@@ -6,12 +6,19 @@
       :number="numberOfStudents"
       :list_permission="listStuPermission"
       :list_discipline="listStuDiscipline"
+
       :class_WebA_2021="countwebA2021"
       :class_WebB_2021="countwebB2021"
+      :class_SNA_2021="countSNA2021"
+      
       :class_WebA_2022="countwebA2022"
       :class_WebB_2022="countwebB2022"
-      :class_SNA_2021="countSNA2021"
       :class_SNA_2022="countSNA2022"
+
+      :class_WebA_2023="countwebA2023"
+      :class_WebB_2023="countwebB2023"
+      :class_SNA_2023="countSNA2023"
+
     >
     </dashboard-card>
   </div>
@@ -19,7 +26,7 @@
 
 <script>
 import axios from "../../api/api.js";
-import DashBoardCard from "../pages/DashboardCard/DashboardCard.vue";
+import DashBoardCard from "../pages/Dashboard/DashboardCard.vue";
 export default {
   components: {
     "dashboard-card": DashBoardCard,
@@ -33,23 +40,20 @@ export default {
       listStuDiscipline: 0,
       getUsers: [],
       studentDatas: [],
-      //~~~~~~~~~~~~~~~~~~~~~|-COUNT STUDENT BY CLASS-|~~~~~~~~~~~~~~~~~~~~~//
+      //~~~~~~~~~~~~~~~~~~~~~|-COUNT STUDENT BY CLASS 2021-|~~~~~~~~~~~~~~~~~~~~~//
       countwebA2021: 0,
       countwebB2021: 0,
+      countSNA2021: 0,
+      //~~~~~~~~~~~~~~~~~~~~~|-COUNT STUDENT BY CLASS 2022-|~~~~~~~~~~~~~~~~~~~~~//
+
       countwebA2022: 0,
       countwebB2022: 0,
-      countSNA2021: 0,
       countSNA2022: 0,
+      //~~~~~~~~~~~~~~~~~~~~~|-COUNT STUDENT BY CLASS 2023-|~~~~~~~~~~~~~~~~~~~~~//
 
-      //~~~~~~~~~~~~~~~~~~~~~|-CREATE NEW STUDENT-|~~~~~~~~~~~~~~~~~~~~~//
-      // newStudent: [],
-      // countNewStu: 0,
-      // dateTime: "",
-      //~~~~~~~~~~~~~~~~~~~~~|-CREATE NEW PERMISSION-|~~~~~~~~~~~~~~~~~~~~~//
-
-      //~~~~~~~~~~~~~~~~~~~~~|-CREATE NEW DISCIPLINE-|~~~~~~~~~~~~~~~~~~~~~//
-
-      //~~~~~~~~~~~~~~~~~~~~~|-CREATE NEW USER-|~~~~~~~~~~~~~~~~~~~~~//
+      countwebA2023: 0,
+      countwebB2023: 0,
+      countSNA2023: 0,
     };
   },
   methods: {
@@ -107,6 +111,12 @@ export default {
           this.countSNA2021 += 1;
         } else if (classes.class === "SNA 2022") {
           this.countSNA2022 += 1;
+        } else if (classes.class === "WEB 2023 A") {
+          this.countwebA2023 += 1;
+        } else if (classes.class === "WEB 2023 B") {
+          this.countwebB2023 += 1;
+        } else if (classes.class === "SNA 2023") {
+          this.countSNA2023 += 1;
         } else {
           this.countwebA2021 += 0;
           this.countwebB2021 += 0;
@@ -114,6 +124,9 @@ export default {
           this.countwebB2022 += 0;
           this.countSNA2021 += 0;
           this.countSNA2022 += 0;
+          this.countwebA2023 += 0;
+          this.countwebB2023 += 0;
+          this.countSNA2023 += 0;
         }
       }
       console.log(this.countwebA2021);

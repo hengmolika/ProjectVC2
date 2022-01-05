@@ -1,3 +1,4 @@
+<!--<~><~><~><~><~><~><~><~><~>|*TEMPLATE*|<~><~><~><~><~><~><~><~><~>-->
 <template>
   <div>
     <v-app
@@ -55,21 +56,22 @@
         <template>
           <div>
             <v-container>
+              <!--<><><><><><><><><><><><><><><><><>|~STUDENT 2021~|<><><><><><><><><><><><><><><><><>-->
               <v-list-item-title
                 class="
                   font-weight-light
                   text-h4
                   white--text
                   mt-7
-                  mb-10
+                  mb-5
                   text-left
                 "
               >
-                ALL CLASS LIST
+                STUDENTS 2021
                 <hr class="hr-1" />
               </v-list-item-title>
-              <v-layout row wrap class="mb-10">
-                <!--**********************************|WEB-A 2021|***********************************-->
+              <v-layout row wrap class="mb-5">
+                <!--**********************|WEB-A 2021|***********************-->
                 <v-flex sm6 xs12 md6 lg4>
                   <v-card class="ma-3" elevation="7" color="success">
                     <v-list-item>
@@ -100,7 +102,7 @@
                     </v-card-actions>
                   </v-card>
                 </v-flex>
-                <!--**********************************|WEB-B 2021|***********************************-->
+                <!--**********************|WEB-B 2021|***********************-->
                 <v-flex sm6 xs12 md6 lg4>
                   <v-card class="ma-3" elevation="7" color="info">
                     <v-list-item>
@@ -131,77 +133,13 @@
                     </v-card-actions>
                   </v-card>
                 </v-flex>
-                <!--**********************************|WEB-A 2022|***********************************-->
+                <!--**********************|WEB-A 2021|***********************-->
                 <v-flex sm6 xs12 md6 lg4>
                   <v-card class="ma-3" elevation="7" color="red">
                     <v-list-item>
                       <v-list-item-avatar tile class="mt-n7">
                         <v-sheet
                           color="red"
-                          width="80"
-                          height="80"
-                          elevation="10"
-                        >
-                          <v-icon dark large>mdi-school</v-icon>
-                        </v-sheet>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <div class="overline text-right white--text">
-                          number of students
-                        </div>
-                        <v-list-item-title
-                          class="headline mb-1 text-right white--text"
-                        >
-                          {{ class_WebA_2022 }}
-                        </v-list-item-title>
-                        <div><v-divider></v-divider></div>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-card-actions>
-                      <v-icon text class="ma-2 white--text">mdi-folder</v-icon>
-                      <div class="overline white--text">CLASS WEB-A 2022</div>
-                    </v-card-actions>
-                  </v-card>
-                </v-flex>
-                <!--**********************************|WEB-B 2022|***********************************-->
-                <v-flex sm6 xs12 md6 lg4>
-                  <v-card class="ma-3" elevation="7" color="orange">
-                    <v-list-item>
-                      <v-list-item-avatar tile class="mt-n7">
-                        <v-sheet
-                          color="orange"
-                          width="80"
-                          height="80"
-                          elevation="10"
-                        >
-                          <v-icon dark large>mdi-school</v-icon>
-                        </v-sheet>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <div class="overline text-right white--text">
-                          number of students
-                        </div>
-                        <v-list-item-title
-                          class="headline mb-1 text-right white--text"
-                        >
-                          {{ class_WebB_2022 }}
-                        </v-list-item-title>
-                        <div><v-divider></v-divider></div>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-card-actions>
-                      <v-icon text class="ma-2 white--text">mdi-folder</v-icon>
-                      <div class="overline white--text">CLASS WEB-B 2022</div>
-                    </v-card-actions>
-                  </v-card>
-                </v-flex>
-                <!--**********************************|SNA 2021|***********************************-->
-                <v-flex sm6 xs12 md6 lg4>
-                  <v-card class="ma-3" elevation="7" color="pink">
-                    <v-list-item>
-                      <v-list-item-avatar tile class="mt-n7">
-                        <v-sheet
-                          color="pink"
                           width="80"
                           height="80"
                           elevation="10"
@@ -227,7 +165,87 @@
                     </v-card-actions>
                   </v-card>
                 </v-flex>
-                <!--**********************************|SNA 2022|***********************************-->
+                <!--<><><><><><><><><><><><><><><><><>|~STUDENT 2022~|<><><><><><><><><><><><><><><><><>-->
+                <v-container>
+                  <v-list-item-title
+                    class="
+                      font-weight-light
+                      text-h4
+                      white--text
+                      mt-7
+                      mb-5
+                      text-left
+                    "
+                  >
+                    STUDENTS 2022
+                    <hr class="hr-1" />
+                  </v-list-item-title>
+                </v-container>
+                <!--**********************|WEB-A 2022|***********************-->
+                <v-flex sm6 xs12 md6 lg4>
+                  <v-card class="ma-3" elevation="7" color="orange">
+                    <v-list-item>
+                      <v-list-item-avatar tile class="mt-n7">
+                        <v-sheet
+                          color="orange"
+                          width="80"
+                          height="80"
+                          elevation="10"
+                        >
+                          <v-icon dark large>mdi-school</v-icon>
+                        </v-sheet>
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <div class="overline text-right white--text">
+                          number of students
+                        </div>
+                        <v-list-item-title
+                          class="headline mb-1 text-right white--text"
+                        >
+                          {{ class_WebA_2022 }}
+                        </v-list-item-title>
+                        <div><v-divider></v-divider></div>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-card-actions>
+                      <v-icon text class="ma-2 white--text">mdi-folder</v-icon>
+                      <div class="overline white--text">CLASS WEB-A 2022</div>
+                    </v-card-actions>
+                  </v-card>
+                </v-flex>
+                <!--**********************|WEB-B 2022|***********************-->
+                <v-flex sm6 xs12 md6 lg4>
+                  <v-card class="ma-3" elevation="7" color="pink">
+                    <v-list-item>
+                      <v-list-item-avatar tile class="mt-n7">
+                        <v-sheet
+                          color="pink"
+                          width="80"
+                          height="80"
+                          elevation="10"
+                        >
+                          <v-icon dark large>mdi-school</v-icon>
+                        </v-sheet>
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <div class="overline text-right white--text">
+                          number of students
+                        </div>
+                        <v-list-item-title
+                          class="headline mb-1 text-right white--text"
+                        >
+                          {{ class_WebB_2022 }}
+                        </v-list-item-title>
+                        <div><v-divider></v-divider></div>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-card-actions>
+                      <v-icon text class="ma-2 white--text">mdi-folder</v-icon>
+                      <div class="overline white--text">CLASS WEB-B 2022</div>
+                    </v-card-actions>
+                  </v-card>
+                </v-flex>
+                <!--**********************|SNA 2022|***********************-->
                 <v-flex sm6 xs12 md6 lg4>
                   <v-card class="ma-3" elevation="7" color="purple">
                     <v-list-item>
@@ -259,6 +277,118 @@
                     </v-card-actions>
                   </v-card>
                 </v-flex>
+                <!--<><><><><><><><><><><><><><><><><>|~STUDENT 2023~|<><><><><><><><><><><><><><><><><>-->
+                <v-container>
+                  <v-list-item-title
+                    class="
+                      font-weight-light
+                      text-h4
+                      white--text
+                      mt-7
+                      mb-5
+                      text-left
+                    "
+                  >
+                    STUDENTS 2023
+                    <hr class="hr-1" />
+                  </v-list-item-title>
+                </v-container>
+                <!--**********************|WEB-B 2022|**********************-->
+                <v-flex sm6 xs12 md6 lg4>
+                  <v-card class="ma-3" elevation="7" color="#009688">
+                    <v-list-item>
+                      <v-list-item-avatar tile class="mt-n7">
+                        <v-sheet
+                          color="#009688"
+                          width="80"
+                          height="80"
+                          elevation="10"
+                        >
+                          <v-icon dark large>mdi-school</v-icon>
+                        </v-sheet>
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <div class="overline text-right white--text">
+                          number of students
+                        </div>
+                        <v-list-item-title
+                          class="headline mb-1 text-right white--text"
+                        >
+                          {{ class_WebA_2023 }}
+                        </v-list-item-title>
+                        <div><v-divider></v-divider></div>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-card-actions>
+                      <v-icon text class="ma-2 white--text">mdi-folder</v-icon>
+                      <div class="overline white--text">CLASS WEB-A 2023</div>
+                    </v-card-actions>
+                  </v-card>
+                </v-flex>
+                <!--**********************|SNA 2021|***********************-->
+                <v-flex sm6 xs12 md6 lg4>
+                  <v-card class="ma-3" elevation="7" color="#FFC107">
+                    <v-list-item>
+                      <v-list-item-avatar tile class="mt-n7">
+                        <v-sheet
+                          color="#FFC107"
+                          width="80"
+                          height="80"
+                          elevation="10"
+                        >
+                          <v-icon dark large>mdi-school</v-icon>
+                        </v-sheet>
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <div class="overline text-right white--text">
+                          number of students
+                        </div>
+                        <v-list-item-title
+                          class="headline mb-1 text-right white--text"
+                        >
+                          {{ class_WebB_2023 }}
+                        </v-list-item-title>
+                        <div><v-divider></v-divider></div>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-card-actions>
+                      <v-icon text class="ma-2 white--text">mdi-folder</v-icon>
+                      <div class="overline white--text">CLASS WEB-B 2023</div>
+                    </v-card-actions>
+                  </v-card>
+                </v-flex>
+                <!--**********************|SNA 2022|***********************-->
+                <v-flex sm6 xs12 md6 lg4>
+                  <v-card class="ma-3" elevation="7" color="#607D8B">
+                    <v-list-item>
+                      <v-list-item-avatar tile class="mt-n7">
+                        <v-sheet
+                          color="#607D8B"
+                          width="80"
+                          height="80"
+                          elevation="10"
+                        >
+                          <v-icon dark large>mdi-school</v-icon>
+                        </v-sheet>
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <div class="overline text-right white--text">
+                          number of students
+                        </div>
+                        <v-list-item-title
+                          class="headline mb-1 text-right white--text"
+                        >
+                          {{ class_SNA_2023 }}
+                        </v-list-item-title>
+                        <div><v-divider></v-divider></div>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-card-actions>
+                      <v-icon text class="ma-2 white--text">mdi-folder</v-icon>
+                      <div class="overline white--text">CLASS SNA 2023</div>
+                    </v-card-actions>
+                  </v-card>
+                </v-flex>
               </v-layout>
             </v-container>
           </div>
@@ -269,16 +399,7 @@
         <v-item-group mandatory class="mt-n4">
           <v-container>
             <v-list-item-title
-              class="
-                font-weight-light
-                text-h4
-                info--text
-                mt-7
-                mb-7
-                text-left
-                ms-5
-                me-5
-              "
+              class="font-weight-light text-h4 info--text mt-7 mb-7 text-left"
             >
               TOTAL
               <hr class="hr-1" />
@@ -444,7 +565,7 @@
   </div>
 </template>
 
-
+<!--<~><~><~><~><~><~><~><~><~>|*SCRIPT*|<~><~><~><~><~><~><~><~><~>-->
 <script>
 export default {
   props: [
@@ -459,6 +580,9 @@ export default {
     "class_WebB_2022",
     "class_SNA_2021",
     "class_SNA_2022",
+    "class_WebA_2023",
+    "class_WebB_2023",
+    "class_SNA_2023",
   ],
   data() {
     return {
@@ -480,7 +604,7 @@ export default {
 };
 </script>
 
-
+<!--<~><~><~><~><~><~><~><~><~>|*STYLE*|<~><~><~><~><~><~><~><~><~>-->
 <style >
 .numberOfStudents {
   background-image: url(https://cdn.pixabay.com/photo/2016/11/14/03/16/book-1822474_960_720.jpg);
@@ -498,6 +622,6 @@ hr {
 hr.hr-1 {
   border: 0;
   height: 2px;
-  background-image: linear-gradient(to right, orange, #f44336, orange);
+  background-image: linear-gradient(to right, orange, #20de20, orange);
 }
 </style>
