@@ -201,10 +201,11 @@ export default {
       notStudentRole: ["STUDENT"],
       students: [],
       images: [
-        "https://i.pinimg.com/236x/92/8f/c8/928fc874edae45b141ac45bdc157a70b.jpg",
-        "https://i.pinimg.com/236x/c4/d3/e2/c4d3e2dd8797e6d7d5b07dbfc338d054.jpg",
-        "https://i.pinimg.com/236x/3f/87/6c/3f876cc74af0f155af84306443b3ea56.jpg",
-        "https://i.pinimg.com/236x/97/7f/e7/977fe798cf2c3a037e7aa9af6ce4b9d1.jpg",
+        "https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png",
+        "https://cdn4.iconfinder.com/data/icons/social-messaging-ui-color-and-shapes-3/177800/129-512.png",
+        "https://www.pinclipart.com/picdir/big/164-1640714_user-symbol-interface-contact-phone-set-add-sign.png",
+        "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-Clipart.png",
+        "https://icon-library.com/images/user-512_4557.png",
       ],
       // DATA FROM INPUT ----------------------------------------
       username: null,
