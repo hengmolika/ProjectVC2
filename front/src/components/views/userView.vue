@@ -77,23 +77,6 @@
                 item-text="first_name"
                 item-value="id"
               >
-                <template v-slot:item="data">
-                  <template>
-                    <v-list-item-avatar>
-                      <img :src="url + data.item.profile" />
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title
-                        v-html="
-                          data.item.first_name + ' ' + data.item.last_name
-                        "
-                      ></v-list-item-title>
-                      <v-list-item-subtitle
-                        v-html="data.item.class"
-                      ></v-list-item-subtitle>
-                    </v-list-item-content>
-                  </template>
-                </template>
               </v-combobox>
             </v-form>
           </v-card-text>
@@ -142,7 +125,7 @@
       </user-search>
       <v-simple-table class="mb-12">
         <template v-slot:default>
-          <thead class="tableHead font-weight-bold text-caption">
+          <thead class="tableHead">
             <tr>
               <th>PROFILE</th>
               <th>USERNAME</th>
@@ -153,7 +136,6 @@
           </thead>
           <tbody v-if="!isSearch">
             <user-card
-              class="font-weight-medium text-caption"
               v-for="user of users"
               :key="user.id"
               :user="user"
@@ -201,11 +183,10 @@ export default {
       notStudentRole: ["STUDENT"],
       students: [],
       images: [
-        "https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png",
-        "https://cdn4.iconfinder.com/data/icons/social-messaging-ui-color-and-shapes-3/177800/129-512.png",
-        "https://www.pinclipart.com/picdir/big/164-1640714_user-symbol-interface-contact-phone-set-add-sign.png",
-        "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-Clipart.png",
-        "https://icon-library.com/images/user-512_4557.png",
+        "https://i.pinimg.com/236x/92/8f/c8/928fc874edae45b141ac45bdc157a70b.jpg",
+        "https://i.pinimg.com/236x/c4/d3/e2/c4d3e2dd8797e6d7d5b07dbfc338d054.jpg",
+        "https://i.pinimg.com/236x/3f/87/6c/3f876cc74af0f155af84306443b3ea56.jpg",
+        "https://i.pinimg.com/236x/97/7f/e7/977fe798cf2c3a037e7aa9af6ce4b9d1.jpg",
       ],
       // DATA FROM INPUT ----------------------------------------
       username: null,
@@ -231,11 +212,10 @@ export default {
       profileRules: [(v) => !!v || "Profile is required"],
       // DATA GET FROM BACKEND ----------------------------------------
       users: [],
-      isSearch: false,
-      contain_users_search: [],
-      key_role_search: "",
       userAction: {},
       dialogDisplay: false,
+      isSearch: false,
+      contain_users_search: [],
       // MESSAGE DATA
       messageError: "",
       messageAlert: "",
@@ -283,15 +263,7 @@ export default {
     // **********************|~GET USER FROM BACKEND~|********************** //
     getUsers() {
       axios.get("/users").then((res) => {
-        if (!this.isSearch) {
-          this.users = res.data;
-        } else {
-          this.contain_users_search = res.data.filter((user) =>
-            user.roles
-              .toLowerCase()
-              .includes(this.key_role_search.toLowerCase())
-          );
-        }
+        this.users = res.data;
       });
     },
 
@@ -333,7 +305,6 @@ export default {
         username: userData.username,
         email: userData.email,
         role: userData.roles,
-        student_id: userData.student_id,
       };
       this.username = this.userAction.username;
       this.email = this.userAction.email;
@@ -341,36 +312,18 @@ export default {
         this.role = "ADMIN";
       } else {
         this.role = this.userAction.role;
-        if (userData.roles === "STUDENT") {
-          this.student = userData.student.first_name;
-        }
       }
       this.messageError = "";
       this.messageAlert = "";
-      console.log(userData);
     },
     updateUser() {
       if (this.userAction.role === "ADMIN") {
         this.role = "ADMIN";
       }
-
-      let student_id = "";
-      if (this.role === "STUDENT" || this.userAction.roles === "STUDENT") {
-        if (this.student.id !== undefined) {
-          student_id = this.student.id;
-        } else {
-          student_id = this.userAction.student_id;
-        }
-      } else {
-        this.student = "";
-      }
-      console.log(this.student.id, this.role, this.userAction.student_id);
-
       let myNewUserData = {
         username: this.username,
         email: this.email,
         roles: this.role,
-        student_id: student_id,
       };
 
       axios
@@ -396,8 +349,8 @@ export default {
         this.profile = this.images[imageRadom];
 
         let student_id = "";
-        if (this.student !== null) {
-          student_id = this.student.id;
+        if(this.student !== null) {
+          student_id = this.student.id
         }
 
         let userInfo = {
@@ -408,12 +361,12 @@ export default {
           roles: this.role,
           student_id: student_id,
           profile: this.profile,
+          
         };
         axios
           .post("/register", userInfo)
           .then((response) => {
             this.users.push(response.data.user);
-            this.getUsers();
             this.closeDialog();
             this.messageAlert = "Create succussfully !";
           })
@@ -429,9 +382,6 @@ export default {
       let id = this.userAction.id;
       axios.delete("/users/" + id).then(() => {
         this.users = this.users.filter((user) => user.id !== id);
-        this.contain_users_search = this.contain_users_search.filter(
-          (user) => user.id !== id
-        );
         this.closeDialog();
         this.messageAlert = "Delete succussfully!";
       });
@@ -474,8 +424,7 @@ export default {
         this.getUsers();
         this.isSearch = false;
       } else {
-        this.key_role_search = role_key;
-        // console.log("hello",this.key_role_search);
+        console.log(role_key);
         this.contain_users_search = this.users.filter((user) =>
           user.roles.toLowerCase().includes(role_key.toLowerCase())
         );
